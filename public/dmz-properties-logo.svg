@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 60" role="img" aria-labelledby="title desc">
+  <title id="title">DMZ Properties</title>
+  <desc id="desc">Geometric DMZ wordmark with the Z representing an access route.</desc>
+  <path fill="#173f32" fill-rule="evenodd" d="M0 0h23c18 0 28 11 28 30S41 60 23 60H0V0Zm13 12v36h9c10 0 16-7 16-18s-6-18-16-18h-9Z"/>
+  <path fill="#173f32" d="M61 60V0h12l16 23 16-23h12v60h-13V22L89 43 74 22v38H61Z"/>
+  <path fill="#87a91f" d="M128 0h50v11l-32 37h32v12h-51V49l32-37h-31V0Z"/>
+  <path d="M203 7v46" stroke="#cad4cc"/>
+  <g fill="#173f32" font-family="Arial, sans-serif" font-size="12" font-weight="700" letter-spacing="2.4">
+    <text x="222" y="34">PROPERTIES</text>
+  </g>
+</svg>
