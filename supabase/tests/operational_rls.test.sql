@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(21);
+select plan(26);
 
 insert into auth.users (id, email)
 values
@@ -133,6 +133,30 @@ select results_eq(
   $$select count(*) from public.audit_events a join public.enquiries e on e.id::text = a.entity_id where e.submission_key = '55555555-5555-4555-8555-555555555555'::uuid$$,
   array[1::bigint],
   'ingestion creates one audit event'
+);
+
+reset role;
+select ok(
+  not has_function_privilege('anon', 'public.check_enquiry_rate_limit(text,integer,integer)', 'execute'),
+  'anonymous callers cannot execute distributed rate limiting'
+);
+select ok(
+  not has_function_privilege('authenticated', 'public.check_enquiry_rate_limit(text,integer,integer)', 'execute'),
+  'authenticated callers cannot execute distributed rate limiting'
+);
+select ok(
+  has_function_privilege('service_role', 'public.check_enquiry_rate_limit(text,integer,integer)', 'execute'),
+  'service role can execute distributed rate limiting'
+);
+select ok(
+  not has_table_privilege('anon', 'private.enquiry_rate_limits', 'select,insert,update,delete'),
+  'anonymous callers hold no rate-limit table privileges'
+);
+set local role service_role;
+select results_eq(
+  $$select public.check_enquiry_rate_limit(repeat('a', 64), 5, 60) from generate_series(1, 6)$$,
+  array[false, false, false, false, false, true],
+  'shared limiter blocks the sixth request in a window'
 );
 
 select * from finish();

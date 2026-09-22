@@ -107,4 +107,32 @@ describe("Supabase migration security", () => {
       "grant execute on function public.ingest_enquiry(jsonb) to service_role",
     );
   });
+
+  it("restricts distributed rate limiting to the service role", async () => {
+    const migration = await readFile(
+      path.join(
+        process.cwd(),
+        "supabase/migrations/20260918000300_distributed_rate_limit.sql",
+      ),
+      "utf8",
+    );
+    expect(migration).toContain("create table private.enquiry_rate_limits");
+    expect(migration).toContain(
+      "revoke all on function public.check_enquiry_rate_limit(text, integer, integer)",
+    );
+    expect(migration).toContain(
+      "grant execute on function public.check_enquiry_rate_limit(text, integer, integer)",
+    );
+    const fixMigration = await readFile(
+      path.join(
+        process.cwd(),
+        "supabase/migrations/20260918000400_fix_rate_limit_parameters.sql",
+      ),
+      "utf8",
+    );
+    expect(fixMigration).toContain("p_identifier_hash text");
+    expect(fixMigration).toContain(
+      "return current_count > p_max_requests",
+    );
+  });
 });

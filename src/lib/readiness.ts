@@ -1,4 +1,13 @@
 export function getReadiness() {
+  const supabaseConfigured = Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+  );
+  const persistenceConfigured = Boolean(
+    process.env.SUPABASE_PERSIST_ENQUIRIES === "true" &&
+      process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      process.env.SUPABASE_SECRET_KEY,
+  );
   const checks = {
     canonicalUrl: Boolean(
       process.env.NEXT_PUBLIC_SITE_URL ||
@@ -15,22 +24,21 @@ export function getReadiness() {
         process.env.TURNSTILE_SECRET_KEY,
     ),
     distributedRateLimit: Boolean(
-      process.env.UPSTASH_REDIS_REST_URL &&
-        process.env.UPSTASH_REDIS_REST_TOKEN,
+      persistenceConfigured ||
+        (process.env.UPSTASH_REDIS_REST_URL &&
+          process.env.UPSTASH_REDIS_REST_TOKEN),
     ),
-    supabase: Boolean(
-      process.env.NEXT_PUBLIC_SUPABASE_URL &&
-        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
-    ),
-    enquiryPersistence: Boolean(
-      process.env.SUPABASE_PERSIST_ENQUIRIES === "true" &&
-        process.env.NEXT_PUBLIC_SUPABASE_URL &&
-        process.env.SUPABASE_SECRET_KEY,
-    ),
+    supabase: supabaseConfigured,
+    enquiryPersistence: persistenceConfigured,
   };
 
   return {
-    ready: Object.values(checks).every(Boolean),
+    ready: Boolean(
+      checks.canonicalUrl &&
+        checks.supabase &&
+        checks.enquiryPersistence &&
+        checks.distributedRateLimit,
+    ),
     checks,
   };
 }

@@ -1,9 +1,13 @@
 import { NextRequest } from "next/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const persistenceMock = vi.hoisted(() => vi.fn());
+const persistenceMocks = vi.hoisted(() => ({
+  persist: vi.fn(),
+  rateLimit: vi.fn(),
+}));
 vi.mock("@/lib/admin/enquiry-persistence", () => ({
-  persistEnquiry: persistenceMock,
+  persistEnquiry: persistenceMocks.persist,
+  isSupabaseEnquiryRateLimited: persistenceMocks.rateLimit,
 }));
 
 import { POST } from "../src/app/api/enquiries/route";
@@ -57,7 +61,9 @@ function restoreEnvironment(key: string, value: string | undefined) {
 }
 
 beforeEach(() => {
-  persistenceMock.mockReset();
+  persistenceMocks.persist.mockReset();
+  persistenceMocks.rateLimit.mockReset();
+  persistenceMocks.rateLimit.mockResolvedValue(false);
   vi.spyOn(console, "error").mockImplementation(() => undefined);
   delete process.env.RESEND_API_KEY;
   delete process.env.ENQUIRY_TO_EMAIL;
@@ -151,23 +157,33 @@ describe("POST /api/enquiries", () => {
 
   it("succeeds without email when Supabase persistence succeeds", async () => {
     process.env.SUPABASE_PERSIST_ENQUIRIES = "true";
-    persistenceMock.mockResolvedValue("enquiry-id");
+    persistenceMocks.persist.mockResolvedValue("enquiry-id");
 
     const response = await POST(createRequest(validInput, "persisted-no-email"));
     expect(response.status).toBe(200);
     expect(await response.json()).toMatchObject({
       message: expect.stringContaining("received"),
     });
-    expect(persistenceMock).toHaveBeenCalledOnce();
+    expect(persistenceMocks.persist).toHaveBeenCalledOnce();
   });
 
   it("fails safely when required Supabase persistence fails", async () => {
     process.env.SUPABASE_PERSIST_ENQUIRIES = "true";
-    persistenceMock.mockRejectedValue(new Error("offline"));
+    persistenceMocks.persist.mockRejectedValue(new Error("offline"));
 
     const response = await POST(createRequest(validInput, "persistence-failure"));
     expect(response.status).toBe(503);
-    expect(persistenceMock).toHaveBeenCalledOnce();
+    expect(persistenceMocks.persist).toHaveBeenCalledOnce();
+  });
+
+  it("uses the shared Supabase limiter when persistence is enabled", async () => {
+    process.env.SUPABASE_PERSIST_ENQUIRIES = "true";
+    persistenceMocks.rateLimit.mockResolvedValue(true);
+
+    const response = await POST(createRequest(validInput, "distributed-limit"));
+    expect(response.status).toBe(429);
+    expect(persistenceMocks.rateLimit).toHaveBeenCalledOnce();
+    expect(persistenceMocks.persist).not.toHaveBeenCalled();
   });
 
   it("fails closed when security-provider keys are only partially configured", async () => {

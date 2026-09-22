@@ -62,4 +62,18 @@ describe("deployment readiness", () => {
 
     expect(getReadiness().ready).toBe(true);
   });
+
+  it("treats email and Turnstile as optional when durable core services exist", () => {
+    process.env.NEXT_PUBLIC_SITE_URL = "https://dmz.example";
+    process.env.NEXT_PUBLIC_SUPABASE_URL = "https://project.supabase.co";
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = "publishable";
+    process.env.SUPABASE_SECRET_KEY = "secret";
+    process.env.SUPABASE_PERSIST_ENQUIRIES = "true";
+
+    const readiness = getReadiness();
+    expect(readiness.ready).toBe(true);
+    expect(readiness.checks.emailDelivery).toBe(false);
+    expect(readiness.checks.botProtection).toBe(false);
+    expect(readiness.checks.distributedRateLimit).toBe(true);
+  });
 });

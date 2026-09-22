@@ -6,7 +6,10 @@ import {
 } from "@/lib/enquiries";
 import { isEnquiryRateLimited, verifyTurnstile } from "@/lib/enquiry-security";
 import { properties } from "@/lib/content";
-import { persistEnquiry } from "@/lib/admin/enquiry-persistence";
+import {
+  isSupabaseEnquiryRateLimited,
+  persistEnquiry,
+} from "@/lib/admin/enquiry-persistence";
 import { isEnquiryPersistenceEnabled } from "@/lib/supabase/service";
 
 function logDeliveryIssue(code: string, status: number) {
@@ -53,7 +56,19 @@ export async function POST(request: NextRequest) {
   }
 
   const identifier = request.headers.get("x-forwarded-for")?.split(",")[0] || "local";
-  if (await isEnquiryRateLimited(identifier)) {
+  const persistenceEnabled = isEnquiryPersistenceEnabled();
+  let rateLimited: boolean;
+  if (persistenceEnabled) {
+    try {
+      rateLimited = await isSupabaseEnquiryRateLimited(identifier);
+    } catch {
+      logDeliveryIssue("supabase_rate_limit_fallback", 503);
+      rateLimited = await isEnquiryRateLimited(identifier);
+    }
+  } else {
+    rateLimited = await isEnquiryRateLimited(identifier);
+  }
+  if (rateLimited) {
     return NextResponse.json(
       { message: "Too many submissions. Please wait and try again." },
       { status: 429 },
@@ -100,7 +115,6 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const persistenceEnabled = isEnquiryPersistenceEnabled();
   let persisted = false;
   if (persistenceEnabled) {
     try {
