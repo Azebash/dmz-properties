@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(13);
+select plan(21);
 
 insert into auth.users (id, email)
 values
@@ -22,7 +22,7 @@ values
 
 set local role anon;
 select results_eq(
-  $$select reference from public.properties order by reference$$,
+  $$select reference from public.properties where reference in ('PUB-1', 'DRAFT-1') order by reference$$,
   array['PUB-1'],
   'anonymous visitors read only published properties'
 );
@@ -40,7 +40,7 @@ select throws_ok(
 set local role authenticated;
 set local request.jwt.claim.sub = '22222222-2222-2222-2222-222222222222';
 select results_eq(
-  $$select reference from public.properties order by reference$$,
+  $$select reference from public.properties where reference in ('PUB-1', 'DRAFT-1') order by reference$$,
   array['DRAFT-1', 'PUB-1'],
   'active staff can read draft and published properties'
 );
@@ -91,6 +91,48 @@ select ok(
 select ok(
   has_function_privilege('service_role', 'public.ingest_enquiry(jsonb)', 'execute'),
   'service role can execute enquiry ingestion'
+);
+
+reset role;
+select results_eq(
+  $$select public from storage.buckets where id = 'property-media'$$,
+  array[false],
+  'property media bucket is private'
+);
+select results_eq(
+  $$select public from storage.buckets where id = 'seller-documents'$$,
+  array[false],
+  'seller documents bucket is private'
+);
+
+set local role service_role;
+select lives_ok(
+  $$select public.ingest_enquiry('{"submissionKey":"55555555-5555-4555-8555-555555555555","name":"Test Buyer","email":"buyer@example.com","phone":"+2348000000000","location":"Abuja","interest":"Booking an inspection","timeline":"Within 3 months","budget":"NGN 14000000","propertyReference":"DMZ-KYC-001","inspectionPreference":"Live video inspection","inspectionDate":"2026-12-15","alternateDate":"2026-12-16","timeZone":"Africa/Lagos","contactMethod":"WhatsApp","contactTime":"Morning","message":"Remote inspection test request","sourcePage":"https://example.com/properties","referrer":"","utmSource":"test","utmMedium":"test","utmCampaign":"rls","referralCode":"","consent":"accepted"}'::jsonb)$$,
+  'service role ingests a validated inspection enquiry'
+);
+select results_eq(
+  $$select count(*) from public.enquiries where submission_key = '55555555-5555-4555-8555-555555555555'::uuid$$,
+  array[1::bigint],
+  'ingestion creates one enquiry'
+);
+select lives_ok(
+  $$select public.ingest_enquiry('{"submissionKey":"55555555-5555-4555-8555-555555555555","name":"Test Buyer","email":"buyer@example.com","phone":"+2348000000000","location":"Abuja","interest":"Booking an inspection","timeline":"Within 3 months","budget":"NGN 14000000","propertyReference":"DMZ-KYC-001","inspectionPreference":"Live video inspection","inspectionDate":"2026-12-15","alternateDate":"2026-12-16","timeZone":"Africa/Lagos","contactMethod":"WhatsApp","contactTime":"Morning","message":"Remote inspection test request","sourcePage":"https://example.com/properties","referrer":"","utmSource":"test","utmMedium":"test","utmCampaign":"rls","referralCode":"","consent":"accepted"}'::jsonb)$$,
+  'repeated submission is accepted idempotently'
+);
+select results_eq(
+  $$select count(*) from public.enquiries where submission_key = '55555555-5555-4555-8555-555555555555'::uuid$$,
+  array[1::bigint],
+  'idempotent retry creates no duplicate enquiry'
+);
+select results_eq(
+  $$select count(*) from public.inspections i join public.enquiries e on e.id = i.enquiry_id where e.submission_key = '55555555-5555-4555-8555-555555555555'::uuid$$,
+  array[1::bigint],
+  'inspection enquiry creates one inspection record'
+);
+select results_eq(
+  $$select count(*) from public.audit_events a join public.enquiries e on e.id::text = a.entity_id where e.submission_key = '55555555-5555-4555-8555-555555555555'::uuid$$,
+  array[1::bigint],
+  'ingestion creates one audit event'
 );
 
 select * from finish();

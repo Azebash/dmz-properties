@@ -54,7 +54,7 @@ describe("Supabase migration security", () => {
     const migration = await readFile(
       path.join(
         process.cwd(),
-        "supabase/migrations/202609180001_initial_operational_schema.sql",
+        "supabase/migrations/20260918000100_initial_operational_schema.sql",
       ),
       "utf8",
     );
@@ -94,7 +94,7 @@ describe("Supabase migration security", () => {
     const migration = await readFile(
       path.join(
         process.cwd(),
-        "supabase/migrations/202609180002_enquiry_ingestion.sql",
+        "supabase/migrations/20260918000200_enquiry_ingestion.sql",
       ),
       "utf8",
     );

@@ -224,7 +224,7 @@ These features reduce manual work after enquiry volume grows.
 - [ ] Add audit history for important listing changes
 - [x] Define Supabase operational schema, publication states, private storage, and RLS policies
 - [x] Add protected read-only admin dashboard and staff session refresh
-- [~] Run Supabase migration and pgTAP policy tests; blocked until Docker engine or hosted project is available
+- [x] Apply Supabase migrations and pass 21 linked pgTAP policy assertions
 - [ ] Add audited mutation RPCs before enabling admin editors
 
 ### Admin Roles
@@ -370,7 +370,8 @@ These capabilities become relevant when DMZ Properties begins developing its own
 - [!] Title type, complete payment schedule, charges, and live allocation count are not yet supplied
 - [x] Estate location confirmed as KYC Homes Phase II, Sabon Lugbe, Airport Road, Abuja, FCT
 - [!] The logo remains a first design direction pending final approval
-- [!] Supabase migration and pgTAP tests are authored but have not executed because Docker is not running and no hosted project is linked
+- [x] Supabase project linked, remote migrations synchronized, seed applied, and generated types refreshed
+- [!] Supabase enquiry persistence remains feature-flagged off until the production secret key and email delivery are configured
 - [!] Current Supabase SDK requires Node.js 22 in production; this workspace currently runs Node.js 20
 - [ ] Replace temporary content before indexing or advertising the website
 

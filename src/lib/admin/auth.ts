@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { redirect } from "next/navigation";
-import type { StaffProfileRow } from "@/lib/supabase/database.types";
+import type { StaffProfileRow } from "@/lib/supabase/types";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 

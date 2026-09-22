@@ -17,6 +17,14 @@ npm run supabase:test
 npm run supabase:types
 ```
 
+If Docker is unavailable but the repository is linked and
+`SUPABASE_DB_PASSWORD` is present in `.env.local`, run the same transactional
+policy suite against the linked project:
+
+```bash
+npm run supabase:test:linked
+```
+
 Copy the local project URL and publishable key into `.env.local`:
 
 ```text
@@ -47,4 +55,4 @@ Do not enable admin mutations or database-backed public publishing until:
 
 The Supabase secret key is server-only and must never use the `NEXT_PUBLIC_` prefix.
 
-The committed `database.types.ts` is a bootstrap type surface for the unconnected project. Replace it with CLI-generated output immediately after the first successful local reset; generated relationships are authoritative.
+The committed `database.types.ts` was generated from the linked project after the initial migrations. Regenerate it after every schema change; generated relationships are authoritative.

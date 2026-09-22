@@ -175,11 +175,13 @@ test("estate gallery filters images and opens an accessible viewer", async ({ pa
   await expect(dialog).toBeHidden();
 });
 
-test("unconfigured admin routes fail safely into setup guidance", async ({ page }) => {
+test("admin routes fail safely into staff authentication", async ({ page }) => {
   await page.goto("/admin");
-  await expect(page).toHaveURL(/\/admin\/login\?setup=required$/);
+  await expect(page).toHaveURL(/\/admin\/login/);
   await expect(page.getByRole("heading", { name: "Staff sign in" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Supabase setup required" })).toBeVisible();
+  const setupMessage = page.getByRole("heading", { name: "Supabase setup required" });
+  const emailField = page.getByLabel("Staff email");
+  await expect(setupMessage.or(emailField)).toBeVisible();
   await expect(page.locator(".site-header")).toBeHidden();
 });
 
