@@ -185,6 +185,25 @@ test("admin routes fail safely into staff authentication", async ({ page }) => {
   await expect(page.locator(".site-header")).toBeHidden();
 });
 
+test("configured administrator reaches the protected dashboard", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-1440", "One live auth check is sufficient");
+  const email = process.env.DMZ_ADMIN_EMAIL;
+  const password = process.env.DMZ_ADMIN_TEMP_PASSWORD;
+  test.skip(!email || !password, "Local administrator credentials are not configured");
+
+  await page.goto("/admin/login");
+  await page.getByLabel("Staff email").fill(email!);
+  await page.getByLabel("Password").fill(password!);
+  await page.getByRole("button", { name: "Sign in" }).click();
+
+  await expect(page).toHaveURL(/\/admin$/, { timeout: 20_000 });
+  await expect(page.getByRole("heading", { name: "Welcome, Hafiz Bashir." })).toBeVisible();
+  await expect(page.locator(".admin-metrics")).toContainText("Properties");
+  await expect(page.locator(".admin-metrics")).toContainText("1");
+});
+
 for (const path of [
   "/",
   "/properties",
