@@ -100,9 +100,12 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  if (isEnquiryPersistenceEnabled()) {
+  const persistenceEnabled = isEnquiryPersistenceEnabled();
+  let persisted = false;
+  if (persistenceEnabled) {
     try {
       await persistEnquiry(enquiry);
+      persisted = true;
     } catch {
       logDeliveryIssue("supabase_persistence_failed", 503);
       return NextResponse.json(
@@ -118,6 +121,11 @@ export async function POST(request: NextRequest) {
 
   if (!apiKey || !toEmail || !fromEmail) {
     logDeliveryIssue("email_not_configured", 503);
+    if (persisted) {
+      return NextResponse.json({
+        message: "Your enquiry has been received. Our team will follow up shortly.",
+      });
+    }
     return NextResponse.json(
       { message: "Enquiry delivery is not configured yet. Please contact us directly." },
       { status: 503 },
@@ -143,6 +151,11 @@ export async function POST(request: NextRequest) {
     });
   } catch {
     logDeliveryIssue("email_provider_unavailable", 503);
+    if (persisted) {
+      return NextResponse.json({
+        message: "Your enquiry has been received. Our team will follow up shortly.",
+      });
+    }
     return NextResponse.json(
       { message: "The enquiry service is temporarily unavailable. Please try again." },
       { status: 503 },
@@ -151,6 +164,11 @@ export async function POST(request: NextRequest) {
 
   if (!emailResponse.ok) {
     logDeliveryIssue("email_provider_rejected", emailResponse.status);
+    if (persisted) {
+      return NextResponse.json({
+        message: "Your enquiry has been received. Our team will follow up shortly.",
+      });
+    }
     return NextResponse.json(
       { message: "We could not deliver your enquiry. Please try again shortly." },
       { status: 502 },

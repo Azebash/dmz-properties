@@ -56,8 +56,8 @@ export const estateImages: EstateImage[] = [
   },
   {
     src: "/images/estate/development-progress-01.webp",
-    alt: "Multiple residential buildings under construction at KYC Homes Phase II",
-    caption: "Multi-unit construction progress",
+    alt: "Detached residence under construction at KYC Homes Phase II",
+    caption: "Detached residence construction progress",
     category: "Construction",
   },
   {

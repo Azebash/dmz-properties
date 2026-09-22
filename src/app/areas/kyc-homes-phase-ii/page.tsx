@@ -115,7 +115,7 @@ export default function KycEstatePage() {
           <figure>
             <Image
               src="/images/estate/development-progress-01.webp"
-              alt="Ongoing multi-unit residential construction at KYC Homes Phase II"
+              alt="Ongoing detached residential construction at KYC Homes Phase II"
               fill
               sizes="(max-width: 800px) 100vw, 40vw"
             />

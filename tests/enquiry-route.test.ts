@@ -1,5 +1,11 @@
 import { NextRequest } from "next/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+const persistenceMock = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/admin/enquiry-persistence", () => ({
+  persistEnquiry: persistenceMock,
+}));
+
 import { POST } from "../src/app/api/enquiries/route";
 
 const futureDate = new Date(Date.now() + 7 * 86_400_000).toISOString().slice(0, 10);
@@ -51,6 +57,7 @@ function restoreEnvironment(key: string, value: string | undefined) {
 }
 
 beforeEach(() => {
+  persistenceMock.mockReset();
   vi.spyOn(console, "error").mockImplementation(() => undefined);
   delete process.env.RESEND_API_KEY;
   delete process.env.ENQUIRY_TO_EMAIL;
@@ -140,6 +147,27 @@ describe("POST /api/enquiries", () => {
     expect(await response.json()).toMatchObject({
       message: expect.stringContaining("not configured"),
     });
+  });
+
+  it("succeeds without email when Supabase persistence succeeds", async () => {
+    process.env.SUPABASE_PERSIST_ENQUIRIES = "true";
+    persistenceMock.mockResolvedValue("enquiry-id");
+
+    const response = await POST(createRequest(validInput, "persisted-no-email"));
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({
+      message: expect.stringContaining("received"),
+    });
+    expect(persistenceMock).toHaveBeenCalledOnce();
+  });
+
+  it("fails safely when required Supabase persistence fails", async () => {
+    process.env.SUPABASE_PERSIST_ENQUIRIES = "true";
+    persistenceMock.mockRejectedValue(new Error("offline"));
+
+    const response = await POST(createRequest(validInput, "persistence-failure"));
+    expect(response.status).toBe(503);
+    expect(persistenceMock).toHaveBeenCalledOnce();
   });
 
   it("fails closed when security-provider keys are only partially configured", async () => {

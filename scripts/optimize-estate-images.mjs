@@ -16,7 +16,7 @@ const selections = {
   "residence-exterior.webp": "IMG_3293.jpg",
   "residence-kitchen.webp": "IMG_3260.jpg",
   "residence-pool.webp": "IMG_3295.jpg",
-  "development-progress-01.webp": "IMG_8629.jpg",
+  "development-progress-01.webp": "IMG_9840.jpg",
   "development-progress-02.webp": "IMG_9842.jpg",
   "development-progress-03.webp": "IMG_1341.jpg",
 };
