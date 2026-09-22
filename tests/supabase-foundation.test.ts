@@ -135,4 +135,21 @@ describe("Supabase migration security", () => {
       "return current_count > p_max_requests",
     );
   });
+
+  it("routes property writes through audited role-checked RPCs", async () => {
+    const migration = await readFile(
+      path.join(
+        process.cwd(),
+        "supabase/migrations/20260918000500_audited_property_mutations.sql",
+      ),
+      "utf8",
+    );
+    expect(migration).toContain("create function public.save_property");
+    expect(migration).toContain("private.has_staff_role");
+    expect(migration).toContain("insert into public.audit_events");
+    expect(migration).toContain("invalid property status transition");
+    expect(migration).toContain(
+      "grant execute on function public.save_property(jsonb) to authenticated",
+    );
+  });
 });

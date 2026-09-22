@@ -629,6 +629,14 @@ export type Database = {
         Returns: boolean
       }
       ingest_enquiry: { Args: { payload: Json }; Returns: string }
+      save_property: { Args: { p_payload: Json }; Returns: string }
+      transition_property_status: {
+        Args: {
+          p_property_id: string
+          p_status: Database["public"]["Enums"]["property_status"]
+        }
+        Returns: Database["public"]["Enums"]["property_status"]
+      }
     }
     Enums: {
       enquiry_status:

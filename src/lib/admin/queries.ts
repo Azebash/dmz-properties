@@ -19,6 +19,17 @@ export async function listAdminProperties() {
   return data;
 }
 
+export async function getAdminProperty(id: string) {
+  const supabase = await authorizedClient();
+  const { data, error } = await supabase
+    .from("properties")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw new Error(`Unable to load property: ${error.message}`);
+  return data;
+}
+
 export async function listAdminEnquiries() {
   const supabase = await authorizedClient();
   const { data, error } = await supabase

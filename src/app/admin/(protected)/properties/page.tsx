@@ -1,13 +1,20 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { AdminEmpty } from "@/components/admin-empty";
 import { AdminStatus } from "@/components/admin-status";
 import { formatAdminDate, formatAdminMoney } from "@/lib/admin/format";
 import { listAdminProperties } from "@/lib/admin/queries";
+import { requireStaff } from "@/lib/admin/auth";
 
 export const metadata: Metadata = { title: "Properties" };
 
 export default async function AdminPropertiesPage() {
-  const properties = await listAdminProperties();
+  const [properties, staff] = await Promise.all([
+    listAdminProperties(),
+    requireStaff(),
+  ]);
+  const canManage =
+    staff.role === "administrator" || staff.role === "property_manager";
 
   return (
     <div className="admin-page">
@@ -15,6 +22,11 @@ export default async function AdminPropertiesPage() {
         <p className="eyebrow">Inventory</p>
         <h1>Properties</h1>
         <p>Published, draft, reserved, sold, and archived inventory.</p>
+        {canManage ? (
+          <Link className="button button-primary" href="/admin/properties/new">
+            Add property
+          </Link>
+        ) : null}
       </header>
       {properties.length ? (
         <div className="admin-table-wrap">
@@ -35,7 +47,11 @@ export default async function AdminPropertiesPage() {
                 <tr key={property.id}>
                   <td>{property.reference}</td>
                   <td>
-                    <strong>{property.title}</strong>
+                    <strong>
+                      <Link href={`/admin/properties/${property.id}/edit`}>
+                        {property.title}
+                      </Link>
+                    </strong>
                     <span>{property.location_name}</span>
                   </td>
                   <td>{property.source.replaceAll("_", " ")}</td>

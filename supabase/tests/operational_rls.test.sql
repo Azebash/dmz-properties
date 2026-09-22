@@ -1,16 +1,18 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(26);
+select plan(36);
 
 insert into auth.users (id, email)
 values
   ('11111111-1111-1111-1111-111111111111', 'admin@example.com'),
-  ('22222222-2222-2222-2222-222222222222', 'viewer@example.com');
+  ('22222222-2222-2222-2222-222222222222', 'viewer@example.com'),
+  ('66666666-6666-6666-8666-666666666666', 'manager@example.com');
 
 insert into public.staff_profiles (user_id, display_name, role)
 values
   ('11111111-1111-1111-1111-111111111111', 'Admin User', 'administrator'),
-  ('22222222-2222-2222-2222-222222222222', 'Viewer User', 'viewer');
+  ('22222222-2222-2222-2222-222222222222', 'Viewer User', 'viewer'),
+  ('66666666-6666-6666-8666-666666666666', 'Manager User', 'property_manager');
 
 insert into public.properties (
   id, reference, slug, title, source, property_type, status,
@@ -157,6 +159,65 @@ select results_eq(
   $$select public.check_enquiry_rate_limit(repeat('a', 64), 5, 60) from generate_series(1, 6)$$,
   array[false, false, false, false, false, true],
   'shared limiter blocks the sixth request in a window'
+);
+
+reset role;
+select ok(
+  not has_function_privilege('anon', 'public.save_property(jsonb)', 'execute'),
+  'anonymous callers cannot execute property mutations'
+);
+select ok(
+  has_function_privilege('authenticated', 'public.save_property(jsonb)', 'execute'),
+  'authenticated role can reach the role-checked property RPC'
+);
+
+set local role authenticated;
+set local request.jwt.claim.sub = '22222222-2222-2222-2222-222222222222';
+select throws_ok(
+  $$select public.save_property('{"reference":"RPC-DENIED","slug":"rpc-denied","title":"Denied","source":"developer_inventory","propertyType":"Land","locationName":"Abuja","description":"Denied mutation","features":[]}'::jsonb)$$,
+  '42501',
+  'property mutation is not permitted',
+  'viewer cannot use property mutation RPC'
+);
+
+set local request.jwt.claim.sub = '66666666-6666-6666-8666-666666666666';
+select lives_ok(
+  $$select public.save_property('{"reference":"RPC-1","slug":"rpc-created-property","title":"RPC Created Property","source":"developer_inventory","propertyType":"Land","locationName":"Abuja","description":"Audited property mutation","features":["Verified"],"lastVerifiedAt":"2026-09-22T00:00:00Z"}'::jsonb)$$,
+  'property manager creates a draft through the audited RPC'
+);
+select results_eq(
+  $$select status::text from public.properties where reference = 'RPC-1'$$,
+  array['draft'],
+  'new RPC property starts in draft status'
+);
+reset role;
+select results_eq(
+  $$select count(*) from public.audit_events where entity_type = 'property' and action = 'created' and entity_id = (select id::text from public.properties where reference = 'RPC-1')$$,
+  array[1::bigint],
+  'property creation records one audit event'
+);
+set local role authenticated;
+set local request.jwt.claim.sub = '66666666-6666-6666-8666-666666666666';
+select results_eq(
+  $$select public.transition_property_status((select id from public.properties where reference = 'RPC-1'), 'under_review')::text$$,
+  array['under_review'],
+  'property manager moves draft to review'
+);
+select results_eq(
+  $$select public.transition_property_status((select id from public.properties where reference = 'RPC-1'), 'published')::text$$,
+  array['published'],
+  'verified reviewed property can be published'
+);
+select results_eq(
+  $$select status::text from public.properties where reference = 'RPC-1'$$,
+  array['published'],
+  'published status is persisted'
+);
+select throws_ok(
+  $$select public.transition_property_status((select id from public.properties where reference = 'RPC-1'), 'draft')$$,
+  '23514',
+  'invalid property status transition',
+  'invalid publication rollback is rejected'
 );
 
 select * from finish();

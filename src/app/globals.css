@@ -3078,6 +3078,17 @@ body:has(.admin-surface) .consent-banner {
   color: var(--ink-soft);
 }
 
+.admin-page-header > .button {
+  margin-top: 22px;
+}
+
+.admin-edit-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 30px;
+}
+
 .admin-table-wrap {
   margin-top: 45px;
   overflow-x: auto;
@@ -3176,6 +3187,55 @@ body:has(.admin-surface) .consent-banner {
   line-height: 1.6;
 }
 
+.admin-editor {
+  margin-top: 45px;
+  padding: clamp(24px, 4vw, 45px);
+  background: white;
+}
+
+.admin-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-bottom: 28px;
+}
+
+.admin-success {
+  margin: 25px 0 0;
+  padding: 13px 15px;
+  border: 1px solid #71934d;
+  background: #edf6df;
+  color: #294715;
+}
+
+.admin-transitions {
+  margin-top: 35px;
+  padding: 30px;
+  background: var(--forest);
+  color: white;
+}
+
+.admin-transitions h2 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.admin-transitions > p {
+  color: #bdccc5;
+}
+
+.admin-transitions > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.admin-transitions .button-secondary {
+  border-color: #71887d;
+  color: white;
+}
+
 @media (max-width: 800px) {
   .admin-shell {
     grid-template-columns: 1fr;
@@ -3191,6 +3251,14 @@ body:has(.admin-surface) .consent-banner {
 
   .admin-metrics {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .admin-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-form-grid .field-full {
+    grid-column: auto;
   }
 }
 

@@ -5,3 +5,4 @@ export type StaffProfileRow =
 export type PropertyRow = Database["public"]["Tables"]["properties"]["Row"];
 export type ArticleRow = Database["public"]["Tables"]["articles"]["Row"];
 export type EnquiryRow = Database["public"]["Tables"]["enquiries"]["Row"];
+export type PropertyStatus = Database["public"]["Enums"]["property_status"];
