@@ -55,7 +55,8 @@ test("production homepage meets basic performance and asset budgets", async ({ p
 });
 
 test("production metadata and discovery endpoints are valid", async ({ page, request }) => {
-  await page.goto("/areas/kyc-homes-phase-ii");
+  const pageResponse = await page.goto("/areas/kyc-homes-phase-ii");
+  expect(pageResponse?.headers()["strict-transport-security"]).toContain("max-age=");
 
   await expect(page).toHaveTitle(/KYC Homes Phase II, Abuja/);
   await expect(page.locator('meta[name="description"]')).toHaveAttribute(
@@ -77,5 +78,23 @@ test("production metadata and discovery endpoints are valid", async ({ page, req
 
   const robots = await request.get("/robots.txt");
   expect(robots.ok()).toBe(true);
-  expect(await robots.text()).toContain("Sitemap:");
+  expect(await robots.text()).toContain("Disallow: /");
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+    "content",
+    /noindex/,
+  );
+
+  const health = await request.get("/api/health");
+  expect(health.ok()).toBe(true);
+  const healthBody = await health.json();
+  expect(healthBody).toMatchObject({
+    status: "ok",
+    service: "dmz-properties",
+  });
+  expect(healthBody.readiness).toBeDefined();
+  expect(health.headers()["cache-control"]).toContain("no-store");
+
+  const readiness = await request.get("/api/ready");
+  expect(readiness.status()).toBe(503);
+  expect(await readiness.json()).toMatchObject({ status: "not_ready" });
 });

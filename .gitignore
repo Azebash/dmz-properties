@@ -34,6 +34,11 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+
+# local source photography; only curated derivatives are published
+/public/images/kyc_homes_phase_2/
+/supabase/.temp/
 
 # vercel
 .vercel

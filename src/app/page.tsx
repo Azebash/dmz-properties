@@ -29,7 +29,8 @@ export default function Home() {
             src="/images/estate/estate-hero.webp"
             alt="Completed residences within KYC Homes Phase II in Abuja"
             fill
-            priority
+            preload
+            unoptimized
             sizes="(max-width: 800px) 100vw, 56vw"
           />
           <Link className="hero-note" href="/areas/kyc-homes-phase-ii">

@@ -20,27 +20,27 @@ These items are launch blockers.
 - [x] Publish company registration number: RC 9121009
 - [x] State that DMZ Properties is independently managed
 - [x] State that the website is not the official KYC Homes Phase II website
-- [~] Disclose the founder's professional relationship with KYC Homes Phase II on the About page
-- [!] Confirm the final wording of the KYC Homes Phase II relationship and authorization
+- [x] Disclose founder Hafiz Bashir's staff relationship with KYC Interproject Limited on the About page
+- [x] Confirm authorization and publish independent-operation wording
 - [!] Add the official business email address
-- [!] Add the official business phone and WhatsApp number
-- [!] Add the office or contact address
+- [x] Add the official business phone and WhatsApp number
+- [x] Add the office or contact address
 - [!] Confirm the production domain
 
 ### Real Property Inventory
 
 - [x] Property catalogue and reusable listing model
 - [x] Individual property detail pages
-- [!] Replace all representative listings with approved live inventory
+- [x] Remove fictional resale listings and publish only confirmed developer inventory
 - [x] Replace public-site stock photography with genuine estate media
-- [ ] Add verified plot dimensions
-- [ ] Add approved prices and complete payment terms
+- [x] Publish the developer's 600 sqm Phase II plot standard
+- [~] Publish the NGN 14,000,000 developer price; complete payment schedule and charges remain pending
 - [ ] Add title type and relevant documentation summary
-- [ ] Add accurate availability status
+- [~] Publish developer inventory status with reconfirmation; live allocation count remains unavailable
 - [x] Add property reference numbers
-- [ ] Add exact or appropriately generalized map locations
+- [x] Add sourced estate coordinates and external directions
 - [ ] Add development status and current site condition
-- [ ] Add nearby infrastructure and access information
+- [x] Add confirmed estate infrastructure and Airport Road access information
 - [x] Add clear developer-inventory or owner-resale labels
 - [x] Add last-verified dates to listings
 
@@ -48,15 +48,15 @@ These items are launch blockers.
 
 - [x] General enquiry page and buyer requirement form
 - [~] Configure Resend credentials for secure form delivery
-- [!] Connect the official WhatsApp number
+- [x] Connect the official WhatsApp number
 - [x] Add property-specific enquiry context automatically
 - [x] Add inspection booking requests
 - [x] Add physical or virtual inspection selection
 - [x] Add preferred contact method and contact time
 - [x] Add budget and purchase timeline qualification
 - [x] Add consent checkbox and privacy notice
-- [x] Add submission confirmation and automated email acknowledgement
-- [~] Add honeypot and basic rate-limit spam protection
+- [~] Add submission confirmation and best-effort email acknowledgement; production delivery remains untested
+- [~] Add honeypot, optional Turnstile, and optional distributed Upstash rate limiting; production credentials remain pending
 - [~] Add internal email notifications for new enquiries
 
 ### Legal And Trust
@@ -79,6 +79,10 @@ These items are launch blockers.
 - [x] Search-engine robots configuration
 - [x] Core company structured data
 - [x] Security headers and content security policy
+- [x] Add HSTS for production responses
+- [x] Keep unapproved deployments non-indexable by default
+- [x] Exclude raw source photography from Vercel deployments
+- [x] Add process health and dependency-readiness endpoints
 - [x] Custom not-found and application-error pages
 - [x] Unit tests for enquiry validation, rate limiting, and content integrity
 - [x] Browser journey tests for navigation, filtering, and enquiries
@@ -88,7 +92,7 @@ These items are launch blockers.
 - [ ] Connect production domain and SSL
 - [ ] Configure environment variables and secrets
 - [x] Add a branded social-sharing image
-- [ ] Add error monitoring
+- [~] Add structured server-error logs and health endpoint; external alerting remains pending
 - [ ] Test all forms on production
 - [x] Test at 375px, 768px, 1024px, and 1440px
 - [~] Production performance, asset, metadata, SEO, and accessibility budgets pass; independent Lighthouse scoring remains pending
@@ -109,21 +113,22 @@ These features should follow immediately after the launch blockers.
 - [x] Search by property name or reference number
 - [ ] Related-property recommendations
 - [x] Clear empty and no-results states
-- [ ] Share property links through WhatsApp and social platforms
+- [x] Share or copy property links through native browser tools
 
 ### Property Presentation
 
 - [x] Multi-image property gallery
+- [x] Filterable estate-wide gallery with accessible image viewer
 - [ ] Video walkthroughs
 - [ ] Drone footage
 - [ ] Live development-progress media
 - [ ] Downloadable property brochure
-- [ ] Downloadable buyer information pack
+- [x] Printable buyer guide with save-as-PDF support
 - [ ] Amenities and infrastructure section
 - [ ] Purchase-cost breakdown
 - [ ] Frequently asked questions per property
 - [x] Inspection availability information
-- [ ] Print-friendly property page
+- [x] Print-friendly property page
 
 ### Trust System
 
@@ -164,9 +169,9 @@ These features should follow immediately after the launch blockers.
 - [x] Add Breadcrumb structured data
 - [x] Add property-specific structured data
 - [x] Create dynamic social-sharing images
-- [x] Add author, published date, and updated date to articles
-- [ ] Add article categories and topic pages
-- [ ] Add internal links between articles, areas, and properties
+- [x] Add author, published date, and updated date to articles and display them
+- [x] Add article categories and topic pages
+- [x] Add internal links between articles, areas, and properties
 - [ ] Add XML image sitemap support if needed
 - [ ] Connect Google Search Console
 - [ ] Connect Bing Webmaster Tools
@@ -191,13 +196,13 @@ These features should follow immediately after the launch blockers.
 
 - [~] Add configurable Google Analytics integration
 - [ ] Connect Google Search Console
-- [ ] Track property page views
-- [ ] Track enquiry submissions
-- [ ] Track WhatsApp clicks
-- [ ] Track inspection requests
-- [ ] Track brochure downloads
-- [ ] Track buyer versus seller enquiries
-- [ ] Record lead source and campaign details
+- [x] Track page views, including property pages, when analytics is enabled
+- [x] Track enquiry submissions when analytics is enabled
+- [x] Track WhatsApp clicks when analytics is enabled
+- [x] Track inspection requests through enquiry type
+- [x] Track buyer-guide and property print actions
+- [x] Track buyer versus seller enquiries
+- [x] Record campaign and referral attribution with enquiries
 - [ ] Define monthly acquisition and conversion reports
 
 ## P2: Operational Efficiency
@@ -206,8 +211,8 @@ These features reduce manual work after enquiry volume grows.
 
 ### Content Management System
 
-- [ ] Select a CMS
-- [ ] Create secure administrator authentication
+- [x] Select Supabase as the operational database, auth, and storage platform
+- [~] Create secure administrator authentication foundation; live Supabase verification remains pending
 - [ ] Create property editor
 - [ ] Create article editor
 - [ ] Create area-guide editor
@@ -217,13 +222,17 @@ These features reduce manual work after enquiry volume grows.
 - [ ] Add SEO title and description controls
 - [ ] Add content preview before publication
 - [ ] Add audit history for important listing changes
+- [x] Define Supabase operational schema, publication states, private storage, and RLS policies
+- [x] Add protected read-only admin dashboard and staff session refresh
+- [~] Run Supabase migration and pgTAP policy tests; blocked until Docker engine or hosted project is available
+- [ ] Add audited mutation RPCs before enabling admin editors
 
 ### Admin Roles
 
-- [ ] Administrator role with complete access
-- [ ] Property manager role for listings and enquiries
-- [ ] Content editor role for articles and SEO
-- [ ] Read-only reporting role
+- [x] Define administrator role and RLS permissions
+- [x] Define property manager role for listings and enquiries
+- [x] Define content editor role for articles and SEO
+- [x] Define read-only viewer role
 - [ ] Two-factor authentication for administrators
 
 ### Lead Management
@@ -235,7 +244,7 @@ These features reduce manual work after enquiry volume grows.
 - [ ] Follow-up reminders
 - [ ] Internal notes and activity history
 - [ ] Assign leads to staff
-- [ ] Inspection scheduling and outcome tracking
+- [~] Structured inspection requests implemented; scheduling confirmation and outcome tracking require CRM integration
 - [ ] Export leads to CSV
 - [ ] CRM integration
 - [ ] Duplicate-lead detection
@@ -264,7 +273,7 @@ These features improve retention and remote buying but are not launch requiremen
 
 - [x] Dedicated buying-from-abroad page
 - [x] Virtual inspection request pathway
-- [ ] Time-zone-aware scheduling
+- [x] Capture preferred inspection dates and buyer time zone
 - [ ] Live video inspection checklist
 - [ ] Secure remote document delivery
 - [x] Remote purchase process timeline
@@ -282,7 +291,7 @@ These features improve retention and remote buying but are not launch requiremen
 - [ ] New-listing notifications
 - [ ] Price-change notifications
 - [ ] Inspection reminders
-- [ ] Buyer document checklist
+- [x] Buyer document checklist
 - [ ] Secure buyer account only when justified by usage
 
 ### Communication
@@ -353,14 +362,16 @@ These capabilities become relevant when DMZ Properties begins developing its own
 
 ## Current Technical Debt And Temporary Content
 
-- [!] Property records in `src/lib/content.ts` are representative placeholders
+- [x] Remove representative property records; future owner resales require approved owner data
 - [x] Replace Unsplash photography with supplied KYC Homes Phase II images
 - [!] Enquiry delivery requires Resend credentials in the production environment
-- [!] In-memory rate limiting must be replaced by a shared production store at scale
-- [!] `dmzproperties.com` is currently assumed in metadata and must be confirmed
-- [!] Title type, pricing, dimensions, and payment terms are not yet supplied
+- [~] Upstash distributed rate limiting is implemented; production credentials remain pending
+- [!] No production domain is selected; metadata currently uses the configured deployment URL
+- [!] Title type, complete payment schedule, charges, and live allocation count are not yet supplied
 - [x] Estate location confirmed as KYC Homes Phase II, Sabon Lugbe, Airport Road, Abuja, FCT
 - [!] The logo remains a first design direction pending final approval
+- [!] Supabase migration and pgTAP tests are authored but have not executed because Docker is not running and no hosted project is linked
+- [!] Current Supabase SDK requires Node.js 22 in production; this workspace currently runs Node.js 20
 - [ ] Replace temporary content before indexing or advertising the website
 
 ## Launch Completion Definition

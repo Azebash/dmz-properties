@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { estate } from "@/lib/business";
 
 export const metadata: Metadata = {
   title: "Property Payment Safety",
@@ -60,6 +61,30 @@ export default function PaymentSafetyPage() {
               Confirm before payment
             </Link>
           </div>
+        </div>
+      </section>
+      <section className="section-shell official-payment-terms">
+        <div>
+          <p className="eyebrow">Published developer process</p>
+          <h2>Terms to confirm in your offer.</h2>
+        </div>
+        <div>
+          <p>Payment should follow developer approval, not precede it.</p>
+          <p>
+            Published post-allocation charge categories include {estate.postAllocationCharges
+              .map((charge) => charge.toLowerCase())
+              .join(", ")}.
+          </p>
+          <p>
+            The official onboarding terms state that allocation letters follow
+            verified bank payment evidence. They also state that installment
+            default may be treated as withdrawal and refunds may attract a 20%
+            administrative charge.
+          </p>
+          <p>
+            Obtain the current amounts, schedule, refund wording, and approved
+            payment account in writing before commitment.
+          </p>
         </div>
       </section>
     </main>

@@ -1,0 +1,6 @@
+# Raw source photography is retained locally for curation but must not be deployed.
+public/images/kyc_homes_phase_2/
+
+# Local test output and project documentation.
+playwright-report/
+test-results/

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { business } from "@/lib/business";
 
 export const metadata: Metadata = {
   title: "Terms of Use",
@@ -43,6 +44,11 @@ export default function TermsPage() {
         <p>
           These terms are an operational draft and must be reviewed by local legal
           counsel before the website is opened to the public.
+        </p>
+        <h2>Contact</h2>
+        <p>
+          DMZ Properties operates from {business.address.display}. Telephone and
+          WhatsApp enquiries can be made through {business.phone.international}.
         </p>
       </article>
     </main>

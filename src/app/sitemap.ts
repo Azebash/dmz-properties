@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { articles, properties } from "@/lib/content";
+import { articleCategories, articles, categorySlug, properties } from "@/lib/content";
 import { siteUrl } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -14,9 +14,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/privacy",
     "/terms",
     "/payment-safety",
+    "/guides/kyc-homes-phase-ii-buyer-guide",
+    "/gallery",
     "/insights",
     "/about",
     "/contact",
+    "/book-inspection",
   ];
 
   return [
@@ -31,6 +34,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...articles.map((article) => ({
       url: `${siteUrl}/insights/${article.slug}`,
       lastModified: new Date(article.updatedAt),
+    })),
+    ...articleCategories.map((category) => ({
+      url: `${siteUrl}/insights/topics/${categorySlug(category)}`,
+      lastModified: new Date(),
     })),
   ];
 }

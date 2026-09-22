@@ -29,6 +29,9 @@ export default function BuyingFromAbroadPage() {
         <Link className="button button-primary section-action" href="/contact">
           Discuss your requirements
         </Link>
+        <Link className="text-link remote-inspection-link" href="/book-inspection">
+          Request a live inspection
+        </Link>
       </section>
       <section className="remote-process">
         <div className="section-shell">

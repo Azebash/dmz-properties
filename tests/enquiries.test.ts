@@ -6,7 +6,13 @@ import {
   RateLimiter,
 } from "../src/lib/enquiries";
 
+const futureDate = new Date(Date.now() + 7 * 86_400_000).toISOString().slice(0, 10);
+const alternateFutureDate = new Date(Date.now() + 8 * 86_400_000)
+  .toISOString()
+  .slice(0, 10);
+
 const validInput = {
+  submissionKey: "11111111-1111-4111-8111-111111111111",
   name: "Ada Buyer",
   email: "ADA@EXAMPLE.COM",
   phone: "+2348000000000",
@@ -16,8 +22,17 @@ const validInput = {
   budget: "NGN 10,000,000",
   propertyReference: "DMZ-KYC-001",
   inspectionPreference: "Live video inspection",
+  inspectionDate: futureDate,
+  alternateDate: alternateFutureDate,
+  timeZone: "GMT",
   contactMethod: "WhatsApp",
   contactTime: "Weekdays after 18:00 GMT",
+  sourcePage: "https://example.com/?utm_source=facebook",
+  referrer: "https://facebook.com/",
+  utmSource: "facebook",
+  utmMedium: "paid-social",
+  utmCampaign: "diaspora-september",
+  referralCode: "ABUJA01",
   message: "I would like to arrange a remote inspection.",
   consent: "accepted",
 };
@@ -55,6 +70,35 @@ describe("parseEnquiry", () => {
     expect(result.success).toBe(true);
     if (result.success) expect(result.data.message).toHaveLength(3_000);
   });
+
+  it("requires an inspection type and date for inspection requests", () => {
+    const result = parseEnquiry({
+      ...validInput,
+      interest: "Booking an inspection",
+      inspectionPreference: "",
+      inspectionDate: "",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects invalid inspection preferences and impossible dates", () => {
+    expect(
+      parseEnquiry({ ...validInput, inspectionPreference: "Unlisted option" }).success,
+    ).toBe(false);
+    expect(
+      parseEnquiry({ ...validInput, inspectionDate: "2026-02-30" }).success,
+    ).toBe(false);
+  });
+
+  it("requires a time zone for inspection requests", () => {
+    expect(
+      parseEnquiry({
+        ...validInput,
+        interest: "Booking an inspection",
+        timeZone: "",
+      }).success,
+    ).toBe(false);
+  });
 });
 
 describe("spam controls", () => {
@@ -71,6 +115,14 @@ describe("spam controls", () => {
     expect(limiter.isLimited("visitor", 200)).toBe(true);
     expect(limiter.isLimited("visitor", 1_001)).toBe(false);
   });
+
+  it("bounds retained identifiers in the local fallback", () => {
+    const limiter = new RateLimiter(1, 10_000, 2);
+    expect(limiter.isLimited("first", 0)).toBe(false);
+    expect(limiter.isLimited("second", 0)).toBe(false);
+    expect(limiter.isLimited("third", 0)).toBe(false);
+    expect(limiter.isLimited("first", 1)).toBe(false);
+  });
 });
 
 describe("formatEnquiry", () => {
@@ -81,6 +133,8 @@ describe("formatEnquiry", () => {
     const body = formatEnquiry(result.data);
     expect(body).toContain("Name: Ada Buyer");
     expect(body).toContain("Interest: Buying a plot");
+    expect(body).toContain("Campaign source: facebook");
+    expect(body).toContain("Referral code: ABUJA01");
     expect(body).toContain(validInput.message);
   });
 });

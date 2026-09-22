@@ -3,7 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { Analytics } from "@/components/analytics";
-import { siteUrl } from "@/lib/site";
+import { allowIndexing, siteUrl } from "@/lib/site";
+import { business } from "@/lib/business";
+import { AttributionCapture } from "@/components/attribution-capture";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -24,6 +26,11 @@ export const metadata: Metadata = {
   },
   description:
     "Explore verified property opportunities in KYC Homes Phase II, Sabon Lugbe, Airport Road, Abuja, with firsthand guidance from DMZ Properties.",
+  alternates: { canonical: "/" },
+  robots: {
+    index: allowIndexing,
+    follow: allowIndexing,
+  },
   openGraph: {
     title: "DMZ Properties",
     description: "Property, properly considered.",
@@ -43,15 +50,28 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   const organizationData = {
     "@context": "https://schema.org",
     "@type": "RealEstateAgent",
-    name: "DMZ Properties",
-    legalName: "DMZ Enterprises Ltd",
-    identifier: "RC 9121009",
+    name: business.brandName,
+    legalName: business.legalName,
+    identifier: business.registrationNumber,
     url: siteUrl,
     description:
       "Independent property sales and advisory company specializing in verified property opportunities.",
     areaServed: {
       "@type": "Place",
       name: "Abuja, Federal Capital Territory, Nigeria",
+    },
+    founder: {
+      "@type": "Person",
+      name: business.founder.name,
+      jobTitle: business.founder.title,
+    },
+    telephone: business.phone.international,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: business.address.street,
+      addressLocality: business.address.city,
+      addressRegion: business.address.region,
+      addressCountry: "NG",
     },
   };
 
@@ -67,6 +87,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationData) }}
         />
         <SiteHeader />
+        <AttributionCapture />
         {children}
         <SiteFooter />
         <Analytics />

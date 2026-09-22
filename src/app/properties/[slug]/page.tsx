@@ -5,6 +5,9 @@ import { notFound } from "next/navigation";
 import { getProperty, properties } from "@/lib/content";
 import { siteUrl } from "@/lib/site";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { business, estate } from "@/lib/business";
+import { PropertyActions } from "@/components/property-actions";
+import { TrackedLink } from "@/components/tracked-link";
 
 type PropertyPageProps = {
   params: Promise<{ slug: string }>;
@@ -46,10 +49,22 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
     name: property.title,
     description: property.description,
     url: `${siteUrl}/properties/${property.slug}`,
-    image: property.gallery,
     dateModified: property.updatedAt,
     identifier: property.reference,
+    ...(property.priceAmount
+      ? {
+          offers: {
+            "@type": "Offer",
+            price: property.priceAmount,
+            priceCurrency: "NGN",
+            url: `${siteUrl}/properties/${property.slug}`,
+          },
+        }
+      : {}),
   };
+  const whatsappUrl = `${business.phone.whatsapp}?text=${encodeURIComponent(
+    `Hello DMZ Properties, I am interested in ${property.title} (${property.reference}).`,
+  )}`;
 
   return (
     <main className="detail-hero">
@@ -68,15 +83,16 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
       </div>
       <div className="section-shell property-gallery">
         {property.gallery.map((image, index) => (
-          <div className="gallery-image" key={image}>
+          <figure className="gallery-image" key={image}>
             <Image
               src={image}
-              alt={`${property.title} view ${index + 1}`}
+              alt={`KYC Homes Phase II estate context, view ${index + 1}`}
               fill
-              priority={index === 0}
+              preload={index === 0}
               sizes={index === 0 ? "(max-width: 800px) 100vw, 66vw" : "34vw"}
             />
-          </div>
+            <figcaption>Estate context image</figcaption>
+          </figure>
         ))}
       </div>
       <section className="section-shell detail-header">
@@ -89,12 +105,24 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
         <div className="detail-summary">
           <strong className="detail-price">{property.price}</strong>
           <p>{property.description}</p>
-          <Link
-            className="button button-primary"
-            href={`/contact?property=${encodeURIComponent(property.reference)}&interest=${encodeURIComponent("Booking an inspection")}`}
-          >
-            Enquire about this property
-          </Link>
+          <div className="button-row detail-actions">
+            <Link
+              className="button button-primary"
+              href={`/book-inspection?property=${encodeURIComponent(property.reference)}`}
+            >
+              Request an inspection
+            </Link>
+            <TrackedLink
+              className="text-link"
+              href={whatsappUrl}
+              eventName="whatsapp_click"
+              eventData={{ placement: "property", property_reference: property.reference }}
+              newTab
+            >
+              Ask on WhatsApp
+            </TrackedLink>
+          </div>
+          <PropertyActions title={property.title} />
         </div>
       </section>
       <section className="section-shell detail-facts" aria-label="Property facts">
@@ -133,6 +161,24 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
             <li key={feature}>{feature}</li>
           ))}
         </ul>
+      </section>
+      <aside className="section-shell property-source">
+        <p>
+          Product format and estate process cross-checked against {estate.developer}
+          {` (${estate.developerRegistrationNumber})`}.
+        </p>
+        <a href={estate.developerProductUrl} target="_blank" rel="noreferrer">
+          View official product information
+        </a>
+      </aside>
+      <section className="section-shell property-resources no-print">
+        <h2>Prepare before you proceed</h2>
+        <div>
+          <Link href="/guides/kyc-homes-phase-ii-buyer-guide">Buyer checklist</Link>
+          <Link href="/verification">Verification process</Link>
+          <Link href="/buying-from-abroad">Buying from abroad</Link>
+          <Link href="/payment-safety">Payment safety</Link>
+        </div>
       </section>
     </main>
   );

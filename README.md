@@ -9,6 +9,7 @@ Content-led property sales and advisory website for DMZ Properties, a venture of
 - TypeScript
 - Tailwind CSS 4 with a custom CSS design system
 - Resend HTTP API for enquiry delivery
+- Supabase Postgres, Auth, and Storage for the operational admin platform
 
 ## Local Development
 
@@ -37,7 +38,7 @@ When Google Analytics is configured, it loads only after the visitor explicitly 
 
 ## Content
 
-Property and article records currently live in `src/lib/content.ts`. Property records remain representative placeholders and must be replaced before public launch. Public-facing estate photography now uses the supplied KYC Homes Phase II image library; each listing identifies these images as estate context until listing-specific media is supplied.
+Property and article records currently live in `src/lib/content.ts`. Only confirmed developer inventory is published. Public-facing photography uses the supplied KYC Homes Phase II image library and is identified as estate context until listing-specific media is supplied.
 
 Estate media utilities:
 
@@ -70,3 +71,5 @@ npm run build
 ```
 
 Use `FEATURE_TRACKER.md` as the source of truth for completed work, launch blockers, and future development.
+Use `DEPLOYMENT.md` for production environment, email, domain, monitoring, and launch procedures.
+Use `supabase/README.md` for database migrations, RLS tests, type generation, and staff bootstrap.

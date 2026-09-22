@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { articles, getArticle } from "@/lib/content";
+import { articles, categorySlug, getArticle } from "@/lib/content";
 import { siteUrl } from "@/lib/site";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 
@@ -30,6 +30,7 @@ export async function generateMetadata({
       description: article.excerpt,
       publishedTime: article.publishedAt,
       modifiedTime: article.updatedAt,
+      images: ["/opengraph-image"],
     },
   };
 }
@@ -50,6 +51,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     publisher: { "@type": "Organization", name: "DMZ Properties" },
     mainEntityOfPage: `${siteUrl}/insights/${article.slug}`,
   };
+  const relatedArticles = articles
+    .filter((candidate) => candidate.slug !== article.slug)
+    .slice(0, 2);
 
   return (
     <main>
@@ -75,6 +79,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         <aside className="article-aside">
           <p>{article.readTime}</p>
           <p>Published {article.publishedAt}</p>
+          <p>Updated {article.updatedAt}</p>
           <p>DMZ Properties</p>
         </aside>
         <div className="article-body">
@@ -89,6 +94,25 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </Link>
         </div>
       </article>
+      <section className="section-shell related-reading">
+        <div className="related-reading-heading">
+          <h2>Continue your research</h2>
+          <Link href={`/insights/topics/${categorySlug(article.category)}`}>
+            More {article.category.toLowerCase()}
+          </Link>
+        </div>
+        <div className="related-reading-grid">
+          {relatedArticles.map((related) => (
+            <article key={related.slug}>
+              <span>{related.category}</span>
+              <h3>
+                <Link href={`/insights/${related.slug}`}>{related.title}</Link>
+              </h3>
+              <p>{related.excerpt}</p>
+            </article>
+          ))}
+        </div>
+      </section>
     </main>
   );
 }

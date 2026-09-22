@@ -80,7 +80,7 @@ export function PropertyBrowser({ properties }: { properties: Property[] }) {
             <PropertyCard
               key={property.slug}
               property={property}
-              priority={index === 0}
+              eager={index === 0}
             />
           ))}
         </div>

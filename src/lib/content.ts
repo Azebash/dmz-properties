@@ -4,6 +4,7 @@ export type Property = {
   type: string;
   location: string;
   price: string;
+  priceAmount?: number;
   status: string;
   ownership: string;
   size: string;
@@ -27,17 +28,18 @@ export type Article = {
   sections: { heading: string; body: string }[];
 };
 
-// Replace these representative records with approved live inventory before launch.
+// Current developer inventory. Reconfirm availability and terms before commitment.
 export const properties: Property[] = [
   {
-    slug: "residential-plot-kyc-homes-phase-ii",
-    title: "Residential Plot",
+    slug: "600sqm-virgin-land-kyc-homes-phase-ii",
+    title: "600 sqm Virgin Land",
     type: "Land",
     location: "KYC Homes Phase II",
-    price: "Price on request",
-    status: "Verified",
+    price: "NGN 14,000,000",
+    priceAmount: 14_000_000,
+    status: "Developer inventory",
     ownership: "Developer inventory",
-    size: "Confirmed on enquiry",
+    size: "600 sqm",
     image: "/images/estate/estate-street.webp",
     imageLabel: "Estate context",
     gallery: [
@@ -46,68 +48,16 @@ export const properties: Property[] = [
       "/images/estate/development-progress-03.webp",
     ],
     description:
-      "A development-ready residential opportunity within KYC Homes Phase II, supported by a clear purchase process and firsthand estate guidance.",
+      "Virgin residential land sold directly by KYC Interproject Limited within KYC Homes Phase II, Sabon Lugbe. Current price and availability must be reconfirmed before payment.",
     features: [
-      "Within KYC Homes Phase II",
-      "Developer-held inventory",
+      "600 sqm virgin land",
+      "NGN 14,000,000 current developer price",
+      "Direct KYC Interproject Limited inventory",
+      "4-bedroom fully detached duplex development format",
       "Physical and remote inspection available",
-      "Documentation reviewed before commitment",
+      "Full or part payment options subject to approved terms",
     ],
     reference: "DMZ-KYC-001",
-    updatedAt: "2026-09-17",
-  },
-  {
-    slug: "client-resale-plot-kyc-homes-phase-ii",
-    title: "Owner Resale Plot",
-    type: "Resale land",
-    location: "KYC Homes Phase II",
-    price: "Price on request",
-    status: "Verified resale",
-    ownership: "Client owned",
-    size: "Confirmed on enquiry",
-    image: "/images/estate/completed-home-03.webp",
-    imageLabel: "Estate context",
-    gallery: [
-      "/images/estate/completed-home-03.webp",
-      "/images/estate/completed-home-02.webp",
-      "/images/estate/completed-home-04.webp",
-    ],
-    description:
-      "A privately owned plot offered for resale after ownership and authority-to-sell checks are completed by DMZ Properties.",
-    features: [
-      "Existing owner resale",
-      "Ownership review required",
-      "Transfer process confirmed before sale",
-      "Physical and remote inspection available",
-    ],
-    reference: "DMZ-KYC-002",
-    updatedAt: "2026-09-17",
-  },
-  {
-    slug: "developing-home-kyc-homes-phase-ii",
-    title: "Developing Residence",
-    type: "Residential",
-    location: "KYC Homes Phase II",
-    price: "Price on request",
-    status: "Available",
-    ownership: "Client owned",
-    size: "Details on enquiry",
-    image: "/images/estate/development-progress-01.webp",
-    imageLabel: "Estate development",
-    gallery: [
-      "/images/estate/development-progress-01.webp",
-      "/images/estate/development-progress-02.webp",
-      "/images/estate/development-progress-03.webp",
-    ],
-    description:
-      "A residential property within the estate for buyers seeking an established setting rather than an undeveloped plot.",
-    features: [
-      "Residential property",
-      "Located within KYC Homes Phase II",
-      "Owner-held property",
-      "Inspection required before commitment",
-    ],
-    reference: "DMZ-KYC-003",
     updatedAt: "2026-09-17",
   },
 ];
@@ -119,7 +69,7 @@ export const articles: Article[] = [
     category: "Area guide",
     readTime: "5 min read",
     excerpt:
-      "What buyers should know about the titled estate in Sabon Lugbe, its established homes, active development, and available purchase routes.",
+      "What buyers should know about the Sabon Lugbe estate, its established homes, active development, and available purchase routes.",
     publishedAt: "2026-09-17",
     updatedAt: "2026-09-17",
     sections: [
@@ -135,13 +85,17 @@ export const articles: Article[] = [
         heading: "Two purchase routes",
         body: "Opportunities may come from current developer inventory or from an existing owner's resale. Each route requires its own documentation, confirmation, payment, and transfer process before commitment.",
       },
+      {
+        heading: "Current developer product and price",
+        body: "KYC Interproject Limited's current virgin-land price is NGN 14,000,000 for a 600 sqm plot. Phase II follows a 4-bedroom fully detached duplex development format. Full or part payment may be available, but buyers must reconfirm availability, charges, payment schedules, and official instructions before transferring funds.",
+      },
     ],
   },
   {
     slug: "questions-before-buying-land",
     title: "Seven questions to ask before buying land",
     category: "Buying guide",
-    readTime: "5 min read",
+    readTime: "3 min read",
     excerpt:
       "A practical framework for checking ownership, documentation, access, costs, and development conditions before committing.",
     publishedAt: "2026-09-17",
@@ -161,7 +115,7 @@ export const articles: Article[] = [
     slug: "developer-sale-versus-owner-resale",
     title: "Developer sale or owner resale: what changes?",
     category: "Explainer",
-    readTime: "4 min read",
+    readTime: "2 min read",
     excerpt:
       "Both routes can be legitimate, but they require different checks, documentation, and expectations.",
     publishedAt: "2026-09-17",
@@ -181,7 +135,7 @@ export const articles: Article[] = [
     slug: "remote-property-inspection",
     title: "How to inspect property when you are abroad",
     category: "Remote buying",
-    readTime: "6 min read",
+    readTime: "2 min read",
     excerpt:
       "Use live video, location evidence, independent checks, and a documented process to make remote property decisions clearer.",
     publishedAt: "2026-09-17",
@@ -205,4 +159,14 @@ export function getProperty(slug: string) {
 
 export function getArticle(slug: string) {
   return articles.find((article) => article.slug === slug);
+}
+
+export function categorySlug(category: string) {
+  return category.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+}
+
+export const articleCategories = [...new Set(articles.map((article) => article.category))];
+
+export function getCategory(topic: string) {
+  return articleCategories.find((category) => categorySlug(category) === topic);
 }

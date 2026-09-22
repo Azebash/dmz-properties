@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { business } from "@/lib/business";
+import { PrivacyPreferences } from "@/components/privacy-preferences";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -34,6 +36,12 @@ export default function PrivacyPage() {
           enquiry or transaction. We retain information only for operational,
           legal, and legitimate business requirements.
         </p>
+        <p>
+          For public form protection, the site may use Cloudflare Turnstile and a
+          distributed rate-limiting provider. Turnstile processes technical
+          verification data, while rate-limit identifiers are hashed before they
+          are sent to the configured store.
+        </p>
         <h2>Analytics and browser storage</h2>
         <p>
           If analytics is enabled, the website asks for permission before loading
@@ -41,11 +49,19 @@ export default function PrivacyPage() {
           respect it on later visits. Declining optional analytics does not prevent
           you from using the website or submitting an enquiry.
         </p>
+        <p>
+          When campaign or referral parameters bring you to the website, they may
+          be retained for the current browser session and included if you choose
+          to submit an enquiry. This helps us understand which introduction or
+          campaign produced the enquiry without creating a public user profile.
+        </p>
+        <PrivacyPreferences />
         <h2>Your choices</h2>
         <p>
           You may request access, correction, or deletion of your personal
           information, subject to applicable legal and record-keeping obligations.
-          Final contact details for privacy requests will be published before launch.
+          Privacy requests can be submitted through our enquiry form or by calling
+          {` ${business.phone.international}`}.
         </p>
       </article>
     </main>

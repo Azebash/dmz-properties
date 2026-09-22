@@ -4,10 +4,10 @@ import type { Property } from "@/lib/content";
 
 export function PropertyCard({
   property,
-  priority = false,
+  eager = false,
 }: {
   property: Property;
-  priority?: boolean;
+  eager?: boolean;
 }) {
   return (
     <article className="property-card">
@@ -17,7 +17,8 @@ export function PropertyCard({
             src={property.image}
             alt={`${property.title} in ${property.location}`}
             fill
-            priority={priority}
+            loading={eager ? "eager" : "lazy"}
+            fetchPriority={eager ? "high" : "auto"}
             sizes="(max-width: 640px) 100vw, (max-width: 900px) 50vw, 33vw"
           />
           <span className="property-status">{property.status}</span>

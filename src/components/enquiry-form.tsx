@@ -1,6 +1,14 @@
 "use client";
 
-import { FormEvent, startTransition, useState } from "react";
+import { FormEvent, startTransition, useRef, useState } from "react";
+import { getAttribution, trackEvent } from "@/lib/analytics-client";
+import { TurnstileWidget } from "@/components/turnstile-widget";
+
+declare global {
+  interface Window {
+    turnstile?: { reset: () => void };
+  }
+}
 
 type FormState = {
   status: "idle" | "submitting" | "success" | "error";
@@ -11,6 +19,7 @@ type EnquiryFormProps = {
   defaultInterest?: string;
   propertyReference?: string;
   submitLabel?: string;
+  mode?: "general" | "inspection";
 };
 
 const initialState: FormState = { status: "idle", message: "" };
@@ -19,13 +28,25 @@ export function EnquiryForm({
   defaultInterest = "",
   propertyReference = "",
   submitLabel = "Send enquiry",
+  mode = "general",
 }: EnquiryFormProps) {
   const [state, setState] = useState<FormState>(initialState);
+  const submissionKey = useRef<string | null>(null);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
-    const body = Object.fromEntries(new FormData(form));
+    const formValues = Object.fromEntries(new FormData(form)) as Record<
+      string,
+      FormDataEntryValue
+    >;
+    const body = {
+      ...formValues,
+      ...getAttribution(),
+      turnstileToken: String(formValues["cf-turnstile-response"] || ""),
+      submissionKey:
+        submissionKey.current || (submissionKey.current = window.crypto.randomUUID()),
+    };
 
     setState({ status: "submitting", message: "Sending your enquiry..." });
 
@@ -42,13 +63,20 @@ export function EnquiryForm({
       }
 
       form.reset();
+      submissionKey.current = null;
+      window.turnstile?.reset();
       startTransition(() => {
         setState({
           status: "success",
           message: "Your enquiry has been received. We will respond shortly.",
         });
       });
+      trackEvent("generate_lead", {
+        enquiry_type: String(formValues.interest || "unknown"),
+        property_reference: String(formValues.propertyReference || "general"),
+      });
     } catch (error) {
+      window.turnstile?.reset();
       setState({
         status: "error",
         message:
@@ -113,44 +141,51 @@ export function EnquiryForm({
           maxLength={100}
         />
       </div>
-      <div className="field">
-        <label htmlFor="interest">I am interested in</label>
-        <select
-          id="interest"
-          name="interest"
-          defaultValue={defaultInterest}
-          required
-        >
-          <option value="" disabled>
-            Select one
-          </option>
-          <option value="Buying a plot">Buying a plot</option>
-          <option value="Buying a developed property">
-            Buying a developed property
-          </option>
-          <option value="Selling my KYC Homes Phase II property">
-            Selling my KYC Homes Phase II property
-          </option>
-          <option value="Booking an inspection">Booking an inspection</option>
-          <option value="General question">General question</option>
-        </select>
-      </div>
-      <div className="field">
-        <label htmlFor="timeline">Expected timeline</label>
-        <select id="timeline" name="timeline" defaultValue="">
-          <option value="">Not decided</option>
-          <option>Immediately</option>
-          <option>Within 3 months</option>
-          <option>Within 6 months</option>
-          <option>Later this year</option>
-        </select>
-      </div>
+      {mode === "inspection" ? (
+        <input name="interest" type="hidden" value="Booking an inspection" />
+      ) : (
+        <>
+          <div className="field">
+            <label htmlFor="interest">I am interested in</label>
+            <select
+              id="interest"
+              name="interest"
+              defaultValue={defaultInterest}
+              required
+            >
+              <option value="" disabled>
+                Select one
+              </option>
+              <option value="Buying a plot">Buying a plot</option>
+              <option value="Buying a developed property">
+                Buying a developed property
+              </option>
+              <option value="Selling my KYC Homes Phase II property">
+                Selling my KYC Homes Phase II property
+              </option>
+              <option value="Booking an inspection">Booking an inspection</option>
+              <option value="General question">General question</option>
+            </select>
+          </div>
+          <div className="field">
+            <label htmlFor="timeline">Expected timeline</label>
+            <select id="timeline" name="timeline" defaultValue="">
+              <option value="">Not decided</option>
+              <option>Immediately</option>
+              <option>Within 3 months</option>
+              <option>Within 6 months</option>
+              <option>Later this year</option>
+            </select>
+          </div>
+        </>
+      )}
       <div className="field">
         <label htmlFor="inspection-preference">Inspection preference</label>
         <select
           id="inspection-preference"
           name="inspectionPreference"
           defaultValue=""
+          required={mode === "inspection"}
         >
           <option value="">Not decided</option>
           <option>Physical inspection</option>
@@ -158,6 +193,28 @@ export function EnquiryForm({
           <option>Representative inspection</option>
         </select>
       </div>
+      {mode === "inspection" ? (
+        <>
+          <div className="field">
+            <label htmlFor="inspection-date">Preferred date</label>
+            <input id="inspection-date" name="inspectionDate" type="date" required />
+          </div>
+          <div className="field">
+            <label htmlFor="alternate-date">Alternate date</label>
+            <input id="alternate-date" name="alternateDate" type="date" />
+          </div>
+          <div className="field field-full">
+            <label htmlFor="time-zone">Your time zone</label>
+            <input
+              id="time-zone"
+              name="timeZone"
+              maxLength={100}
+              placeholder="For example, West Africa Time or GMT"
+              required
+            />
+          </div>
+        </>
+      ) : null}
       <div className="field">
         <label htmlFor="contact-method">Preferred contact method</label>
         <select id="contact-method" name="contactMethod" defaultValue="WhatsApp" required>
@@ -175,15 +232,17 @@ export function EnquiryForm({
           placeholder="Include your time zone if outside Nigeria"
         />
       </div>
-      <div className="field field-full">
-        <label htmlFor="budget">Budget or expected selling price</label>
-        <input
-          id="budget"
-          name="budget"
-          maxLength={100}
-          placeholder="Include currency"
-        />
-      </div>
+      {mode === "general" ? (
+        <div className="field field-full">
+          <label htmlFor="budget">Budget or expected selling price</label>
+          <input
+            id="budget"
+            name="budget"
+            maxLength={100}
+            placeholder="Include currency"
+          />
+        </div>
+      ) : null}
       <div className="field field-full">
         <label htmlFor="message">Property requirements or details</label>
         <textarea id="message" name="message" maxLength={3000} required />
@@ -192,6 +251,7 @@ export function EnquiryForm({
         <label htmlFor="website">Website</label>
         <input id="website" name="website" tabIndex={-1} autoComplete="off" />
       </div>
+      <TurnstileWidget />
       <label className="consent-field field-full">
         <input name="consent" type="checkbox" value="accepted" required />
         <span>

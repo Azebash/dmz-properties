@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Properties",
   description:
     "Browse verified land, resales, and residential opportunities represented by DMZ Properties.",
+  alternates: { canonical: "/properties" },
 };
 
 export default function PropertiesPage() {
@@ -15,9 +16,9 @@ export default function PropertiesPage() {
         <p className="eyebrow">Available opportunities</p>
         <h1 className="page-title">Property with context.</h1>
         <p>
-          A curated selection of developer inventory and verified owner resales,
-          beginning with our specialist coverage of KYC Homes Phase II in Sabon
-          Lugbe, Airport Road, Abuja.
+          Current developer inventory and approved owner resales, beginning with
+          our specialist coverage of KYC Homes Phase II in Sabon Lugbe, Airport
+          Road, Abuja.
         </p>
       </section>
       <PropertyBrowser properties={properties} />

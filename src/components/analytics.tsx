@@ -1,42 +1,39 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import Link from "next/link";
 import Script from "next/script";
-
-type Consent = "unknown" | "accepted" | "declined";
-
-const storageKey = "dmz-analytics-consent";
-const consentEvent = "dmz-analytics-consent-change";
-
-function subscribe(callback: () => void) {
-  window.addEventListener("storage", callback);
-  window.addEventListener(consentEvent, callback);
-  return () => {
-    window.removeEventListener("storage", callback);
-    window.removeEventListener(consentEvent, callback);
-  };
-}
-
-function getSnapshot(): Consent {
-  const stored = window.localStorage.getItem(storageKey);
-  return stored === "accepted" || stored === "declined" ? stored : "unknown";
-}
-
-function getServerSnapshot(): Consent {
-  return "unknown";
-}
+import { usePathname } from "next/navigation";
+import { trackEvent } from "@/lib/analytics-client";
+import {
+  getAnalyticsConsent,
+  getServerAnalyticsConsent,
+  setAnalyticsConsent,
+  subscribeToAnalyticsConsent,
+} from "@/lib/analytics-consent";
 
 export function Analytics() {
   const measurementId = process.env.NEXT_PUBLIC_GA_ID;
-  const consent = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const consent = useSyncExternalStore(
+    subscribeToAnalyticsConsent,
+    getAnalyticsConsent,
+    getServerAnalyticsConsent,
+  );
+  const pathname = usePathname();
+  const lastTrackedPath = useRef("");
+
+  useEffect(() => {
+    if (
+      consent === "accepted" &&
+      window.gtag &&
+      lastTrackedPath.current !== pathname
+    ) {
+      trackEvent("page_view", { page_path: pathname });
+      lastTrackedPath.current = pathname;
+    }
+  }, [consent, pathname]);
 
   if (!measurementId) return null;
-
-  function chooseConsent(choice: Exclude<Consent, "unknown">) {
-    window.localStorage.setItem(storageKey, choice);
-    window.dispatchEvent(new Event(consentEvent));
-  }
 
   return (
     <>
@@ -46,12 +43,19 @@ export function Analytics() {
             src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}
             strategy="afterInteractive"
           />
-          <Script id="google-analytics" strategy="afterInteractive">
+          <Script
+            id="google-analytics"
+            strategy="afterInteractive"
+            onReady={() => {
+              trackEvent("page_view", { page_path: pathname });
+              lastTrackedPath.current = pathname;
+            }}
+          >
             {`
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', '${measurementId}', { anonymize_ip: true });
+              gtag('config', '${measurementId}', { anonymize_ip: true, send_page_view: false });
             `}
           </Script>
         </>
@@ -70,14 +74,14 @@ export function Analytics() {
             <button
               className="button button-secondary"
               type="button"
-              onClick={() => chooseConsent("declined")}
+              onClick={() => setAnalyticsConsent("declined")}
             >
               Decline
             </button>
             <button
               className="button button-primary"
               type="button"
-              onClick={() => chooseConsent("accepted")}
+              onClick={() => setAnalyticsConsent("accepted")}
             >
               Allow analytics
             </button>

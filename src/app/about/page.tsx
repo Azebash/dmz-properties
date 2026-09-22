@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { business, estate } from "@/lib/business";
 
 export const metadata: Metadata = {
   title: "About",
   description:
     "Learn about DMZ Properties, our independent operation, and our specialist knowledge of KYC Homes Phase II in Abuja.",
+  alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {
@@ -18,18 +20,17 @@ export default function AboutPage() {
         <h2>Built for clearer property decisions.</h2>
         <div className="about-copy">
           <p>
-            DMZ Properties is an independently operated real estate company
+            {business.brandName} is an independently operated real estate company
             specializing in property sales, resales, and buyer guidance.
-            It is a property venture of DMZ Enterprises Ltd, registered under
-            RC 9121009.
+            It is a property venture of {business.legalName}, registered under
+            {` ${business.registrationNumber}`}.
           </p>
           <p>
-            Our current strength is KYC Homes Phase II in Sabon Lugbe, Abuja,
-            where our founder&apos;s
-            professional role provides firsthand knowledge of the development,
-            available inventory, and transaction processes. We represent both
-            developer-owned properties and verified properties offered for
-            resale by existing owners.
+            Our current strength is {estate.name} in Sabon Lugbe, Abuja. Our
+            founder&apos;s professional relationship with {estate.developer} provides
+            firsthand knowledge of the development, available inventory, and
+            transaction processes. We represent both developer-owned properties
+            and verified properties offered for resale by existing owners.
           </p>
           <p>
             <strong>DMZ Properties is independently managed and is not the
@@ -43,6 +44,23 @@ export default function AboutPage() {
           <Link className="button button-primary section-action" href="/contact">
             Talk to us
           </Link>
+        </div>
+      </section>
+      <section className="founder-section">
+        <div className="section-shell founder-grid">
+          <div>
+            <p className="eyebrow">Founder</p>
+            <h2>{business.founder.name}</h2>
+            <p className="founder-title">{business.founder.title}</p>
+          </div>
+          <div className="founder-copy">
+            <p>{business.founder.relationship}</p>
+            <p>
+              This working relationship supports direct familiarity with the
+              estate while DMZ Properties remains independently operated through
+              {` ${business.legalName}`}.
+            </p>
+          </div>
         </div>
       </section>
     </main>
