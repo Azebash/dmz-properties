@@ -99,6 +99,10 @@ try {
     const response = await fetch(`${site}/insights`);
     return (await response.text()).includes(`/insights/${slug}`);
   }, { timeout: 90_000 }).toBe(true);
+  await expect.poll(async () => {
+    const response = await fetch(site);
+    return (await response.text()).includes(`/insights/${slug}`);
+  }, { timeout: 90_000 }).toBe(true);
 
   await admin.getByLabel("Title", { exact: true }).fill("Updated editorial publishing verification");
   await admin.getByLabel("Custom SEO title (optional)").fill("Updated editorial verification | DMZ Properties");
@@ -121,6 +125,10 @@ try {
   }, { timeout: 30_000 }).toBe(false);
   await expect.poll(async () => {
     const response = await fetch(`${site}/insights`);
+    return (await response.text()).includes(`/insights/${slug}`);
+  }, { timeout: 90_000 }).toBe(false);
+  await expect.poll(async () => {
+    const response = await fetch(site);
     return (await response.text()).includes(`/insights/${slug}`);
   }, { timeout: 90_000 }).toBe(false);
 
