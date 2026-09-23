@@ -95,6 +95,10 @@ try {
     const response = await fetch(`${site}/sitemap.xml`);
     return (await response.text()).includes(publicUrl);
   }, { timeout: 30_000 }).toBe(true);
+  await expect.poll(async () => {
+    const response = await fetch(`${site}/insights`);
+    return (await response.text()).includes(`/insights/${slug}`);
+  }, { timeout: 90_000 }).toBe(true);
 
   await admin.getByLabel("Title", { exact: true }).fill("Updated editorial publishing verification");
   await admin.getByLabel("Custom SEO title (optional)").fill("Updated editorial verification | DMZ Properties");
@@ -115,6 +119,10 @@ try {
     const response = await fetch(`${site}/sitemap.xml`);
     return (await response.text()).includes(publicUrl);
   }, { timeout: 30_000 }).toBe(false);
+  await expect.poll(async () => {
+    const response = await fetch(`${site}/insights`);
+    return (await response.text()).includes(`/insights/${slug}`);
+  }, { timeout: 90_000 }).toBe(false);
 
   const audits = await request(`/audit_events?entity_type=eq.article&entity_id=eq.${articleId}&select=id,action`);
   if (audits.length !== 5) throw new Error(`Expected 5 audit records, found ${audits.length}`);

@@ -3,7 +3,8 @@ import { categorySlug, properties } from "@/lib/content";
 import { getPublishedArticles } from "@/lib/public-articles";
 import { siteUrl } from "@/lib/site";
 
-export const revalidate = 60;
+// Generated XML must reflect new publications without a stale prerendered CDN copy.
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const articles = await getPublishedArticles();
