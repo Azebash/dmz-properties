@@ -215,18 +215,18 @@ These features reduce manual work after enquiry volume grows.
 - [x] Select Supabase as the operational database, auth, and storage platform
 - [x] Create secure administrator authentication and verify live Supabase access
 - [x] Create audited property editor with review and publish transitions
-- [ ] Create article editor
+- [x] Create audited article editor with draft, review, and publish controls
 - [ ] Create area-guide editor
 - [ ] Create development-update editor
 - [ ] Add draft, review, scheduled, published, sold, and archived states
 - [ ] Add image and document media management
-- [ ] Add SEO title and description controls
+- [x] Add editable property and article SEO title and description controls
 - [ ] Add content preview before publication
-- [x] Add audit history for property, enquiry, and inspection changes
+- [x] Add audit history for property, article, enquiry, and inspection changes
 - [x] Define Supabase operational schema, publication states, private storage, and RLS policies
 - [x] Add protected read-only admin dashboard and staff session refresh
 - [x] Apply Supabase migrations and pass linked pgTAP role and workflow assertions
-- [x] Add audited property, enquiry, and inspection RPCs before enabling admin editors
+- [x] Add audited property, article, enquiry, and inspection RPCs before enabling admin editors
 
 ### Admin Roles
 
@@ -372,7 +372,7 @@ These capabilities become relevant when DMZ Properties begins developing its own
 - [x] Estate location confirmed as KYC Homes Phase II, Sabon Lugbe, Airport Road, Abuja, FCT
 - [!] The logo remains a first design direction pending final approval
 - [x] Supabase project linked, remote migrations synchronized, seed applied, and generated types refreshed
-- [!] Supabase enquiry persistence remains feature-flagged off until the production secret key and email delivery are configured
+- [x] Supabase enquiry persistence is enabled with a production secret key and shared rate limiting
 - [!] Current Supabase SDK requires Node.js 22 in production; this workspace currently runs Node.js 20
 - [ ] Replace temporary content before indexing or advertising the website
 

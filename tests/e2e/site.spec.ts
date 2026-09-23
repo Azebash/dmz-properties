@@ -181,6 +181,27 @@ test("insight topic pages provide crawlable article links", async ({ page }) => 
   ).toBeVisible();
 });
 
+test("published articles keep their links and search metadata", async ({ page }) => {
+  await page.goto("/insights");
+  for (const slug of [
+    "kyc-homes-phase-ii-abuja-guide",
+    "questions-before-buying-land",
+    "developer-sale-versus-owner-resale",
+    "remote-property-inspection",
+  ]) {
+    await expect(page.locator(`a[href="/insights/${slug}"]`)).toBeVisible();
+  }
+
+  await page.goto("/insights/kyc-homes-phase-ii-abuja-guide");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    "A practical guide to KYC Homes Phase II, Abuja",
+  );
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    "href",
+    /\/insights\/kyc-homes-phase-ii-abuja-guide$/,
+  );
+});
+
 test("estate gallery filters images and opens an accessible viewer", async ({ page }) => {
   await page.goto("/gallery");
   await page.getByRole("button", { name: "Interiors", exact: true }).click();

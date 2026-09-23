@@ -1,25 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  articleCategories,
-  articles,
-  categorySlug,
-  getCategory,
-} from "@/lib/content";
+import { categorySlug } from "@/lib/content";
+import { getPublishedArticles } from "@/lib/public-articles";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 
 type TopicPageProps = {
   params: Promise<{ topic: string }>;
 };
 
-export function generateStaticParams() {
-  return articleCategories.map((category) => ({ topic: categorySlug(category) }));
-}
+export const revalidate = 60;
 
 export async function generateMetadata({ params }: TopicPageProps): Promise<Metadata> {
   const topic = (await params).topic;
-  const category = getCategory(topic);
+  const articles = await getPublishedArticles();
+  const category = [...new Set(articles.map((article) => article.category))]
+    .find((name) => categorySlug(name) === topic);
   if (!category) return {};
 
   return {
@@ -31,7 +27,9 @@ export async function generateMetadata({ params }: TopicPageProps): Promise<Meta
 
 export default async function TopicPage({ params }: TopicPageProps) {
   const topic = (await params).topic;
-  const category = getCategory(topic);
+  const articles = await getPublishedArticles();
+  const category = [...new Set(articles.map((article) => article.category))]
+    .find((name) => categorySlug(name) === topic);
   if (!category) notFound();
 
   const topicArticles = articles.filter((article) => article.category === category);

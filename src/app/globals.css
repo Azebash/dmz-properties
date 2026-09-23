@@ -3174,6 +3174,44 @@ body:has(.admin-surface) .consent-banner {
   color: white;
 }
 
+.admin-article-sections {
+  display: grid;
+  gap: 22px;
+  margin: 30px 0;
+}
+
+.admin-article-sections h2 {
+  margin: 0;
+  font-size: 25px;
+}
+
+.admin-article-sections fieldset {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid var(--line);
+}
+
+.admin-article-sections legend {
+  padding: 0 8px;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.admin-article-sections .button {
+  justify-self: start;
+}
+
+.admin-article-sections textarea {
+  min-height: 180px;
+}
+
+.admin-seo-fields {
+  padding-top: 30px;
+  border-top: 1px solid var(--line);
+}
+
 .admin-detail-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.85fr);

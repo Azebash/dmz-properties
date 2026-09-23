@@ -1,8 +1,13 @@
 import type { MetadataRoute } from "next";
-import { articleCategories, articles, categorySlug, properties } from "@/lib/content";
+import { categorySlug, properties } from "@/lib/content";
+import { getPublishedArticles } from "@/lib/public-articles";
 import { siteUrl } from "@/lib/site";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export const revalidate = 60;
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const articles = await getPublishedArticles();
+  const articleCategories = [...new Set(articles.map((article) => article.category))];
   const routes = [
     "",
     "/properties",

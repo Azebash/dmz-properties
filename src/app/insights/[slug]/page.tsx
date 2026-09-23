@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { articles, categorySlug, getArticle } from "@/lib/content";
+import { categorySlug } from "@/lib/content";
+import { getPublishedArticle, getPublishedArticles } from "@/lib/public-articles";
 import { siteUrl } from "@/lib/site";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 
@@ -9,20 +10,18 @@ type ArticlePageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return articles.map((article) => ({ slug: article.slug }));
-}
+export const revalidate = 60;
 
 export async function generateMetadata({
   params,
 }: ArticlePageProps): Promise<Metadata> {
-  const article = getArticle((await params).slug);
+  const article = await getPublishedArticle((await params).slug);
 
   if (!article) return {};
 
   return {
-    title: article.title,
-    description: article.excerpt,
+    title: article.seoTitle || article.title,
+    description: article.seoDescription || article.excerpt,
     alternates: { canonical: `/insights/${article.slug}` },
     openGraph: {
       type: "article",
@@ -36,7 +35,10 @@ export async function generateMetadata({
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
-  const article = getArticle((await params).slug);
+  const [article, articles] = await Promise.all([
+    getPublishedArticle((await params).slug),
+    getPublishedArticles(),
+  ]);
 
   if (!article) notFound();
 

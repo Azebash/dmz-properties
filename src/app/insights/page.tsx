@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { articleCategories, articles, categorySlug } from "@/lib/content";
+import { categorySlug } from "@/lib/content";
+import { getPublishedArticles } from "@/lib/public-articles";
 
 export const metadata: Metadata = {
   title: "Property Insights",
@@ -9,7 +10,11 @@ export const metadata: Metadata = {
   alternates: { canonical: "/insights" },
 };
 
-export default function InsightsPage() {
+export const revalidate = 60;
+
+export default async function InsightsPage() {
+  const articles = await getPublishedArticles();
+  const articleCategories = [...new Set(articles.map((article) => article.category))];
   return (
     <main>
       <section className="section-shell page-hero">

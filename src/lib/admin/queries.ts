@@ -119,3 +119,14 @@ export async function listAdminArticles() {
   if (error) throw new Error(`Unable to load articles: ${error.message}`);
   return data;
 }
+
+export async function getAdminArticle(id: string) {
+  const supabase = await authorizedClient();
+  const { data, error } = await supabase
+    .from("articles")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw new Error(`Unable to load article: ${error.message}`);
+  return data;
+}

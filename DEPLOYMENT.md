@@ -28,6 +28,7 @@ NEXT_PUBLIC_SUPABASE_URL=https://project.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=publishable-key
 SUPABASE_SECRET_KEY=secret-key
 SUPABASE_PERSIST_ENQUIRIES=true
+SUPABASE_CONTENT_SOURCE=database
 RESEND_API_KEY=secret
 ENQUIRY_TO_EMAIL=verified-business-inbox@example.com
 ENQUIRY_FROM_EMAIL=DMZ Properties <enquiries@verified-domain.example>
@@ -70,6 +71,12 @@ Turnstile and Upstash are optional in local development but should be configured
 7. Insert that Auth UUID into `staff_profiles` with role `administrator` using the bootstrap statement in `supabase/seed.sql`.
 8. Configure the project URL and publishable key in encrypted hosting variables.
 9. Verify `/admin/login`, active-staff authorization, and `/api/ready` in the deployed environment.
+
+The editorial catalogue defaults to repository files when the variable is absent.
+Seed and verify the existing slugs before enabling `database`. Only published
+Supabase articles are then visible on the homepage, Insights, topic pages, and
+sitemap; a database outage will surface an error rather than quietly restore
+stale file content. Set `repository` and redeploy only for a controlled rollback.
 
 ## Domain And Search
 

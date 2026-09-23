@@ -25,6 +25,8 @@ export type Article = {
   excerpt: string;
   publishedAt: string;
   updatedAt: string;
+  seoTitle?: string;
+  seoDescription?: string;
   sections: { heading: string; body: string }[];
 };
 
@@ -157,16 +159,6 @@ export function getProperty(slug: string) {
   return properties.find((property) => property.slug === slug);
 }
 
-export function getArticle(slug: string) {
-  return articles.find((article) => article.slug === slug);
-}
-
 export function categorySlug(category: string) {
   return category.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-}
-
-export const articleCategories = [...new Set(articles.map((article) => article.category))];
-
-export function getCategory(topic: string) {
-  return articleCategories.find((category) => categorySlug(category) === topic);
 }

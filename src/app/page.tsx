@@ -1,9 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { PropertyCard } from "@/components/property-card";
-import { articles, properties } from "@/lib/content";
+import { properties } from "@/lib/content";
+import { getPublishedArticles } from "@/lib/public-articles";
 
-export default function Home() {
+export const revalidate = 60;
+
+export default async function Home() {
+  const articles = await getPublishedArticles();
   return (
     <main>
       <section className="hero section-shell">

@@ -33,12 +33,20 @@ ENQUIRY_FROM_EMAIL=DMZ Properties <enquiries@your-verified-domain.com>
 NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
 ```
 
-`NEXT_PUBLIC_GA_ID` is optional. The remaining email values are required for enquiry delivery.
+Supabase environment variables are required for staff access and durable enquiries.
+Resend email variables and `NEXT_PUBLIC_GA_ID` are optional; enquiries persist to
+Supabase even if notification delivery is unavailable.
 When Google Analytics is configured, it loads only after the visitor explicitly accepts optional analytics.
 
 ## Content
 
-Property and article records currently live in `src/lib/content.ts`. Only confirmed developer inventory is published. Public-facing photography uses the supplied KYC Homes Phase II image library and is identified as estate context until listing-specific media is supplied.
+The verified developer property is currently defined in `src/lib/content.ts`.
+Articles are seeded in Supabase and edited at `/admin/content`; published records
+power the homepage, Insights, topic pages, and sitemap when
+`SUPABASE_CONTENT_SOURCE=database`. The repository article records are retained
+as a controlled rollback source. Public-facing photography uses the supplied
+KYC Homes Phase II image library and is identified as estate context until
+listing-specific media is supplied.
 
 Estate media utilities:
 

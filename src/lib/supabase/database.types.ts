@@ -629,10 +629,18 @@ export type Database = {
         Returns: boolean
       }
       ingest_enquiry: { Args: { payload: Json }; Returns: string }
+      save_article: { Args: { p_payload: Json }; Returns: string }
       save_property: { Args: { p_payload: Json }; Returns: string }
       set_inspection_timezone: {
         Args: { p_inspection_id: string; p_time_zone: string }
         Returns: string
+      }
+      transition_article_status: {
+        Args: {
+          p_article_id: string
+          p_status: Database["public"]["Enums"]["publication_status"]
+        }
+        Returns: Database["public"]["Enums"]["publication_status"]
       }
       transition_property_status: {
         Args: {
