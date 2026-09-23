@@ -26,11 +26,11 @@ export default async function AdminDashboardPage() {
         ))}
       </section>
       <section className="admin-foundation-note">
-        <h2>Foundation stage</h2>
+        <h2>Operations</h2>
         <p>
-          Authentication, RLS, storage policies, and read-only dashboard queries
-          are enabled. Editing workflows remain disabled until the live migration
-          and database policy tests have passed.
+          Manage property drafts and publication, qualify enquiries, and follow
+          up on inspections. Each change is checked against staff permissions
+          and recorded in the audit history.
         </p>
       </section>
     </div>
