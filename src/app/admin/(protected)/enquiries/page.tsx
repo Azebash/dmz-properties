@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { AdminEmpty } from "@/components/admin-empty";
 import { AdminStatus } from "@/components/admin-status";
 import { formatAdminDate } from "@/lib/admin/format";
@@ -23,7 +24,7 @@ export default async function AdminEnquiriesPage() {
             <tbody>
               {enquiries.map((enquiry) => (
                 <tr key={enquiry.id}>
-                  <td><strong>{enquiry.name}</strong><span>{enquiry.email}</span><span>{enquiry.phone}</span></td>
+                  <td><strong><Link href={`/admin/enquiries/${enquiry.id}`}>{enquiry.name}</Link></strong><span>{enquiry.email}</span><span>{enquiry.phone}</span></td>
                   <td>{enquiry.enquiry_type}</td>
                   <td>{enquiry.property_reference || "General"}</td>
                   <td><AdminStatus value={enquiry.status} /></td>
@@ -33,7 +34,7 @@ export default async function AdminEnquiriesPage() {
             </tbody>
           </table>
         </div>
-      ) : <AdminEmpty message="New website enquiries will appear here after persistence is enabled." />}
+      ) : <AdminEmpty message="New buyer and seller enquiries will appear here." />}
     </div>
   );
 }

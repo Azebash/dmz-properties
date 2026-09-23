@@ -630,12 +630,33 @@ export type Database = {
       }
       ingest_enquiry: { Args: { payload: Json }; Returns: string }
       save_property: { Args: { p_payload: Json }; Returns: string }
+      set_inspection_timezone: {
+        Args: { p_inspection_id: string; p_time_zone: string }
+        Returns: string
+      }
       transition_property_status: {
         Args: {
           p_property_id: string
           p_status: Database["public"]["Enums"]["property_status"]
         }
         Returns: Database["public"]["Enums"]["property_status"]
+      }
+      update_enquiry_workflow: {
+        Args: {
+          p_enquiry_id: string
+          p_notes: string
+          p_status: Database["public"]["Enums"]["enquiry_status"]
+        }
+        Returns: Database["public"]["Enums"]["enquiry_status"]
+      }
+      update_inspection_workflow: {
+        Args: {
+          p_inspection_id: string
+          p_outcome_notes: string
+          p_scheduled_local: string
+          p_status: Database["public"]["Enums"]["inspection_status"]
+        }
+        Returns: Database["public"]["Enums"]["inspection_status"]
       }
     }
     Enums: {

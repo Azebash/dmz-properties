@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { AdminEmpty } from "@/components/admin-empty";
 import { AdminStatus } from "@/components/admin-status";
 import { formatAdminDate } from "@/lib/admin/format";
@@ -20,7 +21,7 @@ export default async function AdminInspectionsPage() {
           <caption>Inspection requests</caption>
           <thead><tr><th>Type</th><th>Preferred date</th><th>Alternate</th><th>Time zone</th><th>Status</th></tr></thead>
           <tbody>{inspections.map((inspection) => <tr key={inspection.id}>
-            <td>{inspection.inspection_type}</td>
+            <td><Link href={`/admin/inspections/${inspection.id}`}>{inspection.inspection_type}</Link></td>
             <td>{formatAdminDate(inspection.preferred_date)}</td>
             <td>{formatAdminDate(inspection.alternate_date)}</td>
             <td>{inspection.time_zone}</td>

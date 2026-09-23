@@ -152,4 +152,30 @@ describe("Supabase migration security", () => {
       "grant execute on function public.save_property(jsonb) to authenticated",
     );
   });
+
+  it("keeps lead and inspection updates behind role-checked audited RPCs", async () => {
+    const migration = await readFile(
+      path.join(
+        process.cwd(),
+        "supabase/migrations/20260923000100_audited_lead_workflows.sql",
+      ),
+      "utf8",
+    );
+    for (const name of ["update_enquiry_workflow", "update_inspection_workflow"]) {
+      expect(migration).toContain(`create function public.${name}`);
+      expect(migration).toContain(`grant execute on function public.${name}`);
+    }
+    expect(migration).toContain("private.has_staff_role");
+    expect(migration).toContain("insert into public.audit_events");
+
+    const timezoneMigration = await readFile(
+      path.join(
+        process.cwd(),
+        "supabase/migrations/20260923000200_inspection_timezone_correction.sql",
+      ),
+      "utf8",
+    );
+    expect(timezoneMigration).toContain("create function public.set_inspection_timezone");
+    expect(timezoneMigration).toContain("insert into public.audit_events");
+  });
 });

@@ -43,6 +43,17 @@ export async function listAdminEnquiries() {
   return data;
 }
 
+export async function getAdminEnquiry(id: string) {
+  const supabase = await authorizedClient();
+  const { data, error } = await supabase
+    .from("enquiries")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw new Error(`Unable to load enquiry: ${error.message}`);
+  return data;
+}
+
 export async function listAdminInspections() {
   const supabase = await authorizedClient();
   const { data, error } = await supabase
@@ -53,6 +64,33 @@ export async function listAdminInspections() {
     .order("preferred_date", { ascending: true })
     .limit(100);
   if (error) throw new Error(`Unable to load inspections: ${error.message}`);
+  return data;
+}
+
+export async function getAdminInspection(id: string) {
+  const supabase = await authorizedClient();
+  const { data, error } = await supabase
+    .from("inspections")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw new Error(`Unable to load inspection: ${error.message}`);
+  return data;
+}
+
+export async function getAdminActivity(entityType: "enquiry" | "inspection", id: string) {
+  const staff = await requireStaff();
+  if (staff.role !== "administrator") return [];
+
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("audit_events")
+    .select("id, action, created_at, actor_id, previous_value, next_value")
+    .eq("entity_type", entityType)
+    .eq("entity_id", id)
+    .order("created_at", { ascending: false })
+    .limit(30);
+  if (error) throw new Error(`Unable to load activity: ${error.message}`);
   return data;
 }
 

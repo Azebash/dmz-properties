@@ -15,6 +15,7 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:production": "npm run build && playwright test --config=playwright.production.config.ts",
+    "test:live-workflows": "node --env-file=.env.local scripts/verify-live-admin-workflows.mjs",
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
     "supabase:reset": "supabase db reset",

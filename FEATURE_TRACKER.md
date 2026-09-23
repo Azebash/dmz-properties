@@ -212,8 +212,8 @@ These features reduce manual work after enquiry volume grows.
 ### Content Management System
 
 - [x] Select Supabase as the operational database, auth, and storage platform
-- [~] Create secure administrator authentication foundation; live Supabase verification remains pending
-- [ ] Create property editor
+- [x] Create secure administrator authentication and verify live Supabase access
+- [x] Create audited property editor with review and publish transitions
 - [ ] Create article editor
 - [ ] Create area-guide editor
 - [ ] Create development-update editor
@@ -221,11 +221,11 @@ These features reduce manual work after enquiry volume grows.
 - [ ] Add image and document media management
 - [ ] Add SEO title and description controls
 - [ ] Add content preview before publication
-- [ ] Add audit history for important listing changes
+- [x] Add audit history for property, enquiry, and inspection changes
 - [x] Define Supabase operational schema, publication states, private storage, and RLS policies
 - [x] Add protected read-only admin dashboard and staff session refresh
-- [x] Apply Supabase migrations and pass 21 linked pgTAP policy assertions
-- [ ] Add audited mutation RPCs before enabling admin editors
+- [x] Apply Supabase migrations and pass linked pgTAP role and workflow assertions
+- [x] Add audited property, enquiry, and inspection RPCs before enabling admin editors
 
 ### Admin Roles
 
@@ -237,14 +237,14 @@ These features reduce manual work after enquiry volume grows.
 
 ### Lead Management
 
-- [ ] Central enquiry inbox
+- [x] Central persisted enquiry inbox with protected detail view
 - [ ] Buyer profile and requirement records
 - [ ] Seller and property-submission records
-- [ ] Lead stages: new, qualified, inspection, offer, won, and lost
+- [x] Audited lead stages: new, qualified, inspection, offer, won, lost, and spam
 - [ ] Follow-up reminders
-- [ ] Internal notes and activity history
+- [x] Private enquiry notes and administrator audit history
 - [ ] Assign leads to staff
-- [~] Structured inspection requests implemented; scheduling confirmation and outcome tracking require CRM integration
+- [x] Audited inspection confirmation, time-zone correction, completion, and outcome notes
 - [ ] Export leads to CSV
 - [ ] CRM integration
 - [ ] Duplicate-lead detection

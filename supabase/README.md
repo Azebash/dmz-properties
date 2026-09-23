@@ -56,3 +56,8 @@ Do not enable admin mutations or database-backed public publishing until:
 The Supabase secret key is server-only and must never use the `NEXT_PUBLIC_` prefix.
 
 The committed `database.types.ts` was generated from the linked project after the initial migrations. Regenerate it after every schema change; generated relationships are authoritative.
+
+To verify the authenticated operations after a production deployment, run
+`npm run test:live-workflows` with local staff credentials and a server-only
+Supabase secret in `.env.local`. The test creates an inspection request, updates
+it through the admin UI, checks the audit records, and removes all fixture data.
