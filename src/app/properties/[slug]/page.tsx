@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { getProperty, properties } from "@/lib/content";
 import { siteUrl } from "@/lib/site";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { business, estate } from "@/lib/business";
+import { business } from "@/lib/business";
 import { PropertyActions } from "@/components/property-actions";
 import { TrackedLink } from "@/components/tracked-link";
 
@@ -162,15 +162,6 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
           ))}
         </ul>
       </section>
-      <aside className="section-shell property-source">
-        <p>
-          Product format and estate process cross-checked against {estate.developer}
-          {` (${estate.developerRegistrationNumber})`}.
-        </p>
-        <a href={estate.developerProductUrl} target="_blank" rel="noreferrer">
-          View official product information
-        </a>
-      </aside>
       <section className="section-shell property-resources no-print">
         <h2>Prepare before you proceed</h2>
         <div>

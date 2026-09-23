@@ -47,6 +47,7 @@ These items are launch blockers.
 ### Enquiries And Conversion
 
 - [x] General enquiry page and buyer requirement form
+- [x] Keep developer inventory and resale acquisition journeys on DMZ Properties
 - [~] Configure Resend credentials for secure form delivery
 - [x] Connect the official WhatsApp number
 - [x] Add property-specific enquiry context automatically

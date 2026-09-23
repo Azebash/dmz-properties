@@ -29,17 +29,11 @@ export const estate = {
   name: "KYC Homes Phase II",
   developer: "KYC Interproject Limited",
   developerRegistrationNumber: "RC 873737",
-  developerWebsite: "https://nexus-web-cyan-eight.vercel.app",
-  developerProductUrl:
-    "https://nexus-web-cyan-eight.vercel.app/properties/detached-duplex-4br",
-  applicationUrl: "https://nexus-web-cyan-eight.vercel.app/portal/register",
   location: "Sabon Lugbe East Layout, Airport Road, Abuja, FCT",
   coordinates: {
     latitude: 8.951194,
     longitude: 7.396083,
   },
-  directionsUrl:
-    "https://www.google.com/maps/search/?api=1&query=8.951194%2C7.396083",
   propertyType: "4-bedroom fully detached duplex",
   plotSize: "600 sqm plots",
   developerLandPrice: "NGN 14,000,000",

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { PropertyCard } from "@/components/property-card";
 import { properties } from "@/lib/content";
 import { estate } from "@/lib/business";
-import { TrackedLink } from "@/components/tracked-link";
 
 export const metadata: Metadata = {
   title: "Land and Properties in KYC Homes Phase II, Abuja",
@@ -137,21 +136,15 @@ export default function KycEstatePage() {
         <div className="estate-paths">
           <article>
             <span>Developer inventory</span>
-            <h3>Purchase directly from available estate stock.</h3>
+            <h3>Find your plot with DMZ.</h3>
             <p>
-              We explain current availability, approved terms, documentation,
-              and the process from enquiry through allocation. Official Phase II
-              applications are reviewed and approved by {estate.developer}.
+              We help you review current options, inspect the estate, and
+              understand approved terms. {estate.developer} reviews and approves
+              applications; DMZ remains your point of contact for acquisition guidance.
             </p>
-            <TrackedLink
-              className="text-link section-action"
-              href={estate.applicationUrl}
-              eventName="official_application_click"
-              eventData={{ placement: "estate_page" }}
-              newTab
-            >
-              Official developer application
-            </TrackedLink>
+            <Link className="text-link section-action" href="/properties">
+              Explore DMZ inventory
+            </Link>
           </article>
           <article>
             <span>Owner resales</span>
@@ -162,8 +155,8 @@ export default function KycEstatePage() {
               resale prices are set by the individual owner and may differ from
               the developer&apos;s virgin-land price.
             </p>
-            <Link className="text-link section-action" href="/sell">
-              Sell within KYC Homes Phase II
+            <Link className="text-link section-action" href="/contact">
+              Ask DMZ about resales
             </Link>
           </article>
         </div>
@@ -189,18 +182,10 @@ export default function KycEstatePage() {
               <p>Developer-managed formwork, DPC, decking, and lintel milestones.</p>
             </article>
             <article>
-              <strong>Digital client portal</strong>
-              <p>Allocation, payment, documents, and build stages tracked online.</p>
+              <strong>Inspection support</strong>
+              <p>DMZ can coordinate an on-site visit or a live remote walkthrough before you decide.</p>
             </article>
           </div>
-        </div>
-        <div className="section-shell source-note">
-          <p>
-            Developer information sourced from {estate.developer} ({estate.developerRegistrationNumber}).
-          </p>
-          <a href={estate.developerWebsite} target="_blank" rel="noreferrer">
-            Visit the official developer website
-          </a>
         </div>
       </section>
 
@@ -249,32 +234,32 @@ export default function KycEstatePage() {
       <section className="developer-journey">
         <div className="section-shell">
           <div className="section-heading">
-            <h2>The official developer route</h2>
+            <h2>Your purchase, guided by DMZ</h2>
             <p>
-              Direct company inventory follows KYC Interproject Limited&apos;s
-              application and allocation process.
+              Start with DMZ for availability, inspections, and purchase guidance.
+              {` ${estate.developer}`} handles formal application approval and allocation.
             </p>
           </div>
           <ol className="developer-journey-list">
             <li>
               <span>01</span>
-              <strong>Apply</strong>
-              <p>Submit buyer details, building category, and payment mode.</p>
+              <strong>Speak with DMZ</strong>
+              <p>Tell us what you need so we can explain current options and arrange an inspection.</p>
             </li>
             <li>
               <span>02</span>
-              <strong>Developer approval</strong>
-              <p>KYC management reviews the application for an allocation cycle.</p>
+              <strong>Application review</strong>
+              <p>We guide your preparation; KYC management reviews the formal application.</p>
             </li>
             <li>
               <span>03</span>
-              <strong>Qualifying payment</strong>
-              <p>Follow only the official approved payment instructions.</p>
+              <strong>Confirm terms</strong>
+              <p>Review the approved costs and pay only through confirmed transaction channels.</p>
             </li>
             <li>
               <span>04</span>
-              <strong>Allocation and portal</strong>
-              <p>Track the plot, payments, documents, and build stages online.</p>
+              <strong>Allocation</strong>
+              <p>The developer confirms allocation; DMZ stays available to explain the process.</p>
             </li>
           </ol>
         </div>
@@ -288,14 +273,9 @@ export default function KycEstatePage() {
         </div>
         <div className="location-coordinates">
           <span>8.951194, 7.396083</span>
-          <a
-            className="button button-secondary"
-            href={estate.directionsUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Open directions
-          </a>
+          <Link className="button button-secondary" href="/book-inspection">
+            Book an inspection
+          </Link>
         </div>
       </section>
 

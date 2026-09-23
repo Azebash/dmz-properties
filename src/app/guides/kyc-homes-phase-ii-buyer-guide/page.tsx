@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PrintButton } from "@/components/print-button";
 import { business, estate } from "@/lib/business";
-import { TrackedLink } from "@/components/tracked-link";
 
 export const metadata: Metadata = {
   title: "KYC Homes Phase II Buyer Guide",
@@ -68,18 +67,13 @@ export default function BuyerGuidePage() {
           <p className="eyebrow">Developer purchase</p>
           <h2>Direct company inventory</h2>
           <p>
-            Apply through the approved process, await developer approval, confirm
-            current terms, make the qualifying payment through verified channels,
-            and track allocation through the client portal.
+            Start with DMZ to review current availability and arrange an inspection.
+            We help you prepare for developer approval, understand the approved
+            terms, and follow the documented allocation process.
           </p>
-          <TrackedLink
-            href={estate.applicationUrl}
-            eventName="official_application_click"
-            eventData={{ placement: "buyer_guide" }}
-            newTab
-          >
-            Official application portal
-          </TrackedLink>
+          <Link href="/properties/600sqm-virgin-land-kyc-homes-phase-ii">
+            Explore available land
+          </Link>
         </article>
         <article>
           <p className="eyebrow">Owner resale</p>
@@ -89,7 +83,7 @@ export default function BuyerGuidePage() {
             payment position, property identity, and the applicable estate
             transfer process must be confirmed before commitment.
           </p>
-          <Link href="/sell">How DMZ reviews resales</Link>
+          <Link href="/verification">How DMZ verifies resales</Link>
         </article>
       </section>
 

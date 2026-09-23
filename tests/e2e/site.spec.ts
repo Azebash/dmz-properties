@@ -58,6 +58,25 @@ test("property discovery filters and carries listing context into an enquiry", a
   await expect(page.locator(".form-property")).toContainText("DMZ-KYC-001");
 });
 
+test("buyer acquisition pages keep prospects in DMZ journeys", async ({ page }) => {
+  const pages = [
+    "/properties/600sqm-virgin-land-kyc-homes-phase-ii",
+    "/areas/kyc-homes-phase-ii",
+    "/guides/kyc-homes-phase-ii-buyer-guide",
+  ];
+
+  for (const path of pages) {
+    await page.goto(path);
+    await expect(page.locator('a[href*="nexus-web-cyan-eight.vercel.app"], a[href*="kycinterproject.org"]')).toHaveCount(0);
+    await expect(page.getByRole("link", { name: /official developer application|visit the official developer website|view official product information/i })).toHaveCount(0);
+  }
+
+  await page.goto("/areas/kyc-homes-phase-ii");
+  await expect(page.getByRole("link", { name: "Explore DMZ inventory" })).toHaveAttribute("href", "/properties");
+  await expect(page.getByRole("link", { name: "Ask DMZ about resales" })).toHaveAttribute("href", "/contact");
+  await expect(page.getByRole("main").getByRole("link", { name: "Book an inspection" })).toHaveAttribute("href", "/book-inspection");
+});
+
 test("enquiry form submits a qualified buyer request", async ({ page }) => {
   let submitted: Record<string, string> | undefined;
   await page.route("**/api/enquiries", async (route) => {

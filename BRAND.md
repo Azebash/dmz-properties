@@ -17,6 +17,10 @@ Property, properly considered.
 
 DMZ Properties helps people understand what they are buying through verified access, clear information, and firsthand property knowledge.
 
+## Buyer Journey
+
+DMZ Properties is the buyer's acquisition point of contact. Mention KYC Interproject Limited as the developer for transparency, but keep plot enquiries, inspection requests, and purchase guidance on DMZ Properties or its direct WhatsApp and phone channels. Do not route prospective buyers to the developer's website or application portal.
+
 ## Logo Concept
 
 The logo uses custom geometric DMZ letterforms. The diagonal Z acts as the Plotline: a property boundary, access route, and expression of forward development.
