@@ -216,7 +216,7 @@ These features reduce manual work after enquiry volume grows.
 - [x] Create secure administrator authentication and verify live Supabase access
 - [x] Create audited property editor with review and publish transitions
 - [x] Create audited article editor with draft, review, and publish controls
-- [ ] Create area-guide editor
+- [x] Create an audited KYC Homes Phase II area-guide copy and SEO editor with review and publication
 - [ ] Create development-update editor
 - [ ] Add draft, review, scheduled, published, sold, and archived states
 - [ ] Add image and document media management

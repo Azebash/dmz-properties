@@ -78,7 +78,7 @@ export async function getAdminInspection(id: string) {
   return data;
 }
 
-export async function getAdminActivity(entityType: "enquiry" | "inspection" | "article", id: string) {
+export async function getAdminActivity(entityType: "enquiry" | "inspection" | "article" | "area_guide", id: string) {
   const staff = await requireStaff();
   if (staff.role !== "administrator") return [];
 
@@ -128,5 +128,12 @@ export async function getAdminArticle(id: string) {
     .eq("id", id)
     .maybeSingle();
   if (error) throw new Error(`Unable to load article: ${error.message}`);
+  return data;
+}
+
+export async function getAdminAreaGuide(slug: string) {
+  const supabase = await authorizedClient();
+  const { data, error } = await supabase.from("area_guides").select("*").eq("slug", slug).maybeSingle();
+  if (error) throw new Error(`Unable to load area guide: ${error.message}`);
   return data;
 }

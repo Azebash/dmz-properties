@@ -39,6 +39,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      area_guides: {
+        Row: {
+          draft_copy: Json
+          published_at: string | null
+          published_copy: Json | null
+          slug: string
+          status: Database["public"]["Enums"]["publication_status"]
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          draft_copy: Json
+          published_at?: string | null
+          published_copy?: Json | null
+          slug: string
+          status?: Database["public"]["Enums"]["publication_status"]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          draft_copy?: Json
+          published_at?: string | null
+          published_copy?: Json | null
+          slug?: string
+          status?: Database["public"]["Enums"]["publication_status"]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "area_guides_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       articles: {
         Row: {
           author_id: string | null
@@ -628,8 +666,13 @@ export type Database = {
         }
         Returns: boolean
       }
+      get_published_area_guide: { Args: { p_slug: string }; Returns: Json }
       ingest_enquiry: { Args: { payload: Json }; Returns: string }
       save_article: { Args: { p_payload: Json }; Returns: string }
+      save_area_guide: {
+        Args: { p_copy: Json; p_slug: string }
+        Returns: Database["public"]["Enums"]["publication_status"]
+      }
       save_property: { Args: { p_payload: Json }; Returns: string }
       set_inspection_timezone: {
         Args: { p_inspection_id: string; p_time_zone: string }
@@ -638,6 +681,13 @@ export type Database = {
       transition_article_status: {
         Args: {
           p_article_id: string
+          p_status: Database["public"]["Enums"]["publication_status"]
+        }
+        Returns: Database["public"]["Enums"]["publication_status"]
+      }
+      transition_area_guide_status: {
+        Args: {
+          p_slug: string
           p_status: Database["public"]["Enums"]["publication_status"]
         }
         Returns: Database["public"]["Enums"]["publication_status"]

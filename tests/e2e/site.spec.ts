@@ -231,6 +231,7 @@ test("private enquiry, inspection, and editorial details require staff authentic
     `/admin/enquiries/${testId}`,
     `/admin/inspections/${testId}`,
     `/admin/content/${testId}/preview`,
+    "/admin/areas/kyc-homes-phase-ii",
   ]) {
     await page.goto(path);
     await expect(page).toHaveURL(/\/admin\/login/);

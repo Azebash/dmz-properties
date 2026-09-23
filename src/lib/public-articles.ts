@@ -4,7 +4,7 @@ import { articles as repositoryArticles, type Article } from "@/lib/content";
 import type { ArticleRow } from "@/lib/supabase/types";
 import { getSupabaseConfig } from "@/lib/supabase/config";
 
-export function usesDatabaseArticles() {
+export function usesDatabaseContent() {
   return process.env.SUPABASE_CONTENT_SOURCE === "database";
 }
 
@@ -54,12 +54,12 @@ async function fetchArticles(filters = "") {
 }
 
 export async function getPublishedArticles(): Promise<Article[]> {
-  if (!usesDatabaseArticles()) return repositoryArticles;
+  if (!usesDatabaseContent()) return repositoryArticles;
   return fetchArticles("order=published_at.desc,slug.asc&limit=500");
 }
 
 export async function getPublishedArticle(slug: string): Promise<Article | undefined> {
-  if (!usesDatabaseArticles()) {
+  if (!usesDatabaseContent()) {
     return repositoryArticles.find((article) => article.slug === slug);
   }
   const results = await fetchArticles(`slug=eq.${encodeURIComponent(slug)}&limit=1`);

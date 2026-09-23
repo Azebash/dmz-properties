@@ -4,17 +4,21 @@ import Link from "next/link";
 import { PropertyCard } from "@/components/property-card";
 import { properties } from "@/lib/content";
 import { estate } from "@/lib/business";
+import { getPublicAreaGuide } from "@/lib/public-area-guide";
 
-export const metadata: Metadata = {
-  title: "Land and Properties in KYC Homes Phase II, Abuja",
-  description:
-    "Explore developer land, developed homes, and verified owner resales in KYC Homes Phase II, Sabon Lugbe, Airport Road, Abuja.",
-  alternates: {
-    canonical: "/areas/kyc-homes-phase-ii",
-  },
-};
+export const revalidate = 60;
 
-export default function KycEstatePage() {
+export async function generateMetadata(): Promise<Metadata> {
+  const copy = await getPublicAreaGuide();
+  return {
+    title: copy.seoTitle,
+    description: copy.seoDescription,
+    alternates: { canonical: "/areas/kyc-homes-phase-ii" },
+  };
+}
+
+export default async function KycEstatePage() {
+  const copy = await getPublicAreaGuide();
   const estateProperties = properties.filter(
     (property) => property.location === "KYC Homes Phase II",
   );
@@ -47,13 +51,10 @@ export default function KycEstatePage() {
         <div className="section-shell estate-hero-grid">
           <div>
             <p className="eyebrow">Sabon Lugbe / Airport Road / Abuja</p>
-            <h1>KYC Homes Phase II, understood from within.</h1>
+            <h1>{copy.heroTitle}</h1>
           </div>
           <div className="estate-hero-copy">
-            <p>
-              Explore land and properties in an established Abuja estate
-              where hundreds have already developed and new development continues.
-            </p>
+            <p>{copy.heroDescription}</p>
             <Link className="button button-primary" href="/contact">
               Request current availability
             </Link>
@@ -83,12 +84,9 @@ export default function KycEstatePage() {
         <div className="estate-gallery-heading">
           <div>
             <p className="eyebrow">Inside the estate</p>
-            <h2>Established homes. Active development.</h2>
+            <h2>{copy.galleryTitle}</h2>
           </div>
-          <p>
-            Genuine photography from KYC Homes Phase II showing completed
-            residences alongside continuing construction across the estate.
-          </p>
+          <p>{copy.galleryDescription}</p>
         </div>
         <div className="estate-gallery">
           <figure className="estate-gallery-feature">
@@ -132,7 +130,7 @@ export default function KycEstatePage() {
           <strong>4-bedroom fully detached duplex</strong>
           <p>600 sqm virgin land / {estate.developerLandPrice}</p>
         </div>
-        <h2>Two ways to own within the estate.</h2>
+        <h2>{copy.pathsTitle}</h2>
         <div className="estate-paths">
           <article>
             <span>Developer inventory</span>
@@ -166,7 +164,7 @@ export default function KycEstatePage() {
         <div className="section-shell estate-infrastructure-grid">
           <div>
             <p className="eyebrow">Estate structure</p>
-            <h2>Coordinated development standards.</h2>
+            <h2>{copy.infrastructureTitle}</h2>
           </div>
           <div className="infrastructure-list">
             <article>
@@ -209,7 +207,7 @@ export default function KycEstatePage() {
       <section className="section-shell estate-process">
         <div>
           <p className="eyebrow">How we help</p>
-          <h2>Local knowledge without informal shortcuts.</h2>
+          <h2>{copy.processTitle}</h2>
         </div>
         <ol>
           <li>

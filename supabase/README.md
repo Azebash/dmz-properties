@@ -67,3 +67,10 @@ After enabling `SUPABASE_CONTENT_SOURCE=database`, run
 checks the protected saved-article preview, publishes and edits it through the
 staff UI, confirms the public URL, archives it, checks audit history, and removes
 the temporary article and audit records.
+
+Run `npm run test:live-area-guide` to verify protected guide editing, draft
+privacy, review, publication, search metadata, and the unchanged public URL.
+The test restores the approved guide copy and removes its temporary audit
+entries. If direct `supabase db push --linked` cannot reach the database,
+`npm run supabase:push:linked:pooler` applies pending migrations through the
+linked project pooler using the local `SUPABASE_DB_PASSWORD`.

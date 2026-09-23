@@ -27,6 +27,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           <Link href="/admin/inspections">Inspections</Link>
           <Link href="/admin/sellers">Seller reviews</Link>
           <Link href="/admin/content">Content</Link>
+          <Link href="/admin/areas/kyc-homes-phase-ii">Area guide</Link>
         </nav>
         <div className="admin-identity">
           <strong>{staff.display_name}</strong>

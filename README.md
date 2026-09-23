@@ -50,6 +50,11 @@ editorial changes and publication transitions on that page. Public-facing photog
 KYC Homes Phase II image library and is identified as estate context until
 listing-specific media is supplied.
 
+The KYC Homes Phase II area guide has a protected copy editor at
+`/admin/areas/kyc-homes-phase-ii`. Draft and reviewed text does not replace the
+approved public page until publication. Estate facts, prices, imagery, and
+purchase guidance remain fixed in the page template.
+
 Estate media utilities:
 
 ```bash

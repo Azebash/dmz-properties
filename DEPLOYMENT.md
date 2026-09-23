@@ -73,10 +73,11 @@ Turnstile and Upstash are optional in local development but should be configured
 9. Verify `/admin/login`, active-staff authorization, and `/api/ready` in the deployed environment.
 
 The editorial catalogue defaults to repository files when the variable is absent.
-Seed and verify the existing slugs before enabling `database`. Only published
-Supabase articles are then visible on the homepage, Insights, topic pages, and
-sitemap; a database outage will surface an error rather than quietly restore
-stale file content. Set `repository` and redeploy only for a controlled rollback.
+Seed and verify the existing slugs and area-guide copy before enabling `database`.
+Only published Supabase articles appear on the homepage, Insights, topic pages,
+and sitemap; the area page reads only the last approved guide copy. A database
+outage will surface an error rather than quietly restore stale file content.
+Set `repository` and redeploy only for a controlled rollback.
 
 ## Domain And Search
 
