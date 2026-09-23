@@ -35,6 +35,7 @@ afterEach(() => {
 describe("deployment readiness", () => {
   it("reports every missing production dependency", () => {
     const result = getReadiness();
+    expect(result.scope).toBe("configuration");
     expect(result.ready).toBe(false);
     expect(result.checks).toEqual({
       canonicalUrl: false,

@@ -62,6 +62,12 @@ To verify the authenticated operations after a production deployment, run
 Supabase secret in `.env.local`. The test creates an inspection request, updates
 it through the admin UI, checks the audit records, and removes all fixture data.
 
+`npm run test:live-public-forms` submits synthetic buyer, seller, and
+inspection requests through the deployed public forms, verifies the persisted
+enquiries and related review/inspection records, verifies the honeypot accepts
+without persistence, then checks that the fixtures, child rows, and audit records
+are removed. Email notifications need separate verification once configured.
+
 After enabling `SUPABASE_CONTENT_SOURCE=database`, run
 `npm run test:live-editorial`. It creates a draft, verifies it is private,
 checks the protected saved-article preview, publishes and edits it through the

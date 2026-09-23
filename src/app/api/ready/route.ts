@@ -1,15 +1,19 @@
 import { NextResponse } from "next/server";
 import { getReadiness } from "@/lib/readiness";
+import { isSupabaseReachable } from "@/lib/supabase/readiness-probe";
 
-export function GET() {
-  const readiness = getReadiness();
+export async function GET() {
+  const configuration = getReadiness();
+  const supabaseReachable = await isSupabaseReachable();
+  const ready = configuration.ready && supabaseReachable;
   return NextResponse.json(
     {
-      status: readiness.ready ? "ready" : "not_ready",
-      checks: readiness.checks,
+      scope: "operational",
+      status: ready ? "ready" : "not_ready",
+      checks: { ...configuration.checks, supabaseReachable },
     },
     {
-      status: readiness.ready ? 200 : 503,
+      status: ready ? 200 : 503,
       headers: { "Cache-Control": "no-store" },
     },
   );

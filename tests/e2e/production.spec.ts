@@ -96,5 +96,9 @@ test("production metadata and discovery endpoints are valid", async ({ page, req
 
   const readiness = await request.get("/api/ready");
   expect(readiness.status()).toBe(503);
-  expect(await readiness.json()).toMatchObject({ status: "not_ready" });
+  expect(await readiness.json()).toMatchObject({
+    scope: "operational",
+    status: "not_ready",
+    checks: { supabaseReachable: expect.any(Boolean) },
+  });
 });

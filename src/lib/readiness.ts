@@ -33,6 +33,7 @@ export function getReadiness() {
   };
 
   return {
+    scope: "configuration" as const,
     ready: Boolean(
       checks.canonicalUrl &&
         checks.supabase &&

@@ -22,10 +22,8 @@ These items are launch blockers.
 - [x] State that the website is not the official KYC Homes Phase II website
 - [x] Disclose founder Hafiz Bashir's staff relationship with KYC Interproject Limited on the About page
 - [x] Confirm authorization and publish independent-operation wording
-- [!] Add the official business email address
 - [x] Add the official business phone and WhatsApp number
 - [x] Add the office or contact address
-- [!] Confirm the production domain
 
 ### Real Property Inventory
 
@@ -48,7 +46,6 @@ These items are launch blockers.
 
 - [x] General enquiry page and buyer requirement form
 - [x] Keep developer inventory and resale acquisition journeys on DMZ Properties
-- [~] Configure Resend credentials for secure form delivery
 - [x] Connect the official WhatsApp number
 - [x] Add property-specific enquiry context automatically
 - [x] Add inspection booking requests
@@ -56,9 +53,9 @@ These items are launch blockers.
 - [x] Add preferred contact method and contact time
 - [x] Add budget and purchase timeline qualification
 - [x] Add consent checkbox and privacy notice
-- [~] Add submission confirmation and best-effort email acknowledgement; production delivery remains untested
-- [~] Add honeypot, optional Turnstile, and optional distributed Upstash rate limiting; production credentials remain pending
-- [~] Add internal email notifications for new enquiries
+- [x] Confirm submission in the UI after durable Supabase persistence
+- [x] Honeypot passed a live non-persistence check and Supabase distributed rate limiting is active
+- [!] Assign an owner to monitor `/admin/enquiries` and follow up while email notifications are disabled
 
 ### Legal And Trust
 
@@ -89,19 +86,26 @@ These items are launch blockers.
 - [x] Browser journey tests for navigation, filtering, and enquiries
 - [x] Automated accessibility checks on priority pages
 - [x] Enquiry API contract tests for validation, origin, spam, configuration, and delivery paths
-- [ ] Connect production hosting
-- [ ] Connect production domain and SSL
-- [ ] Configure environment variables and secrets
+- [x] Connect production hosting on Vercel
+- [x] Serve the launch URL through Vercel HTTPS; a custom domain is optional
+- [x] Configure core production Supabase, enquiry-persistence, and editorial environment variables
 - [x] Add a branded social-sharing image
-- [~] Add structured server-error logs and health endpoint; external alerting remains pending
-- [ ] Test all forms on production
+- [~] Structured logs and health/readiness exist; a 15-minute availability workflow is prepared locally, but deployment and alert delivery are unverified
+- [x] Buyer, seller, and inspection forms passed live persistence checks with synthetic records removed; honeypot submissions were not persisted
 - [x] Test at 375px, 768px, 1024px, and 1440px
-- [~] Production performance, asset, metadata, SEO, and accessibility budgets pass; independent Lighthouse scoring remains pending
+- [~] Production budgets pass; homepage Lighthouse baseline: mobile performance 78, desktop 92, accessibility/best practices 100, SEO 69 while intentionally noindexed. Mobile performance remains to improve
 - [ ] Verify external image licensing and usage
 
 ## P1: Strongly Recommended For Initial Growth
 
 These features should follow immediately after the launch blockers.
+
+### Business Identity And Notifications
+
+- [ ] Choose a custom DMZ domain and update canonical URLs and SSL when available
+- [ ] Create a monitored official business inbox
+- [ ] Verify a sending domain and configure Resend for internal lead notifications and buyer acknowledgements
+- [ ] Consider optional Turnstile when public traffic warrants it
 
 ### Property Discovery
 
@@ -365,9 +369,9 @@ These capabilities become relevant when DMZ Properties begins developing its own
 
 - [x] Remove representative property records; future owner resales require approved owner data
 - [x] Replace Unsplash photography with supplied KYC Homes Phase II images
-- [!] Enquiry delivery requires Resend credentials in the production environment
-- [~] Upstash distributed rate limiting is implemented; production credentials remain pending
-- [!] No production domain is selected; metadata currently uses the configured deployment URL
+- [~] Enquiries persist to Supabase; email notifications and buyer acknowledgements can follow once an inbox, domain, and Resend are configured
+- [x] Supabase distributed rate limiting is enabled; optional Upstash credentials are not required for the current path
+- [~] The Vercel HTTPS URL is the initial canonical launch URL; a custom domain can be chosen later
 - [!] Title type, complete payment schedule, charges, and live allocation count are not yet supplied
 - [x] Estate location confirmed as KYC Homes Phase II, Sabon Lugbe, Airport Road, Abuja, FCT
 - [!] The logo remains a first design direction pending final approval
@@ -382,9 +386,9 @@ The website is ready for public launch only when:
 
 - [ ] All P0 items are complete
 - [ ] Every published property has current, approved, and verifiable information
-- [ ] All temporary images and contact details are replaced
+- [ ] Published imagery is approved and active contact channels are confirmed
 - [ ] Enquiries are delivered reliably and tested end to end
 - [ ] Legal and privacy content has been reviewed
 - [ ] Analytics and search tools are connected
 - [ ] Mobile, accessibility, performance, and SEO checks pass
-- [ ] The production domain, SSL, sitemap, and metadata are verified
+- [ ] The chosen launch URL has working HTTPS, sitemap, and metadata
