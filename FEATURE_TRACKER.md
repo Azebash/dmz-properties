@@ -90,7 +90,7 @@ These items are launch blockers.
 - [x] Serve the launch URL through Vercel HTTPS; a custom domain is optional
 - [x] Configure core production Supabase, enquiry-persistence, and editorial environment variables
 - [x] Add a branded social-sharing image
-- [~] Structured logs and health/readiness exist; a 15-minute availability workflow is prepared locally, but deployment and alert delivery are unverified
+- [~] Structured logs and live database readiness are deployed; the monitor passes manually, but GitHub Actions scheduling is disabled while the account billing lock prevents runners from starting
 - [x] Buyer, seller, and inspection forms passed live persistence checks with synthetic records removed; honeypot submissions were not persisted
 - [x] Test at 375px, 768px, 1024px, and 1440px
 - [~] Production budgets pass; homepage Lighthouse baseline: mobile performance 78, desktop 92, accessibility/best practices 100, SEO 69 while intentionally noindexed. Mobile performance remains to improve

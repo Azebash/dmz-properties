@@ -120,16 +120,16 @@ Set `repository` and redeploy only for a controlled rollback.
   hero image at high network priority (181 KB transferred, request complete by
   about 1.9 s) while LCP occurred at 3.7 s. Retest rendering on stable hardware
   before changing LCP loading.
-- `.github/workflows/production-availability.yml` is prepared to check
+- `.github/workflows/production-availability.yml` is deployed to check
   `/api/health` and the active Supabase-backed `/api/ready` every 15 minutes
-  and on manual dispatch. Run `npm run monitor:production` after deployment;
-  an unhealthy response exits nonzero and fails the workflow. A successful
-  local production-build check verified the script against real Supabase.
-  The current live deployment lacks the active readiness response, so the
-  monitor correctly fails against it until the code is deployed.
-- Confirm GitHub workflow-failure notifications (or connect an alert provider)
-  before treating the scheduled check as delivered alerting. Update its URL
-  after the final production domain is selected.
+  and on manual dispatch. `npm run monitor:production` passes against the live
+  deployment; an unhealthy response exits nonzero. GitHub's manual workflow
+  dispatch did not start a runner because the account is locked by a billing
+  issue (run 35912830359). The workflow was disabled to avoid repeated failed
+  scheduled attempts. After the account issue is resolved, run
+  `gh workflow enable 365469470 --repo Azebash/dmz-properties`, dispatch it,
+  confirm a passing run and workflow-failure notifications (or connect an alert
+  provider). Update its URL after a custom domain is selected.
 - Vercel logs receive structured `server_request_error` events from `src/instrumentation.ts`.
 - Console logging alone does not provide incident notification.
 
@@ -142,6 +142,7 @@ npm run lint
 npm run test:e2e
 npm run test:production
 npm run test:live-public-forms
+npm run monitor:production
 ```
 
 The live form check uses removable synthetic buyer, seller, and inspection
