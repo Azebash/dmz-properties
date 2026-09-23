@@ -45,6 +45,11 @@ export default async function EditArticlePage({
         </div>
         <AdminStatus value={article.status} />
       </header>
+      <p className="admin-preview-action">
+        <Link className="button button-secondary" href={`/admin/content/${article.id}/preview`}>
+          Preview saved article
+        </Link>
+      </p>
       {query.saved === "1" ? <p className="admin-success" role="status">Article saved.</p> : null}
       {query.transition === "saved" ? <p className="admin-success" role="status">Publication status updated.</p> : null}
       {query.transition === "failed" ? (

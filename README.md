@@ -44,7 +44,8 @@ The verified developer property is currently defined in `src/lib/content.ts`.
 Articles are seeded in Supabase and edited at `/admin/content`; published records
 power the homepage, Insights, topic pages, and sitemap when
 `SUPABASE_CONTENT_SOURCE=database`. The repository article records are retained
-as a controlled rollback source. Public-facing photography uses the supplied
+as a controlled rollback source. Editors can preview a saved draft or reviewed
+article from its edit page without publishing it. Public-facing photography uses the supplied
 KYC Homes Phase II image library and is identified as estate context until
 listing-specific media is supplied.
 

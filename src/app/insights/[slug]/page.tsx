@@ -5,6 +5,7 @@ import { categorySlug } from "@/lib/content";
 import { getPublishedArticle, getPublishedArticles } from "@/lib/public-articles";
 import { siteUrl } from "@/lib/site";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { ArticleContent } from "@/components/article-content";
 
 type ArticlePageProps = {
   params: Promise<{ slug: string }>;
@@ -72,30 +73,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           ]}
         />
       </div>
-      <header className="section-shell page-hero">
-        <p className="eyebrow">{article.category}</p>
-        <h1 className="page-title">{article.title}</h1>
-        <p>{article.excerpt}</p>
-      </header>
-      <article className="section-shell article-grid">
-        <aside className="article-aside">
-          <p>{article.readTime}</p>
-          <p>Published {article.publishedAt}</p>
-          <p>Updated {article.updatedAt}</p>
-          <p>DMZ Properties</p>
-        </aside>
-        <div className="article-body">
-          {article.sections.map((section) => (
-            <section key={section.heading}>
-              <h2>{section.heading}</h2>
-              <p>{section.body}</p>
-            </section>
-          ))}
-          <Link className="button button-secondary section-action" href="/contact">
-            Discuss your requirements
-          </Link>
-        </div>
-      </article>
+      <ArticleContent article={article} />
       <section className="section-shell related-reading">
         <div className="related-reading-heading">
           <h2>Continue your research</h2>

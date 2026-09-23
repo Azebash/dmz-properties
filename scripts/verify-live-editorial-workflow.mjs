@@ -59,6 +59,26 @@ try {
   articleId = admin.url().match(/content\/([^/]+)\/edit/)?.[1];
   if (!articleId) throw new Error("Article draft ID missing");
   await expect(admin.locator(".admin-edit-header .admin-status")).toHaveText("draft");
+  const publicUrl = `${site}/insights/${slug}`;
+  const previewUrl = `${site}/admin/content/${articleId}/preview`;
+  const reader = await browser.newPage();
+  await reader.goto(previewUrl);
+  await expect(reader).toHaveURL(/\/admin\/login/);
+  if ((await reader.goto(publicUrl))?.status() !== 404) {
+    throw new Error("Draft was served on its public article URL");
+  }
+
+  await admin.getByRole("link", { name: "Preview saved article" }).click();
+  await expect(admin).toHaveURL(previewUrl);
+  await expect(admin.locator(".article-preview-bar")).toContainText("Staff preview · draft");
+  await expect(admin.locator(".article-preview-bar")).toContainText(
+    "Search title: Editorial verification | DMZ Properties",
+  );
+  await expect(admin.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+  await expect(admin.getByRole("heading", { level: 1 })).toHaveText(title);
+  await expect(admin.getByRole("heading", { name: "A clear first section" })).toBeVisible();
+  await admin.getByRole("link", { name: "Back to editor" }).click();
+  await expect(admin.getByRole("heading", { name: "Edit article" })).toBeVisible();
 
   const publicHeaders = {
     apikey: publishable,
@@ -74,11 +94,12 @@ try {
 
   await admin.getByRole("button", { name: "Move to under review" }).click();
   await expect(admin.locator(".admin-edit-header .admin-status")).toHaveText("under review", { timeout: 30_000 });
+  await admin.getByRole("link", { name: "Preview saved article" }).click();
+  await expect(admin.locator(".article-preview-bar")).toContainText("Staff preview · under review");
+  await admin.getByRole("link", { name: "Back to editor" }).click();
   await admin.getByRole("button", { name: "Move to published" }).click();
   await expect(admin.locator(".admin-edit-header .admin-status")).toHaveText("published", { timeout: 30_000 });
 
-  const reader = await browser.newPage();
-  const publicUrl = `${site}/insights/${slug}`;
   await expect.poll(async () => {
     const response = await reader.goto(publicUrl);
     return response?.status();

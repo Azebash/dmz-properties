@@ -225,10 +225,14 @@ test("admin routes fail safely into staff authentication", async ({ page }) => {
   await expect(page.locator(".site-header")).toBeHidden();
 });
 
-test("private enquiry and inspection details require staff authentication", async ({ page }) => {
+test("private enquiry, inspection, and editorial details require staff authentication", async ({ page }) => {
   const testId = "94444444-4444-4444-8444-444444444444";
-  for (const section of ["enquiries", "inspections"]) {
-    await page.goto(`/admin/${section}/${testId}`);
+  for (const path of [
+    `/admin/enquiries/${testId}`,
+    `/admin/inspections/${testId}`,
+    `/admin/content/${testId}/preview`,
+  ]) {
+    await page.goto(path);
     await expect(page).toHaveURL(/\/admin\/login/);
     await expect(page.getByRole("heading", { name: "Staff sign in" })).toBeVisible();
   }

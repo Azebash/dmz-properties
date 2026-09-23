@@ -221,7 +221,7 @@ These features reduce manual work after enquiry volume grows.
 - [ ] Add draft, review, scheduled, published, sold, and archived states
 - [ ] Add image and document media management
 - [x] Add editable property and article SEO title and description controls
-- [ ] Add content preview before publication
+- [x] Add staff-only, non-indexed article preview for saved drafts and reviews
 - [x] Add audit history for property, article, enquiry, and inspection changes
 - [x] Define Supabase operational schema, publication states, private storage, and RLS policies
 - [x] Add protected read-only admin dashboard and staff session refresh

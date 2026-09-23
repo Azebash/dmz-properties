@@ -64,5 +64,6 @@ it through the admin UI, checks the audit records, and removes all fixture data.
 
 After enabling `SUPABASE_CONTENT_SOURCE=database`, run
 `npm run test:live-editorial`. It creates a draft, verifies it is private,
-publishes and edits it through the staff UI, confirms the public URL, archives
-it, checks audit history, and removes the temporary article and audit records.
+checks the protected saved-article preview, publishes and edits it through the
+staff UI, confirms the public URL, archives it, checks audit history, and removes
+the temporary article and audit records.

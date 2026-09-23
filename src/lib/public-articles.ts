@@ -8,10 +8,8 @@ export function usesDatabaseArticles() {
   return process.env.SUPABASE_CONTENT_SOURCE === "database";
 }
 
-function parsePublishedArticle(row: ArticleRow): Article {
-  if (!row.published_at || !Array.isArray(row.body)) {
-    throw new Error("A published article is missing publication data");
-  }
+export function articleFromRow(row: ArticleRow): Article {
+  if (!Array.isArray(row.body)) throw new Error("An article is missing sections");
   const sections = row.body.map((item) => {
     if (
       !item || typeof item !== "object" || Array.isArray(item) ||
@@ -27,12 +25,17 @@ function parsePublishedArticle(row: ArticleRow): Article {
     category: row.category,
     excerpt: row.excerpt,
     readTime: `${row.read_time_minutes} min read`,
-    publishedAt: row.published_at.slice(0, 10),
+    publishedAt: (row.published_at || row.created_at).slice(0, 10),
     updatedAt: row.updated_at.slice(0, 10),
     sections,
     seoTitle: row.seo_title || undefined,
     seoDescription: row.seo_description || undefined,
   };
+}
+
+function parsePublishedArticle(row: ArticleRow): Article {
+  if (!row.published_at) throw new Error("A published article is missing publication data");
+  return articleFromRow(row);
 }
 
 async function fetchArticles(filters = "") {

@@ -733,6 +733,36 @@ img {
   padding-top: 35px;
 }
 
+.article-preview-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-block: 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.article-preview-bar strong {
+  color: var(--forest);
+}
+
+.article-preview-bar p {
+  margin: 6px 0 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+.article-preview-bar .button {
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .article-preview-bar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
 .property-gallery {
   display: grid;
   grid-template-columns: 2fr 1fr;
