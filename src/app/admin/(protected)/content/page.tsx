@@ -18,9 +18,12 @@ export default async function AdminContentPage() {
         <h1>Content</h1>
         <p>Draft, review, published, and archived property guidance.</p>
         {canEdit ? (
-          <Link className="button button-primary" href="/admin/content/new">
-            Add article
-          </Link>
+          <div className="button-row admin-content-actions">
+            <Link className="button button-primary" href="/admin/content/new">Add article</Link>
+            <Link className="button button-secondary" href="/admin/content/new?category=estate-update">
+              Add estate update
+            </Link>
+          </div>
         ) : null}
       </header>
       {articles.length ? (

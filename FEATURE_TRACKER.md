@@ -155,7 +155,7 @@ These features should follow immediately after the launch blockers.
 - [ ] Add infrastructure and amenity details
 - [ ] Add approved estate documentation guide
 - [x] Add KYC Homes Phase II frequently asked questions
-- [ ] Add recurring development-update posts
+- [~] Add a dated estate-update feed and publishing workflow; source-approved updates are still needed
 - [x] Add genuine photographs of completed and ongoing development
 
 ### SEO And Content
@@ -217,7 +217,7 @@ These features reduce manual work after enquiry volume grows.
 - [x] Create audited property editor with review and publish transitions
 - [x] Create audited article editor with draft, review, and publish controls
 - [x] Create an audited KYC Homes Phase II area-guide copy and SEO editor with review and publication
-- [ ] Create development-update editor
+- [x] Add an estate-update entry point using the audited article editor, review workflow, and publication controls
 - [ ] Add draft, review, scheduled, published, sold, and archived states
 - [ ] Add image and document media management
 - [x] Add editable property and article SEO title and description controls

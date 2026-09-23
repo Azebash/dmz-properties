@@ -17,7 +17,13 @@ function articleSections(body: ArticleRow["body"] | undefined): Section[] {
   });
 }
 
-export function AdminArticleForm({ article }: { article?: ArticleRow }) {
+export function AdminArticleForm({
+  article,
+  initialCategory,
+}: {
+  article?: ArticleRow;
+  initialCategory?: string;
+}) {
   const existing = articleSections(article?.body);
   const [count, setCount] = useState(Math.max(1, existing.length));
   const [state, action, pending] = useActionState(saveArticleAction, { error: "" });
@@ -36,7 +42,7 @@ export function AdminArticleForm({ article }: { article?: ArticleRow }) {
         </div>
         <div className="field">
           <label htmlFor="article-category">Topic</label>
-          <input id="article-category" name="category" defaultValue={article?.category} maxLength={100} required />
+          <input id="article-category" name="category" defaultValue={article?.category || initialCategory} maxLength={100} required />
         </div>
         <div className="field field-full">
           <label htmlFor="article-excerpt">Search and listing summary</label>

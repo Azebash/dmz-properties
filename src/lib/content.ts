@@ -30,6 +30,8 @@ export type Article = {
   sections: { heading: string; body: string }[];
 };
 
+export const estateUpdateCategory = "Estate update";
+
 // Current developer inventory. Reconfirm availability and terms before commitment.
 export const properties: Property[] = [
   {

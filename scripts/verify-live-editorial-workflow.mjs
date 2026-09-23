@@ -6,6 +6,9 @@ const secret = process.env.SUPABASE_SECRET_KEY;
 const publishable = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 const email = process.env.DMZ_ADMIN_EMAIL;
 const password = process.env.DMZ_ADMIN_TEMP_PASSWORD;
+const estateUpdate = process.argv.includes("--estate-update");
+const topic = estateUpdate ? "Estate update" : "Editorial verification";
+const topicSlug = estateUpdate ? "estate-update" : "editorial-verification";
 
 if (!site.startsWith("https://") || !supabaseUrl || !secret || !publishable || !email || !password) {
   throw new Error("Live editorial verification needs HTTPS and local admin/Supabase credentials");
@@ -39,10 +42,17 @@ try {
   await admin.getByRole("button", { name: "Sign in" }).click();
   await admin.waitForURL(/\/admin$/, { timeout: 30_000 });
 
-  await admin.goto(`${site}/admin/content/new`, { waitUntil: "networkidle" });
+  if (estateUpdate) {
+    await admin.goto(`${site}/admin/content`, { waitUntil: "networkidle" });
+    await admin.getByRole("link", { name: "Add estate update" }).click();
+    await expect(admin.getByRole("heading", { name: "Create estate update" })).toBeVisible();
+    await expect(admin.getByLabel("Topic")).toHaveValue("Estate update");
+  } else {
+    await admin.goto(`${site}/admin/content/new`, { waitUntil: "networkidle" });
+  }
   await admin.getByLabel("Title", { exact: true }).fill(title);
   await admin.getByLabel("URL slug").fill(slug);
-  await admin.getByLabel("Topic").fill("Editorial verification");
+  await admin.getByLabel("Topic").fill(topic);
   await admin.getByLabel("Search and listing summary").fill(
     "A temporary guide that verifies the DMZ editorial publishing workflow end to end.",
   );
@@ -69,6 +79,9 @@ try {
   await expect(reader).toHaveURL(/\/admin\/login/);
   if ((await reader.goto(publicUrl))?.status() !== 404) {
     throw new Error("Draft was served on its public article URL");
+  }
+  if (estateUpdate && (await (await fetch(`${site}/areas/kyc-homes-phase-ii`)).text()).includes(`/insights/${slug}`)) {
+    throw new Error("Draft estate update was visible on the area page");
   }
 
   await admin.getByRole("link", { name: "Preview saved article" }).click();
@@ -114,7 +127,7 @@ try {
   await expect(reader.locator('meta[name="description"]')).toHaveAttribute(
     "content", "Check the DMZ editorial publishing and search metadata workflow.",
   );
-  await reader.goto(`${site}/insights/topics/editorial-verification`);
+  await reader.goto(`${site}/insights/topics/${topicSlug}`);
   await expect(reader.getByRole("link", { name: title })).toHaveAttribute("href", `/insights/${slug}`);
   await expect.poll(async () => {
     const response = await fetch(`${site}/sitemap.xml`);
@@ -128,6 +141,12 @@ try {
     const response = await fetch(site);
     return (await response.text()).includes(`/insights/${slug}`);
   }, { timeout: 90_000 }).toBe(true);
+  if (estateUpdate) {
+    await expect.poll(async () => {
+      const response = await fetch(`${site}/areas/kyc-homes-phase-ii`);
+      return (await response.text()).includes(`/insights/${slug}`);
+    }, { timeout: 90_000 }).toBe(true);
+  }
 
   await admin.getByLabel("Title", { exact: true }).fill("Updated editorial publishing verification");
   await admin.getByLabel("Custom SEO title (optional)").fill("Updated editorial verification | DMZ Properties");
@@ -158,6 +177,12 @@ try {
     const response = await fetch(site);
     return (await response.text()).includes(`/insights/${slug}`);
   }, { timeout: 90_000 }).toBe(false);
+  if (estateUpdate) {
+    await expect.poll(async () => {
+      const response = await fetch(`${site}/areas/kyc-homes-phase-ii`);
+      return (await response.text()).includes(`/insights/${slug}`);
+    }, { timeout: 90_000 }).toBe(false);
+  }
 
   const audits = await request(`/audit_events?entity_type=eq.article&entity_id=eq.${articleId}&select=id,action`);
   if (audits.length !== 5) throw new Error(`Expected 5 audit records, found ${audits.length}`);

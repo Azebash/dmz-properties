@@ -40,6 +40,11 @@ test("primary navigation reaches the KYC Homes Phase II area guide", async ({
   await expectNoHorizontalOverflow(page);
 });
 
+test("estate updates have a dedicated, dated section on the area page", async ({ page }) => {
+  await page.goto("/areas/kyc-homes-phase-ii");
+  await expect(page.getByRole("region", { name: "What has changed on the ground." })).toBeVisible();
+});
+
 test("property discovery filters and carries listing context into an enquiry", async ({
   page,
 }) => {
@@ -242,6 +247,7 @@ test("private enquiry, inspection, and editorial details require staff authentic
 test("configured administrator reaches the protected dashboard", async ({
   page,
 }, testInfo) => {
+  test.setTimeout(60_000);
   test.skip(testInfo.project.name !== "desktop-1440", "One live auth check is sufficient");
   const email = process.env.DMZ_ADMIN_EMAIL;
   const password = process.env.DMZ_ADMIN_TEMP_PASSWORD;
@@ -256,6 +262,9 @@ test("configured administrator reaches the protected dashboard", async ({
   await expect(page.getByRole("heading", { name: "Welcome, Hafiz Bashir." })).toBeVisible();
   await expect(page.locator(".admin-metrics")).toContainText("Properties");
   await expect(page.locator(".admin-metrics")).toContainText("1");
+  await page.goto("/admin/content/new?category=estate-update");
+  await expect(page.getByRole("heading", { name: "Create estate update" })).toBeVisible();
+  await expect(page.getByLabel("Topic")).toHaveValue("Estate update");
 });
 
 for (const path of [

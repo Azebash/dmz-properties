@@ -21,6 +21,7 @@ function revalidateArticle(slug: string, category: string) {
   for (const path of [
     "/",
     "/insights",
+    "/areas/kyc-homes-phase-ii",
     "/sitemap.xml",
     `/insights/${slug}`,
     `/insights/topics/${categorySlug(category)}`,

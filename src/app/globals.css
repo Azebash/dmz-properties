@@ -468,6 +468,23 @@ img {
   border-top: 1px solid var(--line);
 }
 
+.estate-updates-empty {
+  padding: 28px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.estate-updates-empty p {
+  max-width: 670px;
+  margin: 0 0 18px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+
+.admin-content-actions {
+  flex-wrap: wrap;
+}
+
 .topic-nav {
   display: flex;
   flex-wrap: wrap;

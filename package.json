@@ -17,6 +17,7 @@
     "test:production": "npm run build && playwright test --config=playwright.production.config.ts",
     "test:live-workflows": "node --env-file=.env.local scripts/verify-live-admin-workflows.mjs",
     "test:live-editorial": "node --env-file=.env.local scripts/verify-live-editorial-workflow.mjs",
+    "test:live-estate-updates": "node --env-file=.env.local scripts/verify-live-editorial-workflow.mjs --estate-update",
     "test:live-area-guide": "node --env-file=.env.local scripts/verify-live-area-guide.mjs",
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",

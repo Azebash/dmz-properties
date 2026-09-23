@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { PropertyCard } from "@/components/property-card";
-import { properties } from "@/lib/content";
+import { estateUpdateCategory, properties } from "@/lib/content";
 import { estate } from "@/lib/business";
 import { getPublicAreaGuide } from "@/lib/public-area-guide";
+import { getPublishedArticles } from "@/lib/public-articles";
 
 export const revalidate = 60;
 
@@ -18,7 +19,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function KycEstatePage() {
-  const copy = await getPublicAreaGuide();
+  const [copy, articles] = await Promise.all([getPublicAreaGuide(), getPublishedArticles()]);
+  const updates = articles.filter((article) => article.category === estateUpdateCategory).slice(0, 3);
   const estateProperties = properties.filter(
     (property) => property.location === "KYC Homes Phase II",
   );
@@ -185,6 +187,37 @@ export default async function KycEstatePage() {
             </article>
           </div>
         </div>
+      </section>
+
+      <section className="section-shell section-block estate-updates" aria-labelledby="estate-updates-title">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Estate updates</p>
+            <h2 id="estate-updates-title">What has changed on the ground.</h2>
+          </div>
+          <p>Reviewed, dated updates from DMZ Properties. Confirm current site conditions through an inspection before deciding.</p>
+        </div>
+        {updates.length ? (
+          <>
+            <div className="article-list">
+              {updates.map((update) => (
+                <article className="article-row" key={update.slug}>
+                  <p><time dateTime={update.publishedAt}>{update.publishedAt}</time></p>
+                  <h3><Link href={`/insights/${update.slug}`}>{update.title}</Link></h3>
+                  <span>{update.readTime}</span>
+                </article>
+              ))}
+            </div>
+            <Link className="button button-secondary section-action" href="/insights/topics/estate-update">
+              View all estate updates
+            </Link>
+          </>
+        ) : (
+          <div className="estate-updates-empty">
+            <p>No dated estate updates have been published yet. Ask DMZ for current site information and an inspection.</p>
+            <Link className="text-link" href="/book-inspection">Request an inspection</Link>
+          </div>
+        )}
       </section>
 
       <section className="estate-properties">

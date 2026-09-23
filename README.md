@@ -55,6 +55,11 @@ The KYC Homes Phase II area guide has a protected copy editor at
 approved public page until publication. Estate facts, prices, imagery, and
 purchase guidance remain fixed in the page template.
 
+Staff can start a dated estate update from `/admin/content` using **Add estate
+update**. Published updates appear on the KYC Homes Phase II page and in
+Insights; draft, reviewed, and archived updates stay off public pages. No
+unverified development progress is seeded into the feed.
+
 Estate media utilities:
 
 ```bash

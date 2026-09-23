@@ -67,6 +67,8 @@ After enabling `SUPABASE_CONTENT_SOURCE=database`, run
 checks the protected saved-article preview, publishes and edits it through the
 staff UI, confirms the public URL, archives it, checks audit history, and removes
 the temporary article and audit records.
+Run `npm run test:live-estate-updates` for the same workflow with the estate-update
+entry point and checks that the area page shows only published updates.
 
 Run `npm run test:live-area-guide` to verify protected guide editing, draft
 privacy, review, publication, search metadata, and the unchanged public URL.
