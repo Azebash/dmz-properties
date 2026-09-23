@@ -3,10 +3,11 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { transitionArticleAction } from "@/app/admin/(protected)/content/actions";
 import { AdminArticleForm } from "@/components/admin-article-form";
+import { AdminActivity } from "@/components/admin-activity";
 import { AdminStatus } from "@/components/admin-status";
 import { requireStaff } from "@/lib/admin/auth";
 import { uuidPattern } from "@/lib/admin/lead-workflow";
-import { getAdminArticle } from "@/lib/admin/queries";
+import { getAdminActivity, getAdminArticle } from "@/lib/admin/queries";
 import type { Database } from "@/lib/supabase/database.types";
 
 export const metadata: Metadata = { title: "Edit Article" };
@@ -28,8 +29,8 @@ export default async function EditArticlePage({
 }) {
   const { id } = await params;
   if (!uuidPattern.test(id)) notFound();
-  const [staff, article, query] = await Promise.all([
-    requireStaff(), getAdminArticle(id), searchParams,
+  const [staff, article, activity, query] = await Promise.all([
+    requireStaff(), getAdminArticle(id), getAdminActivity("article", id), searchParams,
   ]);
   if (!article) notFound();
   if (staff.role !== "administrator" && staff.role !== "content_editor") {
@@ -72,6 +73,7 @@ export default async function EditArticlePage({
           ))}
         </div>
       </section>
+      <AdminActivity events={activity} entityType="article" />
     </div>
   );
 }

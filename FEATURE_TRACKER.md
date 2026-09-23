@@ -222,7 +222,7 @@ These features reduce manual work after enquiry volume grows.
 - [ ] Add image and document media management
 - [x] Add editable property and article SEO title and description controls
 - [x] Add staff-only, non-indexed article preview for saved drafts and reviews
-- [x] Add audit history for property, article, enquiry, and inspection changes
+- [x] Record audited property, article, enquiry, and inspection changes; show article, lead, and inspection history to administrators
 - [x] Define Supabase operational schema, publication states, private storage, and RLS policies
 - [x] Add protected read-only admin dashboard and staff session refresh
 - [x] Apply Supabase migrations and pass linked pgTAP role and workflow assertions

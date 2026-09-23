@@ -78,14 +78,14 @@ export async function getAdminInspection(id: string) {
   return data;
 }
 
-export async function getAdminActivity(entityType: "enquiry" | "inspection", id: string) {
+export async function getAdminActivity(entityType: "enquiry" | "inspection" | "article", id: string) {
   const staff = await requireStaff();
   if (staff.role !== "administrator") return [];
 
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("audit_events")
-    .select("id, action, created_at, actor_id, previous_value, next_value")
+    .select("id, action, created_at, actor_id, previous_value, next_value, actor:staff_profiles(display_name)")
     .eq("entity_type", entityType)
     .eq("entity_id", id)
     .order("created_at", { ascending: false })

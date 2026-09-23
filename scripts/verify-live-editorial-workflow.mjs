@@ -59,6 +59,9 @@ try {
   articleId = admin.url().match(/content\/([^/]+)\/edit/)?.[1];
   if (!articleId) throw new Error("Article draft ID missing");
   await expect(admin.locator(".admin-edit-header .admin-status")).toHaveText("draft");
+  const activity = admin.getByRole("region", { name: "Audit history" });
+  await expect(activity).toContainText("created");
+  await expect(activity).toContainText("By Hafiz Bashir");
   const publicUrl = `${site}/insights/${slug}`;
   const previewUrl = `${site}/admin/content/${articleId}/preview`;
   const reader = await browser.newPage();
@@ -94,6 +97,7 @@ try {
 
   await admin.getByRole("button", { name: "Move to under review" }).click();
   await expect(admin.locator(".admin-edit-header .admin-status")).toHaveText("under review", { timeout: 30_000 });
+  await expect(activity).toContainText("Stage: draft → under review");
   await admin.getByRole("link", { name: "Preview saved article" }).click();
   await expect(admin.locator(".article-preview-bar")).toContainText("Staff preview · under review");
   await admin.getByRole("link", { name: "Back to editor" }).click();
@@ -134,9 +138,11 @@ try {
     return reader.getByRole("heading", { level: 1 }).textContent();
   }, { timeout: 30_000 }).toBe("Updated editorial publishing verification");
   await expect(reader).toHaveTitle(/Updated editorial verification \| DMZ Properties/);
+  await expect(activity).toContainText("Changed: Title, Search title");
 
   await admin.getByRole("button", { name: "Move to archived" }).click();
   await expect(admin.locator(".admin-edit-header .admin-status")).toHaveText("archived", { timeout: 30_000 });
+  await expect(activity).toContainText("Stage: published → archived");
   await expect.poll(async () => (await reader.goto(publicUrl))?.status(), {
     timeout: 30_000,
   }).toBe(404);

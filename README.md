@@ -45,7 +45,8 @@ Articles are seeded in Supabase and edited at `/admin/content`; published record
 power the homepage, Insights, topic pages, and sitemap when
 `SUPABASE_CONTENT_SOURCE=database`. The repository article records are retained
 as a controlled rollback source. Editors can preview a saved draft or reviewed
-article from its edit page without publishing it. Public-facing photography uses the supplied
+article from its edit page without publishing it. Administrators can review
+editorial changes and publication transitions on that page. Public-facing photography uses the supplied
 KYC Homes Phase II image library and is identified as estate context until
 listing-specific media is supplied.
 
