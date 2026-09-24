@@ -1,13 +1,16 @@
 import { chromium, expect } from "@playwright/test";
 import { createClient } from "@supabase/supabase-js";
 
-const site = process.env.DMZ_VERIFY_SITE_URL || "http://localhost:3100";
+const production = process.argv.includes("--production");
+const site = production
+  ? "https://dmz-properties.vercel.app"
+  : process.env.DMZ_VERIFY_SITE_URL || "http://localhost:3100";
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const secret = process.env.SUPABASE_SECRET_KEY;
 const email = process.env.DMZ_ADMIN_EMAIL;
 const password = process.env.DMZ_ADMIN_TEMP_PASSWORD;
-if (!site.startsWith("http://localhost:") || !url || !secret || !email || !password) {
-  throw new Error("Use a local production build and linked Supabase credentials for media verification");
+if ((!production && !site.startsWith("http://localhost:")) || !url || !secret || !email || !password) {
+  throw new Error("Use the local production build or the explicit --production mode with linked Supabase credentials for media verification");
 }
 
 const service = createClient(url, secret, {
@@ -17,6 +20,15 @@ const alt = `Estate street photographed for private media verification ${Date.no
 let mediaId;
 let storagePath;
 let browser;
+
+async function hasPublicWebp(url) {
+  const response = await fetch(url, { cache: "no-store" });
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  return response.status === 200
+    && response.headers.get("content-type")?.includes("image/webp")
+    && Buffer.from(bytes.subarray(0, 4)).toString() === "RIFF"
+    && Buffer.from(bytes.subarray(8, 12)).toString() === "WEBP";
+}
 
 try {
   const { data: property, error: propertyError } = await service.from("properties")
@@ -86,7 +98,7 @@ try {
   await admin.getByRole("checkbox", { name: /confirm publication rights/i }).check();
   await admin.getByRole("button", { name: "Approve for public view" }).click();
   await expect(admin.getByText("Image moved to approved and audited.")).toBeVisible({ timeout: 30_000 });
-  await expect.poll(async () => (await reader.goto(publicImage))?.status(), { timeout: 30_000 }).toBe(200);
+  await expect.poll(() => hasPublicWebp(publicImage), { timeout: 30_000 }).toBe(true);
   await expect.poll(async () => {
     const html = await (await fetch(`${site}/properties/${property.slug}`)).text();
     return html.includes(`/api/property-media/${mediaId}`);
@@ -99,7 +111,7 @@ try {
   }).toBe(404);
   await admin.getByRole("checkbox", { name: /confirm publication rights/i }).check();
   await admin.getByRole("button", { name: "Approve for public view" }).click();
-  await expect.poll(async () => (await reader.goto(publicImage))?.status(), { timeout: 30_000 }).toBe(200);
+  await expect.poll(() => hasPublicWebp(publicImage), { timeout: 30_000 }).toBe(true);
   await admin.getByRole("button", { name: "Withdraw image" }).click();
   await expect.poll(async () => (await reader.goto(publicImage))?.status(), { timeout: 30_000 }).toBe(404);
   await expect.poll(async () => {

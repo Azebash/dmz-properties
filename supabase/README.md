@@ -87,7 +87,9 @@ With a local production
 server on port 3100 and Node.js 22, run `npm run test:linked-property-media`
 with `DMZ_VERIFY_SITE_URL=http://localhost:3100` to upload a real WebP from the
 curated estate gallery, review it, verify public access only while approved,
-then remove the temporary file, media row, and audit records.
+then remove the temporary file, media row, and audit records. On Node.js 22,
+`npm run test:live-property-media` repeats the reversible check against the
+canonical production URL without requiring a local server.
 
 To verify the authenticated operations after a production deployment, run
 `npm run test:live-workflows` with local staff credentials and a server-only

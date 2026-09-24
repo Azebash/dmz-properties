@@ -102,9 +102,12 @@ until a property manager or administrator confirms publication rights and
 classification. Exact-property photos are available for developed properties,
 while virgin land accepts estate-context images only. The first approved photo
 by display order becomes the public cover; withdrawn photos are no longer
-served. Never upload offer letters to the photo gallery. Run the reversible
-linked media check before enabling public uploads in production. If Vercel logs
-emit `property_media_orphan_cleanup_failed`, locate that private Storage path,
+served. Never upload offer letters to the photo gallery. Linked database tests
+and a reversible live upload/approval/withdrawal check passed after deployment;
+run `npm run test:live-property-media` using Node.js 22 to repeat the latter.
+The check uses the canonical production URL only with its explicit
+`--production` mode and removes its temporary file, metadata, and audit events.
+If Vercel logs emit `property_media_orphan_cleanup_failed`, locate that private Storage path,
 confirm it has no `property_media` row, then remove it in Supabase Storage.
 If `property_media_registration_unknown` appears, first check the row and file
 before retrying or deleting either one.

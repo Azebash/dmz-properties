@@ -20,6 +20,7 @@
     "test:linked-staff:governance": "node --env-file=.env.local scripts/verify-local-staff-governance.mjs",
     "test:linked-public-property": "node --env-file=.env.local scripts/verify-local-property-publication.mjs",
     "test:linked-property-media": "node --env-file=.env.local scripts/verify-local-property-media.mjs",
+    "test:live-property-media": "node --env-file=.env.local scripts/verify-local-property-media.mjs --production",
     "test:linked-media-concurrency": "node --env-file=.env.local scripts/verify-linked-media-concurrency.mjs",
     "test:live-public-forms": "node --env-file=.env.local scripts/verify-live-public-forms.mjs",
     "test:live-published-property": "node --env-file=.env.local scripts/verify-live-published-property.mjs",

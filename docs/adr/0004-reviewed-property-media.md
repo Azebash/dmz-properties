@@ -1,6 +1,6 @@
 # ADR 0004: Keep uploaded property media private until approved
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-09-24
 - Related: [ADR 0001](0001-supabase-operational-platform.md), [ADR 0003](0003-published-property-read-model.md)
 
@@ -68,8 +68,9 @@ two-transaction linked test proves property-type and media-classification edits
 serialize in both orders. A reversible local
 production-build check uploads a real estate-context WebP, confirms 404 before
 approval and after withdrawal, checks public image bytes only while approved,
-and removes the test file, metadata, and audit history. Do not mark production
-rollout complete until these behaviors pass on the deployed site.
+and removes the test file, metadata, and audit history. The same reversible
+check passed against the deployed production site after the image route and
+staff editor were released; readiness and the published listing also passed.
 
 ## Rollback
 
