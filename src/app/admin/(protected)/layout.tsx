@@ -23,11 +23,16 @@ export default async function AdminLayout({ children }: { children: ReactNode })
         <nav aria-label="Admin navigation">
           <Link href="/admin">Overview</Link>
           <Link href="/admin/properties">Properties</Link>
-          <Link href="/admin/enquiries">Enquiries</Link>
-          <Link href="/admin/inspections">Inspections</Link>
-          <Link href="/admin/sellers">Seller reviews</Link>
+          {staff.role === "administrator" || staff.role === "property_manager" ? (
+            <>
+              <Link href="/admin/enquiries">Enquiries</Link>
+              <Link href="/admin/inspections">Inspections</Link>
+              <Link href="/admin/sellers">Seller reviews</Link>
+            </>
+          ) : null}
           <Link href="/admin/content">Content</Link>
           <Link href="/admin/areas/kyc-homes-phase-ii">Area guide</Link>
+          {staff.role === "administrator" ? <Link href="/admin/staff">Staff</Link> : null}
         </nav>
         <div className="admin-identity">
           <strong>{staff.display_name}</strong>

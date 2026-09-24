@@ -1,8 +1,17 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireStaff } from "@/lib/admin/auth";
+import { redirect } from "next/navigation";
 
 async function authorizedClient() {
   await requireStaff();
+  return createClient();
+}
+
+async function authorizedPropertyClient() {
+  const staff = await requireStaff();
+  if (staff.role !== "administrator" && staff.role !== "property_manager") {
+    redirect("/admin/access-denied");
+  }
   return createClient();
 }
 
@@ -31,7 +40,7 @@ export async function getAdminProperty(id: string) {
 }
 
 export async function listAdminEnquiries() {
-  const supabase = await authorizedClient();
+  const supabase = await authorizedPropertyClient();
   const { data, error } = await supabase
     .from("enquiries")
     .select(
@@ -44,7 +53,7 @@ export async function listAdminEnquiries() {
 }
 
 export async function getAdminEnquiry(id: string) {
-  const supabase = await authorizedClient();
+  const supabase = await authorizedPropertyClient();
   const { data, error } = await supabase
     .from("enquiries")
     .select("*")
@@ -55,7 +64,7 @@ export async function getAdminEnquiry(id: string) {
 }
 
 export async function listAdminInspections() {
-  const supabase = await authorizedClient();
+  const supabase = await authorizedPropertyClient();
   const { data, error } = await supabase
     .from("inspections")
     .select(
@@ -68,7 +77,7 @@ export async function listAdminInspections() {
 }
 
 export async function getAdminInspection(id: string) {
-  const supabase = await authorizedClient();
+  const supabase = await authorizedPropertyClient();
   const { data, error } = await supabase
     .from("inspections")
     .select("*")
@@ -78,7 +87,7 @@ export async function getAdminInspection(id: string) {
   return data;
 }
 
-export async function getAdminActivity(entityType: "enquiry" | "inspection" | "article" | "area_guide", id: string) {
+export async function getAdminActivity(entityType: "enquiry" | "inspection" | "article" | "area_guide" | "staff_profile", id: string) {
   const staff = await requireStaff();
   if (staff.role !== "administrator") return [];
 
@@ -95,7 +104,7 @@ export async function getAdminActivity(entityType: "enquiry" | "inspection" | "a
 }
 
 export async function listAdminSellerSubmissions() {
-  const supabase = await authorizedClient();
+  const supabase = await authorizedPropertyClient();
   const { data, error } = await supabase
     .from("seller_submissions")
     .select(
@@ -135,5 +144,14 @@ export async function getAdminAreaGuide(slug: string) {
   const supabase = await authorizedClient();
   const { data, error } = await supabase.from("area_guides").select("*").eq("slug", slug).maybeSingle();
   if (error) throw new Error(`Unable to load area guide: ${error.message}`);
+  return data;
+}
+
+export async function listAdminStaff() {
+  const staff = await requireStaff();
+  if (staff.role !== "administrator") redirect("/admin/access-denied");
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("staff_directory");
+  if (error) throw new Error(`Unable to load staff directory: ${error.message}`);
   return data;
 }

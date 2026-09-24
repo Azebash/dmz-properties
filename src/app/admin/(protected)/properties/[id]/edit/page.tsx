@@ -44,6 +44,14 @@ export default async function EditPropertyPage({
         </div>
         <AdminStatus value={property.status} />
       </header>
+      {property.published_at ? (
+        <p className="admin-readonly-note">
+          Authorized edits to this published listing appear publicly when saved.
+          Its URL and reference stay fixed. Keep any price references in freeform
+          descriptions consistent with the amount you enter. Dated articles may
+          need a separate editorial update when the developer price changes.
+        </p>
+      ) : null}
       {query.saved === "1" ? (
         <p className="admin-success" role="status">Property details saved.</p>
       ) : null}

@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getPublishedProperty } from "@/lib/public-properties";
+import { serializeStructuredData } from "@/lib/structured-data";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Frequently Asked Questions",
@@ -8,10 +12,13 @@ export const metadata: Metadata = {
   alternates: { canonical: "/faqs" },
 };
 
-const faqs = [
+function buildFaqs(currentPrice: string | null) {
+  return [
   [
     "What is the current company price for virgin land?",
-    "The current KYC Interproject Limited price is NGN 14,000,000 for a 600 sqm virgin-land plot at KYC Homes Phase II. Price, availability, charges, and payment instructions must be reconfirmed before payment.",
+    currentPrice
+      ? `The currently listed KYC Interproject Limited price is ${currentPrice} for a 600 sqm virgin-land plot at KYC Homes Phase II. Price, availability, charges, and payment instructions must be reconfirmed before payment.`
+      : "Ask DMZ for the current KYC Interproject Limited price and availability for 600 sqm virgin land. Charges and payment instructions must be reconfirmed before payment.",
   ],
   [
     "How are third-party resale prices determined?",
@@ -35,7 +42,7 @@ const faqs = [
   ],
   [
     "What is the Phase II development format?",
-    "The published Phase II product is a 4-bedroom fully detached duplex on a 600 sqm plot, with coordinated building standards and developer-managed structural milestones.",
+    "The documented Phase II plot standard is 600 sqm with a 4-bedroom fully detached duplex development format. Confirm the size and current approved terms for the specific property you are considering.",
   ],
   [
     "Is DMZ Properties the official KYC Homes Phase II website?",
@@ -69,9 +76,12 @@ const faqs = [
     "How do I receive current prices and availability?",
     "Submit an enquiry with your requirements. The current developer virgin-land price is published, while resale prices are owner-set. Availability and approved terms are reconfirmed before a purchase decision.",
   ],
-];
+  ];
+}
 
-export default function FaqPage() {
+export default async function FaqPage() {
+  const developerLand = await getPublishedProperty("600sqm-virgin-land-kyc-homes-phase-ii");
+  const faqs = buildFaqs(developerLand?.price || null);
   const faqData = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -86,7 +96,7 @@ export default function FaqPage() {
     <main>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqData) }}
+        dangerouslySetInnerHTML={{ __html: serializeStructuredData(faqData) }}
       />
       <section className="section-shell page-hero">
         <p className="eyebrow">Frequently asked questions</p>

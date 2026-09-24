@@ -58,6 +58,7 @@ test("property discovery filters and carries listing context into an enquiry", a
     timeout: 20_000,
   });
   await expect(page.getByText("DMZ-KYC-001", { exact: true })).toBeVisible();
+  await expect(page.getByText(/photographs show the estate, not an individual virgin-land plot/i)).toBeVisible();
   await page.getByRole("link", { name: "Request an inspection" }).click();
   await expect(page).toHaveURL(/property=DMZ-KYC-001/, { timeout: 20_000 });
   await expect(page.locator(".form-property")).toContainText("DMZ-KYC-001");
@@ -237,6 +238,8 @@ test("private enquiry, inspection, and editorial details require staff authentic
     `/admin/inspections/${testId}`,
     `/admin/content/${testId}/preview`,
     "/admin/areas/kyc-homes-phase-ii",
+    "/admin/staff",
+    `/admin/staff/${testId}`,
   ]) {
     await page.goto(path);
     await expect(page).toHaveURL(/\/admin\/login/);
@@ -244,29 +247,8 @@ test("private enquiry, inspection, and editorial details require staff authentic
   }
 });
 
-test("configured administrator reaches the protected dashboard", async ({
-  page,
-}, testInfo) => {
-  test.setTimeout(60_000);
-  test.skip(testInfo.project.name !== "desktop-1440", "One live auth check is sufficient");
-  const email = process.env.DMZ_ADMIN_EMAIL;
-  const password = process.env.DMZ_ADMIN_TEMP_PASSWORD;
-  test.skip(!email || !password, "Local administrator credentials are not configured");
-
-  await page.goto("/admin/login");
-  await page.getByLabel("Staff email").fill(email!);
-  await page.getByLabel("Password").fill(password!);
-  await page.getByRole("button", { name: "Sign in" }).click();
-
-  await expect(page).toHaveURL(/\/admin$/, { timeout: 20_000 });
-  await expect(page.getByRole("heading", { name: "Welcome, Hafiz Bashir." })).toBeVisible();
-  await expect(page.locator(".admin-metrics")).toContainText("Properties");
-  await expect(page.locator(".admin-metrics")).toContainText("1");
-  await page.goto("/admin/content/new?category=estate-update");
-  await expect(page.getByRole("heading", { name: "Create estate update" })).toBeVisible();
-  await expect(page.getByLabel("Topic")).toHaveValue("Estate update");
-});
-
+// Authenticated staff journeys run in scripts/verify-live-admin-workflows.mjs;
+// Playwright failure traces must not retain real staff credentials.
 for (const path of [
   "/",
   "/properties",

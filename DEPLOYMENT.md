@@ -80,13 +80,20 @@ configured.
 7. Insert that Auth UUID into `staff_profiles` with role `administrator` using the bootstrap statement in `supabase/seed.sql`.
 8. Configure the project URL and publishable key in encrypted hosting variables.
 9. Verify `/admin/login`, active-staff authorization, and `/api/ready` in the deployed environment.
+10. Create additional confirmed staff accounts with individual passwords in
+    Supabase Auth, then assign their role by Auth UUID through `/admin/staff`.
+    App-managed invitations remain disabled until a pending-account activation
+    workflow is verified.
 
-The editorial catalogue defaults to repository files when the variable is absent.
-Seed and verify the existing slugs and area-guide copy before enabling `database`.
-Only published Supabase articles appear on the homepage, Insights, topic pages,
-and sitemap; the area page reads only the last approved guide copy. A database
-outage will surface an error rather than quietly restore stale file content.
-Set `repository` and redeploy only for a controlled rollback.
+Public content defaults to repository files when the variable is absent.
+Seed and verify property and article URLs and area-guide copy before enabling
+`database`. Only published Supabase properties and articles then appear across
+the public pages and sitemap; the area page reads only the last approved guide
+copy. Virgin land shows clearly labelled estate-context images; other new
+listings without approved media show a placeholder, never a claimed listing
+photo. Offer letters remain private. A database outage surfaces an error rather
+than quietly restoring stale file content. Set `repository` and redeploy only
+for a controlled rollback.
 
 ## Domain And Search
 

@@ -1,14 +1,16 @@
 import { randomUUID } from "node:crypto";
 import { chromium, expect } from "@playwright/test";
 
-const site = process.env.NEXT_PUBLIC_SITE_URL || "https://dmz-properties.vercel.app";
+const site = process.env.DMZ_VERIFY_SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://dmz-properties.vercel.app";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const secret = process.env.SUPABASE_SECRET_KEY;
 const email = process.env.DMZ_ADMIN_EMAIL;
 const password = process.env.DMZ_ADMIN_TEMP_PASSWORD;
+const governance = process.argv.includes("--staff-governance");
 
-if (!supabaseUrl || !secret || !email || !password || !site.startsWith("https://")) {
-  throw new Error("Live verification requires HTTPS and the local Supabase/admin credentials");
+if (!supabaseUrl || !secret || !email || !password ||
+  (!site.startsWith("https://") && !/^http:\/\/localhost:\d+$/.test(site))) {
+  throw new Error("Workflow verification requires HTTPS (or localhost) and staff/Supabase credentials");
 }
 
 const headers = {
@@ -66,8 +68,19 @@ try {
   await page.getByRole("button", { name: "Sign in" }).click();
   await page.waitForURL(/\/admin$/, { timeout: 30_000 });
 
+  if (governance) {
+    await page.goto(`${site}/admin/staff`, { waitUntil: "networkidle" });
+    await expect(page.getByRole("heading", { name: "Staff", exact: true })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Hafiz Bashir" })).toBeVisible();
+  }
+
   await page.goto(`${site}/admin/enquiries/${enquiryId}`, { waitUntil: "networkidle" });
   await expect(page.getByRole("heading", { name: "Workflow Verification" })).toBeVisible();
+  if (governance) {
+    await page.getByLabel("Assigned to").selectOption({ label: "Hafiz Bashir" });
+    await page.getByRole("button", { name: "Save assignment" }).click();
+    await expect(page.getByText("Lead and linked inspection ownership updated.")).toBeVisible();
+  }
   await page.getByLabel("Lead stage").selectOption("qualified");
   await page.getByLabel("Private follow-up notes").fill("Confirmed remote buyer interest.");
   await page.getByRole("button", { name: "Save follow-up" }).click();
@@ -76,6 +89,11 @@ try {
   });
 
   await page.goto(`${site}/admin/inspections/${inspectionId}`, { waitUntil: "networkidle" });
+  if (governance) {
+    await expect(page.getByLabel("Assigned to")).toHaveValue(
+      (await databaseRequest(`/enquiries?id=eq.${enquiryId}&select=assigned_to`))[0].assigned_to,
+    );
+  }
   await page.getByLabel("Time zone", { exact: true }).fill("Africa/Lagos");
   await page.getByRole("button", { name: "Update time zone" }).click();
   await expect(page.getByText("Time zone updated and audited.")).toBeVisible();
@@ -99,14 +117,17 @@ try {
   const activity = await databaseRequest(
     `/audit_events?entity_id=in.(${enquiryId},${inspectionId})&action=in.(workflow_updated,time_zone_corrected)&select=id`,
   );
+  const assignments = governance ? await databaseRequest(
+    `/audit_events?entity_id=in.(${enquiryId},${inspectionId})&action=eq.assigned&select=id`,
+  ) : [];
   if (enquiry[0]?.status !== "qualified" ||
       inspection[0]?.status !== "completed" ||
       inspection[0]?.time_zone !== "Africa/Lagos" ||
       !inspection[0]?.scheduled_at ||
-      activity.length !== 4) {
+      activity.length !== 4 || assignments.length !== (governance ? 2 : 0)) {
     throw new Error("Workflow state or audit records do not match the browser actions");
   }
-  console.log(JSON.stringify({ enquiry: "qualified", inspection: "completed", audits: 4 }));
+  console.log(JSON.stringify({ enquiry: "qualified", inspection: "completed", audits: activity.length + assignments.length }));
 } finally {
   await browser?.close();
   if (enquiryId) {

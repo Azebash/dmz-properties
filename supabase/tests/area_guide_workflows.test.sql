@@ -5,6 +5,8 @@ select plan(15);
 insert into auth.users (id,email) values
   ('83333333-3333-4333-8333-333333333333','guide-viewer@example.com'),
   ('84444444-4444-4444-8444-444444444444','guide-editor@example.com');
+update auth.users set email_confirmed_at = now(), encrypted_password = 'fixture-hash'
+where id in ('83333333-3333-4333-8333-333333333333', '84444444-4444-4444-8444-444444444444');
 insert into public.staff_profiles (user_id,display_name,role) values
   ('83333333-3333-4333-8333-333333333333','Guide Viewer','viewer'),
   ('84444444-4444-4444-8444-444444444444','Guide Editor','content_editor');

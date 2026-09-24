@@ -6,6 +6,9 @@ insert into auth.users (id, email) values
   ('91111111-1111-4111-8111-111111111111', 'lead-admin@example.com'),
   ('92222222-2222-4222-8222-222222222222', 'lead-viewer@example.com'),
   ('93333333-3333-4333-8333-333333333333', 'lead-manager@example.com');
+update auth.users set email_confirmed_at = now(), encrypted_password = 'fixture-hash'
+where id in ('91111111-1111-4111-8111-111111111111',
+  '92222222-2222-4222-8222-222222222222', '93333333-3333-4333-8333-333333333333');
 insert into public.staff_profiles (user_id, display_name, role) values
   ('91111111-1111-4111-8111-111111111111', 'Lead Admin', 'administrator'),
   ('92222222-2222-4222-8222-222222222222', 'Lead Viewer', 'viewer'),

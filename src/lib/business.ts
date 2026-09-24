@@ -36,7 +36,6 @@ export const estate = {
   },
   propertyType: "4-bedroom fully detached duplex",
   plotSize: "600 sqm plots",
-  developerLandPrice: "NGN 14,000,000",
   resalePricePolicy: "Set by the individual property owner",
   postAllocationCharges: [
     "Infrastructure",

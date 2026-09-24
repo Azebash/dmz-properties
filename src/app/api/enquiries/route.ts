@@ -5,7 +5,7 @@ import {
   parseEnquiry,
 } from "@/lib/enquiries";
 import { isEnquiryRateLimited, verifyTurnstile } from "@/lib/enquiry-security";
-import { properties } from "@/lib/content";
+import { isPublishedPropertyReference } from "@/lib/public-properties";
 import {
   isSupabaseEnquiryRateLimited,
   persistEnquiry,
@@ -105,14 +105,23 @@ export async function POST(request: NextRequest) {
     );
   }
   const enquiry = parsed.data;
-  if (
-    enquiry.propertyReference &&
-    !properties.some((property) => property.reference === enquiry.propertyReference)
-  ) {
-    return NextResponse.json(
-      { message: "The selected property reference is not recognized." },
-      { status: 400 },
-    );
+  if (enquiry.propertyReference) {
+    let recognized;
+    try {
+      recognized = await isPublishedPropertyReference(enquiry.propertyReference);
+    } catch {
+      logDeliveryIssue("property_inventory_unavailable", 503);
+      return NextResponse.json(
+        { message: "We could not verify the selected property. Please try again." },
+        { status: 503 },
+      );
+    }
+    if (!recognized) {
+      return NextResponse.json(
+        { message: "The selected property reference is not recognized." },
+        { status: 400 },
+      );
+    }
   }
 
   let persisted = false;

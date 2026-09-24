@@ -35,18 +35,12 @@ values (
   'NGN 14,000,000',
   600,
   'Developer inventory',
-  'Virgin residential land sold directly by KYC Interproject Limited within KYC Homes Phase II. Current price and availability must be reconfirmed before payment.',
-  '["600 sqm virgin land", "Current developer price: NGN 14,000,000", "Direct KYC Interproject Limited inventory", "Physical and remote inspection available"]'::jsonb,
+  'Virgin residential land sold directly by KYC Interproject Limited within KYC Homes Phase II, Sabon Lugbe. Current price and availability must be reconfirmed before payment.',
+  '["600 sqm virgin land", "NGN 14,000,000 current developer price", "Direct KYC Interproject Limited inventory", "4-bedroom fully detached duplex development format", "Physical and remote inspection available", "Full or part payment options subject to approved terms"]'::jsonb,
   now(),
   now()
 )
-on conflict (reference) do update set
-  title = excluded.title,
-  price_amount = excluded.price_amount,
-  price_label = excluded.price_label,
-  description = excluded.description,
-  features = excluded.features,
-  last_verified_at = excluded.last_verified_at;
+on conflict (reference) do nothing;
 
 -- Bootstrap the first administrator after creating their Supabase Auth user:
 -- insert into public.staff_profiles (user_id, display_name, role)

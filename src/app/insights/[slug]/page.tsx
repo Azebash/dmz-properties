@@ -6,6 +6,7 @@ import { getPublishedArticle, getPublishedArticles } from "@/lib/public-articles
 import { siteUrl } from "@/lib/site";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ArticleContent } from "@/components/article-content";
+import { serializeStructuredData } from "@/lib/structured-data";
 
 type ArticlePageProps = {
   params: Promise<{ slug: string }>;
@@ -62,7 +63,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     <main>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleData) }}
+        dangerouslySetInnerHTML={{ __html: serializeStructuredData(articleData) }}
       />
       <div className="section-shell article-breadcrumbs">
         <Breadcrumbs

@@ -5,7 +5,13 @@ import type { ArticleRow } from "@/lib/supabase/types";
 import { getSupabaseConfig } from "@/lib/supabase/config";
 
 export function usesDatabaseContent() {
-  return process.env.SUPABASE_CONTENT_SOURCE === "database";
+  const source = process.env.SUPABASE_CONTENT_SOURCE;
+  if (source === "repository") return false;
+  if (source === "database") return true;
+  if (!source && (process.env.NODE_ENV !== "production" || !process.env.NEXT_PUBLIC_SUPABASE_URL)) {
+    return false;
+  }
+  throw new Error("SUPABASE_CONTENT_SOURCE must be database or repository");
 }
 
 export function articleFromRow(row: ArticleRow): Article {

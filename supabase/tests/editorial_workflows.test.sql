@@ -5,6 +5,8 @@ select plan(19);
 insert into auth.users (id, email) values
   ('81111111-1111-4111-8111-111111111111', 'editor-viewer@example.com'),
   ('82222222-2222-4222-8222-222222222222', 'editor@example.com');
+update auth.users set email_confirmed_at = now(), encrypted_password = 'fixture-hash'
+where id in ('81111111-1111-4111-8111-111111111111', '82222222-2222-4222-8222-222222222222');
 insert into public.staff_profiles (user_id, display_name, role) values
   ('81111111-1111-4111-8111-111111111111', 'Editorial Viewer', 'viewer'),
   ('82222222-2222-4222-8222-222222222222', 'Editorial Editor', 'content_editor');

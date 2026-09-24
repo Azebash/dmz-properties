@@ -658,6 +658,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      assign_enquiry_staff: {
+        Args: { p_assignee: string | null; p_enquiry_id: string }
+        Returns: string | null
+      }
       check_enquiry_rate_limit: {
         Args: {
           p_identifier_hash: string
@@ -668,6 +672,15 @@ export type Database = {
       }
       get_published_area_guide: { Args: { p_slug: string }; Returns: Json }
       ingest_enquiry: { Args: { payload: Json }; Returns: string }
+      manage_staff_profile: {
+        Args: {
+          p_active: boolean
+          p_display_name: string
+          p_role: Database["public"]["Enums"]["staff_role"]
+          p_user_id: string
+        }
+        Returns: string
+      }
       save_article: { Args: { p_payload: Json }; Returns: string }
       save_area_guide: {
         Args: { p_copy: Json; p_slug: string }
@@ -677,6 +690,19 @@ export type Database = {
       set_inspection_timezone: {
         Args: { p_inspection_id: string; p_time_zone: string }
         Returns: string
+      }
+      staff_directory: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          active: boolean
+          auth_eligible: boolean
+          created_at: string
+          display_name: string
+          email: string
+          role: Database["public"]["Enums"]["staff_role"]
+          updated_at: string
+          user_id: string
+        }[]
       }
       transition_article_status: {
         Args: {

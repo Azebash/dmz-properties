@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { PropertyBrowser } from "@/components/property-browser";
-import { properties } from "@/lib/content";
+import { getPublishedProperties } from "@/lib/public-properties";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Properties",
@@ -9,7 +11,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/properties" },
 };
 
-export default function PropertiesPage() {
+export default async function PropertiesPage() {
+  const properties = await getPublishedProperties();
   return (
     <main>
       <section className="section-shell page-hero">

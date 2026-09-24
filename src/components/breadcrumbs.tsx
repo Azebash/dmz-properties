@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { serializeStructuredData } from "@/lib/structured-data";
 import { siteUrl } from "@/lib/site";
 
 type Breadcrumb = {
@@ -22,7 +23,7 @@ export function Breadcrumbs({ items }: { items: Breadcrumb[] }) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
+        dangerouslySetInnerHTML={{ __html: serializeStructuredData(breadcrumbData) }}
       />
       <nav className="breadcrumbs" aria-label="Breadcrumb">
         <ol>

@@ -40,7 +40,15 @@ When Google Analytics is configured, it loads only after the visitor explicitly 
 
 ## Content
 
-The verified developer property is currently defined in `src/lib/content.ts`.
+Published property listings come from Supabase when
+`SUPABASE_CONTENT_SOURCE=database`; the verified developer record in
+`src/lib/content.ts` remains a controlled rollback source. Its approved estate
+photos stay labelled as context, never as a picture of the specific virgin plot.
+This property-read cutover has passed local and linked checks but is not yet
+deployed; the current Vercel build still serves repository property data.
+Price references on the area page, FAQs, and printable buyer guide follow the
+published developer listing. Older dated articles may need a separate editor
+review when that price changes.
 Articles are seeded in Supabase and edited at `/admin/content`; published records
 power the homepage, Insights, topic pages, and sitemap when
 `SUPABASE_CONTENT_SOURCE=database`. The repository article records are retained
@@ -54,6 +62,17 @@ The KYC Homes Phase II area guide has a protected copy editor at
 `/admin/areas/kyc-homes-phase-ii`. Draft and reviewed text does not replace the
 approved public page until publication. Estate facts, prices, imagery, and
 purchase guidance remain fixed in the page template.
+
+Administrator-only staff governance at `/admin/staff` grants roles to existing
+Supabase Auth users, changes access, and assigns an enquiry with its inspection.
+Role changes and ownership handoffs are audited. Staff must have their own
+confirmed Auth account and password before access is granted; invitation
+onboarding is not yet enabled in the app.
+Only administrators and property managers may view buyer, inspection, or seller
+records. The same roles may edit published property details with an audit event;
+new property listings still require review and publication.
+Virgin-land listings use estate-context photography, explicitly identified as
+not a picture of the exact plot; offer-letter details remain private.
 
 Staff can start a dated estate update from `/admin/content` using **Add estate
 update**. Published updates appear on the KYC Homes Phase II page and in

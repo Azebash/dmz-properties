@@ -1,6 +1,6 @@
 # DMZ Properties Development Tracker
 
-Last reviewed: September 23, 2026
+Last reviewed: September 24, 2026
 
 ## Status Legend
 
@@ -41,6 +41,7 @@ These items are launch blockers.
 - [x] Add confirmed estate infrastructure and Airport Road access information
 - [x] Add clear developer-inventory or owner-resale labels
 - [x] Add last-verified dates to listings
+- [~] Audited Supabase property publishing now drives all public property readers in the locally verified build; production cutover and live validation remain pending
 
 ### Enquiries And Conversion
 
@@ -238,6 +239,7 @@ These features reduce manual work after enquiry volume grows.
 - [x] Define property manager role for listings and enquiries
 - [x] Define content editor role for articles and SEO
 - [x] Define read-only viewer role
+- [~] Staff directory, audited existing-user role changes, and lead/inspection assignment are implemented locally; secure invitations and deployment remain to verify
 - [ ] Two-factor authentication for administrators
 
 ### Lead Management

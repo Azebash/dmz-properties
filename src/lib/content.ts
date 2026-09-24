@@ -5,6 +5,7 @@ export type Property = {
   location: string;
   price: string;
   priceAmount?: number;
+  currency?: string;
   status: string;
   ownership: string;
   size: string;
@@ -15,6 +16,9 @@ export type Property = {
   features: string[];
   reference: string;
   updatedAt: string;
+  lastVerifiedAt?: string;
+  seoTitle?: string;
+  seoDescription?: string;
 };
 
 export type Article = {
@@ -41,6 +45,7 @@ export const properties: Property[] = [
     location: "KYC Homes Phase II",
     price: "NGN 14,000,000",
     priceAmount: 14_000_000,
+    currency: "NGN",
     status: "Developer inventory",
     ownership: "Developer inventory",
     size: "600 sqm",
@@ -63,6 +68,7 @@ export const properties: Property[] = [
     ],
     reference: "DMZ-KYC-001",
     updatedAt: "2026-09-17",
+    lastVerifiedAt: "2026-09-17",
   },
 ];
 
@@ -90,8 +96,8 @@ export const articles: Article[] = [
         body: "Opportunities may come from current developer inventory or from an existing owner's resale. Each route requires its own documentation, confirmation, payment, and transfer process before commitment.",
       },
       {
-        heading: "Current developer product and price",
-        body: "KYC Interproject Limited's current virgin-land price is NGN 14,000,000 for a 600 sqm plot. Phase II follows a 4-bedroom fully detached duplex development format. Full or part payment may be available, but buyers must reconfirm availability, charges, payment schedules, and official instructions before transferring funds.",
+        heading: "Developer product at publication",
+        body: "At this guide's original publication on 17 September 2026, KYC Interproject Limited's quoted virgin-land price was NGN 14,000,000 for a 600 sqm plot. Phase II follows a 4-bedroom fully detached duplex development format. Full or part payment may be available, but buyers must reconfirm availability, charges, payment schedules, and official instructions before transferring funds.",
       },
     ],
   },
@@ -156,10 +162,6 @@ export const articles: Article[] = [
     ],
   },
 ];
-
-export function getProperty(slug: string) {
-  return properties.find((property) => property.slug === slug);
-}
 
 export function categorySlug(category: string) {
   return category.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");

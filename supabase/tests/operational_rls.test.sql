@@ -1,12 +1,15 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(36);
+select plan(41);
 
 insert into auth.users (id, email)
 values
   ('11111111-1111-1111-1111-111111111111', 'admin@example.com'),
   ('22222222-2222-2222-2222-222222222222', 'viewer@example.com'),
   ('66666666-6666-6666-8666-666666666666', 'manager@example.com');
+update auth.users set email_confirmed_at = now(), encrypted_password = 'fixture-hash'
+where id in ('11111111-1111-1111-1111-111111111111',
+  '22222222-2222-2222-2222-222222222222', '66666666-6666-6666-8666-666666666666');
 
 insert into public.staff_profiles (user_id, display_name, role)
 values
@@ -16,11 +19,11 @@ values
 
 insert into public.properties (
   id, reference, slug, title, source, property_type, status,
-  location_name, description, published_at
+  location_name, description, published_at, last_verified_at
 )
 values
-  ('33333333-3333-3333-3333-333333333333', 'PUB-1', 'published-property', 'Published', 'developer_inventory', 'Land', 'published', 'Abuja', 'Published property', now()),
-  ('44444444-4444-4444-4444-444444444444', 'DRAFT-1', 'draft-property', 'Draft', 'owner_resale', 'Land', 'draft', 'Abuja', 'Draft property', null);
+  ('33333333-3333-3333-3333-333333333333', 'PUB-1', 'published-property', 'Published', 'developer_inventory', 'Land', 'published', 'Abuja', 'Published property', now(), now()),
+  ('44444444-4444-4444-4444-444444444444', 'DRAFT-1', 'draft-property', 'Draft', 'owner_resale', 'Land', 'draft', 'Abuja', 'Draft property', null, null);
 
 set local role anon;
 select results_eq(
@@ -218,6 +221,38 @@ select throws_ok(
   '23514',
   'invalid property status transition',
   'invalid publication rollback is rejected'
+);
+select throws_ok(
+  $$select public.save_property(jsonb_set(
+    '{"reference":"RPC-1","slug":"renamed-property","title":"RPC Created Property","source":"developer_inventory","propertyType":"Land","locationName":"Abuja","description":"Audited property mutation","features":["Verified"],"lastVerifiedAt":"2026-09-22T00:00:00Z"}'::jsonb,
+    '{id}', to_jsonb((select id::text from public.properties where reference='RPC-1'))))$$,
+  '23514', 'published property URLs and references cannot change',
+  'published property URL cannot be changed by an otherwise authorized editor'
+);
+select throws_ok(
+  $$select public.save_property(jsonb_set(
+    '{"reference":"RPC-CHANGED","slug":"rpc-created-property","title":"RPC Created Property","source":"developer_inventory","propertyType":"Land","locationName":"Abuja","description":"Audited property mutation","features":["Verified"],"lastVerifiedAt":"2026-09-22T00:00:00Z"}'::jsonb,
+    '{id}', to_jsonb((select id::text from public.properties where reference='RPC-1'))))$$,
+  '23514', 'published property URLs and references cannot change',
+  'published property reference cannot silently change buyer enquiry context'
+);
+select lives_ok(
+  $$select public.save_property(jsonb_set(
+    '{"reference":"RPC-1","slug":"rpc-created-property","title":"Authorized Current Listing Edit","source":"developer_inventory","propertyType":"Land","locationName":"Abuja","description":"Audited property mutation","features":["Verified"],"lastVerifiedAt":"2026-09-22T00:00:00Z"}'::jsonb,
+    '{id}', to_jsonb((select id::text from public.properties where reference='RPC-1'))))$$,
+  'property manager can still edit the current approved listing with an audit trail'
+);
+select results_eq(
+  $$select title from public.properties where reference='RPC-1'$$,
+  array['Authorized Current Listing Edit'],
+  'authorized published property edit is persisted'
+);
+select throws_ok(
+  $$select public.save_property(jsonb_set(
+    '{"reference":"RPC-1","slug":"rpc-created-property","title":"Unauthorized Unverified Edit","source":"developer_inventory","propertyType":"Land","locationName":"Abuja","description":"Audited property mutation","features":["Verified"],"lastVerifiedAt":""}'::jsonb,
+    '{id}', to_jsonb((select id::text from public.properties where reference='RPC-1'))))$$,
+  '23514', null,
+  'editing a published property cannot clear its verification date'
 );
 
 select * from finish();

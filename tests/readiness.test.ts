@@ -16,6 +16,7 @@ const keys = [
   "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY",
   "SUPABASE_SECRET_KEY",
   "SUPABASE_PERSIST_ENQUIRIES",
+  "SUPABASE_CONTENT_SOURCE",
 ] as const;
 
 const original = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
@@ -44,6 +45,7 @@ describe("deployment readiness", () => {
       distributedRateLimit: false,
       supabase: false,
       enquiryPersistence: false,
+      contentSource: false,
     });
   });
 
@@ -60,6 +62,7 @@ describe("deployment readiness", () => {
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = "publishable";
     process.env.SUPABASE_SECRET_KEY = "secret";
     process.env.SUPABASE_PERSIST_ENQUIRIES = "true";
+    process.env.SUPABASE_CONTENT_SOURCE = "database";
 
     expect(getReadiness().ready).toBe(true);
   });
@@ -70,11 +73,13 @@ describe("deployment readiness", () => {
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = "publishable";
     process.env.SUPABASE_SECRET_KEY = "secret";
     process.env.SUPABASE_PERSIST_ENQUIRIES = "true";
+    process.env.SUPABASE_CONTENT_SOURCE = "repository";
 
     const readiness = getReadiness();
     expect(readiness.ready).toBe(true);
     expect(readiness.checks.emailDelivery).toBe(false);
     expect(readiness.checks.botProtection).toBe(false);
     expect(readiness.checks.distributedRateLimit).toBe(true);
+    expect(readiness.checks.contentSource).toBe(true);
   });
 });

@@ -11,13 +11,14 @@ async function countRows(table: "properties" | "enquiries" | "inspections" | "se
 }
 
 export async function getAdminSummary() {
-  await requireStaff();
-  const [properties, enquiries, inspections, sellerSubmissions] = await Promise.all([
-    countRows("properties"),
-    countRows("enquiries"),
-    countRows("inspections"),
-    countRows("seller_submissions"),
-  ]);
+  const staff = await requireStaff();
+  const canViewLeads = staff.role === "administrator" || staff.role === "property_manager";
+  const properties = await countRows("properties");
+  const [enquiries, inspections, sellerSubmissions] = canViewLeads
+    ? await Promise.all([
+      countRows("enquiries"), countRows("inspections"), countRows("seller_submissions"),
+    ])
+    : [null, null, null];
 
   return { properties, enquiries, inspections, sellerSubmissions };
 }

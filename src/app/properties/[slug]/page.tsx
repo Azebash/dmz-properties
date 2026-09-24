@@ -2,31 +2,30 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProperty, properties } from "@/lib/content";
+import { getPublishedProperty } from "@/lib/public-properties";
 import { siteUrl } from "@/lib/site";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { business } from "@/lib/business";
 import { PropertyActions } from "@/components/property-actions";
 import { TrackedLink } from "@/components/tracked-link";
+import { serializeStructuredData } from "@/lib/structured-data";
 
 type PropertyPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return properties.map((property) => ({ slug: property.slug }));
-}
+export const revalidate = 60;
 
 export async function generateMetadata({
   params,
 }: PropertyPageProps): Promise<Metadata> {
-  const property = getProperty((await params).slug);
+  const property = await getPublishedProperty((await params).slug);
 
   if (!property) return {};
 
   return {
-    title: property.title,
-    description: property.description,
+    title: property.seoTitle || property.title,
+    description: property.seoDescription || property.description,
     alternates: {
       canonical: `/properties/${property.slug}`,
     },
@@ -39,7 +38,7 @@ export async function generateMetadata({
 }
 
 export default async function PropertyPage({ params }: PropertyPageProps) {
-  const property = getProperty((await params).slug);
+  const property = await getPublishedProperty((await params).slug);
 
   if (!property) notFound();
 
@@ -56,7 +55,7 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
           offers: {
             "@type": "Offer",
             price: property.priceAmount,
-            priceCurrency: "NGN",
+            priceCurrency: property.currency || "NGN",
             url: `${siteUrl}/properties/${property.slug}`,
           },
         }
@@ -70,7 +69,7 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
     <main className="detail-hero">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(listingData) }}
+        dangerouslySetInnerHTML={{ __html: serializeStructuredData(listingData) }}
       />
       <div className="section-shell">
         <Breadcrumbs
@@ -81,20 +80,37 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
           ]}
         />
       </div>
-      <div className="section-shell property-gallery">
+      <div className={`section-shell property-gallery${property.gallery.length === 1 ? " property-gallery-single" : ""}`}>
         {property.gallery.map((image, index) => (
           <figure className="gallery-image" key={image}>
             <Image
               src={image}
-              alt={`KYC Homes Phase II estate context, view ${index + 1}`}
+              alt={property.imageLabel === "Estate context"
+                ? `${property.location} estate context, not the specific property, view ${index + 1}`
+                : property.imageLabel === "Images pending"
+                  ? `Property media pending verification for ${property.title}`
+                  : `${property.title}, view ${index + 1}`}
               fill
-              preload={index === 0}
+              preload={index === 0 && property.imageLabel !== "Images pending"}
               sizes={index === 0 ? "(max-width: 800px) 100vw, 66vw" : "34vw"}
             />
-            <figcaption>Estate context image</figcaption>
+            <figcaption>{property.imageLabel === "Estate context"
+              ? "Estate context, not the specific property" : property.imageLabel === "Images pending"
+                ? "Property media pending" : "Property image"}</figcaption>
           </figure>
         ))}
       </div>
+      {property.type === "Land" && property.imageLabel === "Estate context" ? (
+        <p className="section-shell property-media-note">
+          These photographs show the estate, not an individual virgin-land plot.
+          Offer-letter details are reviewed privately during verification.
+        </p>
+      ) : null}
+      {property.imageLabel === "Images pending" ? (
+        <p className="section-shell property-media-note">
+          Listing-specific photography has not been approved. Request verified property information before deciding.
+        </p>
+      ) : null}
       <section className="section-shell detail-header">
         <div>
           <p className="eyebrow">
@@ -144,7 +160,7 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
         </div>
         <div className="detail-fact">
           <span>Last reviewed</span>
-          <strong>{property.updatedAt}</strong>
+          <strong>{property.lastVerifiedAt || property.updatedAt}</strong>
         </div>
         <div className="detail-fact">
           <span>Inspection</span>

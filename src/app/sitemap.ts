@@ -1,13 +1,14 @@
 import type { MetadataRoute } from "next";
-import { categorySlug, properties } from "@/lib/content";
+import { categorySlug } from "@/lib/content";
 import { getPublishedArticles } from "@/lib/public-articles";
+import { getPublishedProperties } from "@/lib/public-properties";
 import { siteUrl } from "@/lib/site";
 
 // Generated XML must reflect new publications without a stale prerendered CDN copy.
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const articles = await getPublishedArticles();
+  const [articles, properties] = await Promise.all([getPublishedArticles(), getPublishedProperties()]);
   const articleCategories = [...new Set(articles.map((article) => article.category))];
   const routes = [
     "",

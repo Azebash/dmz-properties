@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { PropertyCard } from "@/components/property-card";
-import { estateUpdateCategory, properties } from "@/lib/content";
+import { estateUpdateCategory } from "@/lib/content";
 import { estate } from "@/lib/business";
 import { getPublicAreaGuide } from "@/lib/public-area-guide";
 import { getPublishedArticles } from "@/lib/public-articles";
+import { getPublishedProperties } from "@/lib/public-properties";
+import { serializeStructuredData } from "@/lib/structured-data";
 
 export const revalidate = 60;
 
@@ -19,11 +21,14 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function KycEstatePage() {
-  const [copy, articles] = await Promise.all([getPublicAreaGuide(), getPublishedArticles()]);
+  const [copy, articles, properties] = await Promise.all([
+    getPublicAreaGuide(), getPublishedArticles(), getPublishedProperties(),
+  ]);
   const updates = articles.filter((article) => article.category === estateUpdateCategory).slice(0, 3);
   const estateProperties = properties.filter(
     (property) => property.location === "KYC Homes Phase II",
   );
+  const developerLand = estateProperties.find((property) => property.reference === "DMZ-KYC-001");
 
   const placeData = {
     "@context": "https://schema.org",
@@ -47,7 +52,7 @@ export default async function KycEstatePage() {
     <main>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(placeData) }}
+        dangerouslySetInnerHTML={{ __html: serializeStructuredData(placeData) }}
       />
       <section className="estate-hero">
         <div className="section-shell estate-hero-grid">
@@ -128,9 +133,9 @@ export default async function KycEstatePage() {
 
       <section className="section-shell section-block estate-intro">
         <div className="estate-specification">
-          <span>Current developer product</span>
+          <span>Estate development standard</span>
           <strong>4-bedroom fully detached duplex</strong>
-          <p>600 sqm virgin land / {estate.developerLandPrice}</p>
+          <p>600 sqm virgin land / {developerLand?.price || "Ask DMZ for current pricing"}</p>
         </div>
         <h2>{copy.pathsTitle}</h2>
         <div className="estate-paths">
@@ -234,6 +239,7 @@ export default async function KycEstatePage() {
               <PropertyCard key={property.slug} property={property} />
             ))}
           </div>
+          {!estateProperties.length ? <p>There are no currently published estate listings. Ask DMZ for availability.</p> : null}
         </div>
       </section>
 

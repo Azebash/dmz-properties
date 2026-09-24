@@ -21,7 +21,7 @@ export function AdminPropertyForm({ property }: { property?: PropertyRow }) {
       <div className="admin-form-grid">
         <div className="field">
           <label htmlFor="property-reference">Reference</label>
-          <input id="property-reference" name="reference" defaultValue={property?.reference} required />
+          <input id="property-reference" name="reference" defaultValue={property?.reference} readOnly={!!property?.published_at} required />
         </div>
         <div className="field">
           <label htmlFor="property-source">Source</label>
@@ -36,7 +36,7 @@ export function AdminPropertyForm({ property }: { property?: PropertyRow }) {
         </div>
         <div className="field field-full">
           <label htmlFor="property-slug">URL slug</label>
-          <input id="property-slug" name="slug" defaultValue={property?.slug} required />
+          <input id="property-slug" name="slug" defaultValue={property?.slug} readOnly={!!property?.published_at} required />
         </div>
         <div className="field">
           <label htmlFor="property-type">Property type</label>
@@ -88,7 +88,7 @@ export function AdminPropertyForm({ property }: { property?: PropertyRow }) {
         </div>
         <div className="field">
           <label htmlFor="last-verified">Last verified</label>
-          <input id="last-verified" name="lastVerifiedAt" type="date" defaultValue={property?.last_verified_at?.slice(0, 10) || ""} />
+          <input id="last-verified" name="lastVerifiedAt" type="date" required={property?.status === "published"} defaultValue={property?.last_verified_at?.slice(0, 10) || ""} />
         </div>
         <div className="field field-full">
           <label htmlFor="seo-title">SEO title</label>

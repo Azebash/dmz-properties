@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PrintButton } from "@/components/print-button";
 import { business, estate } from "@/lib/business";
+import { getPublishedProperty } from "@/lib/public-properties";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "KYC Homes Phase II Buyer Guide",
@@ -22,7 +25,8 @@ const checklist = [
   "Keep agreements, receipts, allocation records, and material correspondence.",
 ];
 
-export default function BuyerGuidePage() {
+export default async function BuyerGuidePage() {
+  const developerLand = await getPublishedProperty("600sqm-virgin-land-kyc-homes-phase-ii");
   return (
     <main className="buyer-guide">
       <header className="section-shell page-hero buyer-guide-hero">
@@ -38,11 +42,12 @@ export default function BuyerGuidePage() {
       <section className="section-shell guide-facts">
         <div>
           <span>Current developer land price</span>
-          <strong>{estate.developerLandPrice}</strong>
+          <strong>{developerLand?.price || "Ask DMZ for current pricing"}</strong>
         </div>
         <div>
           <span>Plot standard</span>
           <strong>{estate.plotSize}</strong>
+          <small>Check the exact size of any individual property.</small>
         </div>
         <div>
           <span>Development format</span>
@@ -71,8 +76,8 @@ export default function BuyerGuidePage() {
             We help you prepare for developer approval, understand the approved
             terms, and follow the documented allocation process.
           </p>
-          <Link href="/properties/600sqm-virgin-land-kyc-homes-phase-ii">
-            Explore available land
+          <Link href={developerLand ? `/properties/${developerLand.slug}` : "/contact"}>
+            {developerLand ? "Explore available land" : "Ask about current availability"}
           </Link>
         </article>
         <article>

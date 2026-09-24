@@ -1,13 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { PropertyCard } from "@/components/property-card";
-import { properties } from "@/lib/content";
 import { getPublishedArticles } from "@/lib/public-articles";
+import { getPublishedProperties } from "@/lib/public-properties";
 
 export const revalidate = 60;
 
 export default async function Home() {
-  const articles = await getPublishedArticles();
+  const [articles, properties] = await Promise.all([getPublishedArticles(), getPublishedProperties()]);
   return (
     <main>
       <section className="hero section-shell">
@@ -64,6 +64,7 @@ export default async function Home() {
             <PropertyCard key={property.slug} property={property} />
           ))}
         </div>
+        {!properties.length ? <p>There are no published listings right now. Ask DMZ for current availability.</p> : null}
         <Link className="button button-secondary section-action" href="/properties">
           View all properties
         </Link>

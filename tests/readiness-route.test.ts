@@ -12,6 +12,7 @@ function configureCore() {
   vi.stubEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "public-key");
   vi.stubEnv("SUPABASE_SECRET_KEY", "secret-key");
   vi.stubEnv("SUPABASE_PERSIST_ENQUIRIES", "true");
+  vi.stubEnv("SUPABASE_CONTENT_SOURCE", "database");
 }
 
 describe("operational readiness route", () => {

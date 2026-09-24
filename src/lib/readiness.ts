@@ -30,6 +30,7 @@ export function getReadiness() {
     ),
     supabase: supabaseConfigured,
     enquiryPersistence: persistenceConfigured,
+    contentSource: ["database", "repository"].includes(process.env.SUPABASE_CONTENT_SOURCE || ""),
   };
 
   return {
@@ -38,7 +39,8 @@ export function getReadiness() {
       checks.canonicalUrl &&
         checks.supabase &&
         checks.enquiryPersistence &&
-        checks.distributedRateLimit,
+        checks.distributedRateLimit &&
+        checks.contentSource,
     ),
     checks,
   };

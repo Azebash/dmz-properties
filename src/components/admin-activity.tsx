@@ -12,7 +12,7 @@ export function AdminActivity({
   entityType,
 }: {
   events: Activity[];
-  entityType?: "article";
+  entityType?: "article" | "staff_profile";
 }) {
   if (!events.length) return null;
 
@@ -29,6 +29,10 @@ export function AdminActivity({
             : null;
           const detail = entityType === "article"
             ? articleActivityDetail(event.action, event.previous_value, event.next_value)
+            : entityType === "staff_profile" && event.next_value &&
+                typeof event.next_value === "object" && !Array.isArray(event.next_value) &&
+                typeof event.next_value.role === "string"
+              ? `Role: ${event.next_value.role.replaceAll("_", " ")} · ${event.next_value.active ? "Active" : "Disabled"}`
             : nextStatus;
           return (
             <li key={event.id}>

@@ -3,11 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdminActivity } from "@/components/admin-activity";
 import { AdminEnquiryWorkflow } from "@/components/admin-enquiry-workflow";
+import { AdminLeadAssignment } from "@/components/admin-lead-assignment";
 import { AdminStatus } from "@/components/admin-status";
 import { requireStaff } from "@/lib/admin/auth";
 import { formatAdminDateTime } from "@/lib/admin/format";
 import { uuidPattern } from "@/lib/admin/lead-workflow";
-import { getAdminActivity, getAdminEnquiry } from "@/lib/admin/queries";
+import { getAdminActivity, getAdminEnquiry, listAdminStaff } from "@/lib/admin/queries";
 
 export const metadata: Metadata = { title: "Enquiry Details" };
 
@@ -26,6 +27,10 @@ export default async function AdminEnquiryDetails({
   ]);
   if (!enquiry) notFound();
   const canManage = staff.role === "administrator" || staff.role === "property_manager";
+  const assignees = staff.role === "administrator"
+    ? (await listAdminStaff()).filter((member) => member.active && member.auth_eligible &&
+      (member.role === "administrator" || member.role === "property_manager"))
+    : [];
 
   return (
     <div className="admin-page">
@@ -50,6 +55,10 @@ export default async function AdminEnquiryDetails({
               <div><dt>Location</dt><dd>{enquiry.current_location || "Not provided"}</dd></div>
               <div><dt>Budget</dt><dd>{enquiry.budget || "Not provided"}</dd></div>
               <div><dt>Timeline</dt><dd>{enquiry.purchase_timeline || "Not provided"}</dd></div>
+              <div><dt>Owner</dt><dd>{staff.role === "administrator"
+                ? assignees.find((member) => member.user_id === enquiry.assigned_to)?.display_name || "Unassigned"
+                : !enquiry.assigned_to ? "Unassigned"
+                  : enquiry.assigned_to === staff.user_id ? "Assigned to you" : "Team assignment"}</dd></div>
               <div><dt>Preferred contact</dt><dd>{enquiry.preferred_contact_method || "Not provided"}</dd></div>
               <div><dt>Contact time</dt><dd>{enquiry.preferred_contact_time || "Not provided"}</dd></div>
             </dl>
@@ -69,11 +78,12 @@ export default async function AdminEnquiryDetails({
           <AdminActivity events={activity} />
         </div>
         {canManage ? (
-          <AdminEnquiryWorkflow
-            id={enquiry.id}
-            status={enquiry.status}
-            notes={enquiry.internal_notes}
-          />
+          <div className="admin-workflow-group">
+            {staff.role === "administrator" ? (
+              <AdminLeadAssignment enquiryId={enquiry.id} assignedTo={enquiry.assigned_to} staff={assignees} />
+            ) : null}
+            <AdminEnquiryWorkflow id={enquiry.id} status={enquiry.status} notes={enquiry.internal_notes} />
+          </div>
         ) : (
           <p className="admin-readonly-note">Your staff role can view but not change lead records.</p>
         )}

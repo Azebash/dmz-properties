@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdminActivity } from "@/components/admin-activity";
 import { AdminInspectionWorkflow } from "@/components/admin-inspection-workflow";
+import { AdminLeadAssignment } from "@/components/admin-lead-assignment";
 import { AdminStatus } from "@/components/admin-status";
 import { requireStaff } from "@/lib/admin/auth";
 import { formatAdminDate, formatAdminDateTime } from "@/lib/admin/format";
@@ -11,6 +12,7 @@ import {
   getAdminActivity,
   getAdminEnquiry,
   getAdminInspection,
+  listAdminStaff,
 } from "@/lib/admin/queries";
 
 export const metadata: Metadata = { title: "Inspection Details" };
@@ -31,6 +33,10 @@ export default async function AdminInspectionDetails({
 
   const enquiry = await getAdminEnquiry(inspection.enquiry_id);
   const canManage = staff.role === "administrator" || staff.role === "property_manager";
+  const assignees = staff.role === "administrator"
+    ? (await listAdminStaff()).filter((member) => member.active && member.auth_eligible &&
+      (member.role === "administrator" || member.role === "property_manager"))
+    : [];
 
   return (
     <div className="admin-page">
@@ -53,6 +59,10 @@ export default async function AdminInspectionDetails({
               <div><dt>Preferred date</dt><dd>{formatAdminDate(inspection.preferred_date)}</dd></div>
               <div><dt>Alternate date</dt><dd>{formatAdminDate(inspection.alternate_date)}</dd></div>
               <div><dt>Time zone</dt><dd>{inspection.time_zone}</dd></div>
+              <div><dt>Owner</dt><dd>{staff.role === "administrator"
+                ? assignees.find((member) => member.user_id === inspection.assigned_to)?.display_name || "Unassigned"
+                : !inspection.assigned_to ? "Unassigned"
+                  : inspection.assigned_to === staff.user_id ? "Assigned to you" : "Team assignment"}</dd></div>
               <div><dt>Confirmed time</dt><dd>{inspection.scheduled_at ? formatAdminDateTime(inspection.scheduled_at, inspection.time_zone) : "Not confirmed"}</dd></div>
               <div><dt>Email</dt><dd>{enquiry ? <a href={`mailto:${enquiry.email}`}>{enquiry.email}</a> : "Not available"}</dd></div>
               <div><dt>Phone</dt><dd>{enquiry ? <a href={`tel:${enquiry.phone}`}>{enquiry.phone}</a> : "Not available"}</dd></div>
@@ -63,11 +73,12 @@ export default async function AdminInspectionDetails({
           <AdminActivity events={activity} />
         </div>
         {canManage ? (
-          <AdminInspectionWorkflow
-            id={inspection.id}
-            status={inspection.status}
-            timeZone={inspection.time_zone}
-          />
+          <div className="admin-workflow-group">
+            {staff.role === "administrator" && enquiry ? (
+              <AdminLeadAssignment enquiryId={enquiry.id} assignedTo={enquiry.assigned_to} staff={assignees} />
+            ) : null}
+            <AdminInspectionWorkflow id={inspection.id} status={inspection.status} timeZone={inspection.time_zone} />
+          </div>
         ) : (
           <p className="admin-readonly-note">Your staff role can view but not change inspection records.</p>
         )}

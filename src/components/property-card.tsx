@@ -15,7 +15,11 @@ export function PropertyCard({
         <div className="property-image">
           <Image
             src={property.image}
-            alt={`${property.title} in ${property.location}`}
+            alt={property.imageLabel === "Estate context"
+              ? `Estate context in ${property.location}, not a photo of the specific property`
+              : property.imageLabel === "Images pending"
+                ? `Property media pending verification for ${property.title}`
+                : `${property.title} in ${property.location}`}
             fill
             loading={eager ? "eager" : "lazy"}
             fetchPriority={eager ? "high" : "auto"}

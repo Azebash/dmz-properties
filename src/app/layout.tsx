@@ -6,6 +6,7 @@ import { Analytics } from "@/components/analytics";
 import { allowIndexing, siteUrl } from "@/lib/site";
 import { business } from "@/lib/business";
 import { AttributionCapture } from "@/components/attribution-capture";
+import { serializeStructuredData } from "@/lib/structured-data";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -84,7 +85,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationData) }}
+          dangerouslySetInnerHTML={{ __html: serializeStructuredData(organizationData) }}
         />
         <SiteHeader />
         <AttributionCapture />

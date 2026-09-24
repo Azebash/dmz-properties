@@ -5,10 +5,12 @@ export default async function AdminDashboardPage() {
   const [staff, summary] = await Promise.all([requireStaff(), getAdminSummary()]);
   const metrics = [
     ["Properties", summary.properties],
-    ["Enquiries", summary.enquiries],
-    ["Inspection requests", summary.inspections],
-    ["Seller reviews", summary.sellerSubmissions],
-  ] as const;
+    ...(summary.enquiries === null ? [] : [
+      ["Enquiries", summary.enquiries],
+      ["Inspection requests", summary.inspections],
+      ["Seller reviews", summary.sellerSubmissions],
+    ]),
+  ];
 
   return (
     <div className="admin-dashboard">
@@ -27,11 +29,9 @@ export default async function AdminDashboardPage() {
       </section>
       <section className="admin-foundation-note">
         <h2>Operations</h2>
-        <p>
-          Manage property drafts and publication, qualify enquiries, and follow
-          up on inspections. Each change is checked against staff permissions
-          and recorded in the audit history.
-        </p>
+        <p>{summary.enquiries === null
+          ? "Property and editorial records remain available for read-only review. Private buyer and seller records require a property role."
+          : "Manage property drafts and publication, qualify enquiries, and follow up on inspections. Each change is checked against staff permissions and recorded in the audit history."}</p>
       </section>
     </div>
   );
