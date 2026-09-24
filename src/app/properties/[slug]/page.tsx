@@ -85,18 +85,19 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
           <figure className="gallery-image" key={image}>
             <Image
               src={image}
-              alt={property.imageLabel === "Estate context"
+              alt={property.media?.[index]?.alt || (property.imageLabel === "Estate context"
                 ? `${property.location} estate context, not the specific property, view ${index + 1}`
                 : property.imageLabel === "Images pending"
                   ? `Property media pending verification for ${property.title}`
-                  : `${property.title}, view ${index + 1}`}
+                  : `${property.title}, view ${index + 1}`)}
               fill
               preload={index === 0 && property.imageLabel !== "Images pending"}
+              unoptimized={image.startsWith("/api/property-media/")}
               sizes={index === 0 ? "(max-width: 800px) 100vw, 66vw" : "34vw"}
             />
-            <figcaption>{property.imageLabel === "Estate context"
+            <figcaption>{property.media?.[index]?.caption || (property.imageLabel === "Estate context"
               ? "Estate context, not the specific property" : property.imageLabel === "Images pending"
-                ? "Property media pending" : "Property image"}</figcaption>
+                ? "Property media pending" : "Property image")}</figcaption>
           </figure>
         ))}
       </div>

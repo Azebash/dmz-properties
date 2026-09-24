@@ -39,6 +39,16 @@ export async function getAdminProperty(id: string) {
   return data;
 }
 
+export async function getAdminPropertyMedia(propertyId: string) {
+  const supabase = await authorizedPropertyClient();
+  const { data, error } = await supabase.from("property_media")
+    .select("*").eq("property_id", propertyId)
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: true });
+  if (error) throw new Error(`Unable to load property media: ${error.message}`);
+  return data;
+}
+
 export async function listAdminEnquiries() {
   const supabase = await authorizedPropertyClient();
   const { data, error } = await supabase

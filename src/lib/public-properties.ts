@@ -9,7 +9,15 @@ const estateContext = repositoryProperties[0];
 const mediaPending = "/images/property-media-pending.svg";
 const pageSize = 100;
 
-export function propertyFromRow(row: PropertyRow): Property {
+type PublishedMedia = {
+  id: string;
+  property_id: string;
+  alt_text: string;
+  caption: string | null;
+  estate_context: boolean;
+};
+
+export function propertyFromRow(row: PropertyRow, approvedMedia: PublishedMedia[] = []): Property {
   if (!row.last_verified_at || !Array.isArray(row.features) ||
     !row.features.every((item) => typeof item === "string")) {
     throw new Error(`Published property ${row.reference} has incomplete verified content`);
@@ -20,8 +28,16 @@ export function propertyFromRow(row: PropertyRow): Property {
     : undefined;
   const contextualLand = row.source === "developer_inventory" && row.property_type === "Land" &&
     row.location_name === "KYC Homes Phase II";
-  const gallery = curated?.gallery || (contextualLand ? estateContext.gallery : [mediaPending]);
-  const imageLabel = curated?.imageLabel || (contextualLand ? "Estate context" : "Images pending");
+  const media = approvedMedia.map((item) => ({
+    src: `/api/property-media/${item.id}`,
+    alt: item.alt_text,
+    caption: item.caption || (item.estate_context ? "Estate context, not the specific property" : "Property photograph"),
+    estateContext: item.estate_context,
+  }));
+  const gallery = media.length ? media.map((item) => item.src)
+    : curated?.gallery || (contextualLand ? estateContext.gallery : [mediaPending]);
+  const imageLabel = media.length ? (media[0].estateContext ? "Estate context" : "Property photo")
+    : curated?.imageLabel || (contextualLand ? "Estate context" : "Images pending");
   const amount = row.price_amount === null ? null : Number(row.price_amount);
   const price = amount !== null && amount > 0
     ? `${row.price_currency} ${new Intl.NumberFormat("en-NG", { maximumFractionDigits: 2 }).format(amount)}`
@@ -46,9 +62,10 @@ export function propertyFromRow(row: PropertyRow): Property {
     priceAmount: amount !== null && amount > 0 ? amount : undefined,
     currency: row.price_currency,
     size: row.plot_size_sqm ? `${Number(row.plot_size_sqm)} sqm` : "Size on request",
-    image: curated?.image || (contextualLand ? estateContext.image : mediaPending),
+    image: media[0]?.src || curated?.image || (contextualLand ? estateContext.image : mediaPending),
     imageLabel,
     gallery,
+    media: media.length ? media : undefined,
     description: row.description,
     features,
     updatedAt: row.updated_at.slice(0, 10),
@@ -75,7 +92,28 @@ async function fetchPublishedProperties(filters?: { slug?: string; offset?: numb
     next: { revalidate: 60, tags: ["published-properties"] },
   });
   if (!response.ok) throw new Error("Published property inventory is unavailable");
-  return (await response.json() as PropertyRow[]).map(propertyFromRow);
+  const rows = await response.json() as PropertyRow[];
+  const media = await fetchApprovedMedia(rows.map((row) => row.id));
+  return rows.map((row) => propertyFromRow(row, media.filter((item) => item.property_id === row.id)));
+}
+
+async function fetchApprovedMedia(propertyIds: string[]): Promise<PublishedMedia[]> {
+  if (!propertyIds.length) return [];
+  const { url, publishableKey } = getSupabaseConfig();
+  const endpoint = new URL("/rest/v1/property_media", url);
+  endpoint.searchParams.set("select", "id,property_id,alt_text,caption,estate_context");
+  endpoint.searchParams.set("property_id", `in.(${propertyIds.join(",")})`);
+  endpoint.searchParams.set("media_type", "eq.image");
+  endpoint.searchParams.set("order", "sort_order.asc,created_at.asc");
+  const response = await fetch(endpoint, {
+    headers: {
+      apikey: publishableKey,
+      Authorization: `Bearer ${publishableKey}`,
+    },
+    next: { revalidate: 60, tags: ["published-properties"] },
+  });
+  if (!response.ok) throw new Error("Approved property media is unavailable");
+  return response.json() as Promise<PublishedMedia[]>;
 }
 
 export async function getPublishedProperties() {

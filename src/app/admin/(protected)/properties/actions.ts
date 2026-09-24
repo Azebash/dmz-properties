@@ -1,26 +1,17 @@
 "use server";
 
-import { revalidatePath, updateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { PropertyStatus } from "@/lib/supabase/types";
 import { requireStaff } from "@/lib/admin/auth";
 import { propertyPayloadFromFormData } from "@/lib/admin/property-validation";
 import { createClient } from "@/lib/supabase/server";
+import { revalidatePublicProperty } from "@/lib/admin/property-revalidation";
 
 export type PropertyActionState = { error: string };
 
 function canManage(role: string) {
   return role === "administrator" || role === "property_manager";
-}
-
-function revalidatePublicProperty(slugs: string[]) {
-  updateTag("published-properties");
-  const routes = new Set([
-    "/", "/properties", "/areas/kyc-homes-phase-ii", "/faqs",
-    "/guides/kyc-homes-phase-ii-buyer-guide", "/sitemap.xml",
-    ...slugs.filter(Boolean).map((slug) => `/properties/${slug}`),
-  ]);
-  for (const route of routes) revalidatePath(route);
 }
 
 export async function savePropertyAction(

@@ -12,6 +12,7 @@ export type Property = {
   image: string;
   imageLabel: string;
   gallery: string[];
+  media?: { src: string; alt: string; caption: string; estateContext: boolean }[];
   description: string;
   features: string[];
   reference: string;

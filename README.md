@@ -44,6 +44,12 @@ Published property listings come from Supabase when
 `SUPABASE_CONTENT_SOURCE=database`; the verified developer record in
 `src/lib/content.ts` remains a controlled rollback source. Its approved estate
 photos stay labelled as context, never as a picture of the specific virgin plot.
+The property editor now has a locally verified private-photo workflow: staff
+choose estate context or an exact-property image, provide alt text and a
+caption, set display order, and approve rights before public display. Accepted
+JPEG, PNG and WebP files are normalized to WebP without source metadata. Land
+photos can only be estate context; offer letters are never uploaded to the
+photo gallery. The media UI and image proxy are not deployed yet.
 The property-read cutover is deployed and verified on the Vercel site; approved
 Supabase listings now drive the homepage, catalogue, detail pages, area cards,
 search metadata, and sitemap.

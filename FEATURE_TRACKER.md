@@ -224,7 +224,7 @@ These features reduce manual work after enquiry volume grows.
 - [x] Create an audited KYC Homes Phase II area-guide copy and SEO editor with review and publication
 - [x] Add an estate-update entry point using the audited article editor, review workflow, and publication controls
 - [ ] Add draft, review, scheduled, published, sold, and archived states
-- [ ] Add image and document media management
+- [~] Private property image upload, classification, ordering, review, and withdrawal pass linked tests; production rollout and separate private document management remain pending
 - [x] Add editable property and article SEO title and description controls
 - [x] Add staff-only, non-indexed article preview for saved drafts and reviews
 - [x] Record audited property, article, enquiry, and inspection changes; show article, lead, and inspection history to administrators

@@ -19,6 +19,8 @@
     "test:live-staff-workflows": "node --env-file=.env.local scripts/verify-live-admin-workflows.mjs --staff-governance",
     "test:linked-staff:governance": "node --env-file=.env.local scripts/verify-local-staff-governance.mjs",
     "test:linked-public-property": "node --env-file=.env.local scripts/verify-local-property-publication.mjs",
+    "test:linked-property-media": "node --env-file=.env.local scripts/verify-local-property-media.mjs",
+    "test:linked-media-concurrency": "node --env-file=.env.local scripts/verify-linked-media-concurrency.mjs",
     "test:live-public-forms": "node --env-file=.env.local scripts/verify-live-public-forms.mjs",
     "test:live-published-property": "node --env-file=.env.local scripts/verify-live-published-property.mjs",
     "monitor:production": "node scripts/check-production-availability.mjs",
@@ -38,7 +40,8 @@
     "@supabase/supabase-js": "^2.109.0",
     "next": "16.3.5",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "sharp": "^0.35.4"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
@@ -50,7 +53,6 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
     "postgres": "^3.4.9",
-    "sharp": "^0.35.4",
     "supabase": "^2.117.0",
     "tailwindcss": "^4",
     "typescript": "^5",

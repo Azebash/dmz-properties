@@ -85,7 +85,8 @@ configured.
     App-managed invitations remain disabled until a pending-account activation
     workflow is verified.
 
-Public content defaults to repository files when the variable is absent.
+Local development without Supabase can read repository content by default.
+Configured production deployments require an explicit content-source value.
 Seed and verify property and article URLs and area-guide copy before enabling
 `database`. Only published Supabase properties and articles then appear across
 the public pages and sitemap; the area page reads only the last approved guide
@@ -94,6 +95,19 @@ listings without approved media show a placeholder, never a claimed listing
 photo. Offer letters remain private. A database outage surfaces an error rather
 than quietly restoring stale file content. Set `repository` and redeploy only
 for a controlled rollback.
+
+Staff property photos use the private `property-media` Storage bucket. Image
+uploads accept JPEG, PNG, and WebP up to 3 MB; uploaded records are private
+until a property manager or administrator confirms publication rights and
+classification. Exact-property photos are available for developed properties,
+while virgin land accepts estate-context images only. The first approved photo
+by display order becomes the public cover; withdrawn photos are no longer
+served. Never upload offer letters to the photo gallery. Run the reversible
+linked media check before enabling public uploads in production. If Vercel logs
+emit `property_media_orphan_cleanup_failed`, locate that private Storage path,
+confirm it has no `property_media` row, then remove it in Supabase Storage.
+If `property_media_registration_unknown` appears, first check the row and file
+before retrying or deleting either one.
 
 ## Domain And Search
 

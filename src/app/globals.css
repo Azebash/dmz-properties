@@ -3200,6 +3200,56 @@ body:has(.admin-surface) .consent-banner {
   background: white;
 }
 
+.admin-property-media {
+  margin-top: 58px;
+}
+
+.admin-property-media > h2 {
+  margin: 0;
+  font-size: 30px;
+}
+
+.admin-property-media > p {
+  max-width: 760px;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+
+.admin-media-list {
+  display: grid;
+  gap: 22px;
+  margin-top: 26px;
+}
+
+.admin-media-record {
+  display: grid;
+  grid-template-columns: minmax(190px, 300px) minmax(0, 1fr);
+  gap: 24px;
+  padding: 24px;
+  background: white;
+}
+
+.admin-media-thumb img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.admin-media-edit {
+  margin-top: 12px;
+  padding: 0;
+}
+
+.admin-media-transitions {
+  padding-block: 18px;
+}
+
+@media (max-width: 760px) {
+  .admin-media-record {
+    grid-template-columns: 1fr;
+  }
+}
+
 .admin-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

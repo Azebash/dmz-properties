@@ -15,7 +15,14 @@ function configureDatabase() {
   vi.stubEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "public-key");
 }
 
+function mockInventory(rows: unknown[], media: unknown[] = []) {
+  return vi.fn().mockImplementation((input: URL) => Promise.resolve(new Response(JSON.stringify(
+    new URL(input).pathname.endsWith("/property_media") ? media : rows,
+  ))));
+}
+
 const publishedRow = {
+  id: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
   slug: "600sqm-virgin-land-kyc-homes-phase-ii",
   reference: "DMZ-KYC-001",
   title: "600 sqm Virgin Land",
@@ -45,9 +52,7 @@ describe("public property publishing", () => {
 
   it("reads only published database rows and retains the existing plot URL and context photos", async () => {
     configureDatabase();
-    const fetcher = vi.fn().mockImplementation(() => Promise.resolve(
-      new Response(JSON.stringify([publishedRow])),
-    ));
+    const fetcher = mockInventory([publishedRow]);
     vi.stubGlobal("fetch", fetcher);
     const [property] = await getPublishedProperties();
     expect(property).toMatchObject({
@@ -66,14 +71,14 @@ describe("public property publishing", () => {
 
   it("does not present a resale without media as a photograph of that property", async () => {
     configureDatabase();
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify([{
+    vi.stubGlobal("fetch", mockInventory([{
       ...publishedRow,
       slug: "approved-owner-resale",
       reference: "DMZ-RESALE-101",
       source: "owner_resale",
       price_amount: null,
       price_label: "Price on request",
-    }]))));
+    }]));
     expect((await getPublishedProperties())[0]).toMatchObject({
       imageLabel: "Images pending",
       gallery: ["/images/property-media-pending.svg"],
@@ -83,22 +88,46 @@ describe("public property publishing", () => {
 
   it("does not reuse curated developer imagery after its source becomes a resale", async () => {
     configureDatabase();
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify([{
+    vi.stubGlobal("fetch", mockInventory([{
       ...publishedRow, source: "owner_resale",
-    }]))));
+    }]));
     expect((await getPublishedProperties())[0].imageLabel).toBe("Images pending");
   });
 
   it("keeps numeric price claims and structured-data currency tied to the saved amount", async () => {
     configureDatabase();
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify([{
+    vi.stubGlobal("fetch", mockInventory([{
       ...publishedRow, price_currency: "USD", price_amount: 15000000,
-    }]))));
+    }]));
     expect((await getPublishedProperties())[0]).toMatchObject({
       price: "USD 15,000,000",
       currency: "USD",
       features: expect.arrayContaining(["USD 15,000,000 current developer price"]),
     });
+  });
+
+  it("uses only approved media returned by RLS and preserves each image classification", async () => {
+    configureDatabase();
+    const id = "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb";
+    const fetcher = mockInventory([publishedRow], [{
+      id, property_id: publishedRow.id,
+      alt_text: "Estate streets and houses in Sabon Lugbe",
+      caption: "A current estate-context photograph",
+      estate_context: true,
+    }]);
+    vi.stubGlobal("fetch", fetcher);
+    expect((await getPublishedProperties())[0]).toMatchObject({
+      image: `/api/property-media/${id}`,
+      imageLabel: "Estate context",
+      gallery: [`/api/property-media/${id}`],
+      media: [{
+        alt: "Estate streets and houses in Sabon Lugbe",
+        caption: "A current estate-context photograph",
+        estateContext: true,
+      }],
+    });
+    expect(String(fetcher.mock.calls[1][0])).toContain("/rest/v1/property_media");
+    expect(String(fetcher.mock.calls[1][0])).toContain("media_type=eq.image");
   });
 
   it("paginates published inventory and validates a reference without cached catalogue data", async () => {
@@ -108,6 +137,9 @@ describe("public property publishing", () => {
       if (endpoint.searchParams.has("reference")) {
         expect(options?.cache).toBe("no-store");
         return Promise.resolve(new Response(JSON.stringify([{ reference: "DMZ-KYC-001" }])));
+      }
+      if (endpoint.pathname.endsWith("/property_media")) {
+        return Promise.resolve(new Response("[]"));
       }
       const offset = Number(endpoint.searchParams.get("offset") || 0);
       const rows = Array.from({ length: offset ? 1 : 100 }, (_, index) => ({
@@ -119,18 +151,19 @@ describe("public property publishing", () => {
     vi.stubGlobal("fetch", fetcher);
     expect(await getPublishedProperties()).toHaveLength(101);
     expect(await isPublishedPropertyReference("DMZ-KYC-001")).toBe(true);
-    expect(fetcher.mock.calls[2][1].cache).toBe("no-store");
-    expect(String(fetcher.mock.calls[2][0])).toContain("status=eq.published");
+    const referenceRequest = fetcher.mock.calls.find(([input]) => new URL(input).searchParams.has("reference"));
+    expect(referenceRequest?.[1].cache).toBe("no-store");
+    expect(String(referenceRequest?.[0])).toContain("status=eq.published");
   });
 
   it("fails closed when published inventory is unavailable or unverified", async () => {
     configureDatabase();
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(null, { status: 503 })));
     await expect(getPublishedProperties()).rejects.toThrow("Published property inventory is unavailable");
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify([{
+    vi.stubGlobal("fetch", mockInventory([{
       ...publishedRow,
       last_verified_at: null,
-    }]))));
+    }]));
     await expect(getPublishedProperties()).rejects.toThrow("incomplete verified content");
   });
 

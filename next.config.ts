@@ -46,6 +46,7 @@ const contentSecurityPolicy = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  experimental: { serverActions: { bodySizeLimit: "3.5mb" } },
   async redirects() {
     return [
       {

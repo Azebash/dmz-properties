@@ -78,6 +78,17 @@ copy was reconciled only if its database row still matched the original seed.
 the original URL, price, last-reviewed date, curated context imagery, structured
 data, area guide, FAQs, printable guide, and sitemap.
 
+`property_media_workflow.test.sql` verifies that photos remain private until
+approved, exact-plot photos are rejected for land, rights confirmation is
+required, video cannot enter the image gallery, and withdrawal revokes anonymous
+access. `npm run test:linked-media-concurrency` checks two conflicting
+classification changes against linked Postgres and removes its draft fixtures.
+With a local production
+server on port 3100 and Node.js 22, run `npm run test:linked-property-media`
+with `DMZ_VERIFY_SITE_URL=http://localhost:3100` to upload a real WebP from the
+curated estate gallery, review it, verify public access only while approved,
+then remove the temporary file, media row, and audit records.
+
 To verify the authenticated operations after a production deployment, run
 `npm run test:live-workflows` with local staff credentials and a server-only
 Supabase secret in `.env.local`. The test creates an inspection request, updates

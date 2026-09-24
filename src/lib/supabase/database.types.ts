@@ -514,6 +514,7 @@ export type Database = {
           property_id: string
           sort_order: number
           storage_path: string
+          verification_status: Database["public"]["Enums"]["verification_status"]
         }
         Insert: {
           alt_text: string
@@ -526,6 +527,7 @@ export type Database = {
           property_id: string
           sort_order?: number
           storage_path: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
         }
         Update: {
           alt_text?: string
@@ -538,6 +540,7 @@ export type Database = {
           property_id?: string
           sort_order?: number
           storage_path?: string
+          verification_status?: Database["public"]["Enums"]["verification_status"]
         }
         Relationships: [
           {
@@ -658,6 +661,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_property_media: {
+        Args: {
+          p_alt_text: string
+          p_caption: string
+          p_estate_context: boolean
+          p_property_id: string
+          p_storage_path: string
+        }
+        Returns: string
+      }
       assign_enquiry_staff: {
         Args: { p_assignee: string | null; p_enquiry_id: string }
         Returns: string | null
@@ -725,6 +738,14 @@ export type Database = {
         }
         Returns: Database["public"]["Enums"]["property_status"]
       }
+      transition_property_media: {
+        Args: {
+          p_media_id: string
+          p_rights_confirmed: boolean
+          p_status: Database["public"]["Enums"]["verification_status"]
+        }
+        Returns: Database["public"]["Enums"]["verification_status"]
+      }
       update_enquiry_workflow: {
         Args: {
           p_enquiry_id: string
@@ -741,6 +762,16 @@ export type Database = {
           p_status: Database["public"]["Enums"]["inspection_status"]
         }
         Returns: Database["public"]["Enums"]["inspection_status"]
+      }
+      update_property_media: {
+        Args: {
+          p_alt_text: string
+          p_caption: string
+          p_estate_context: boolean
+          p_media_id: string
+          p_sort_order: number
+        }
+        Returns: Database["public"]["Enums"]["verification_status"]
       }
     }
     Enums: {

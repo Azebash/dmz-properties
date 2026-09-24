@@ -15,12 +15,13 @@ export function PropertyCard({
         <div className="property-image">
           <Image
             src={property.image}
-            alt={property.imageLabel === "Estate context"
+            alt={property.media?.[0]?.alt || (property.imageLabel === "Estate context"
               ? `Estate context in ${property.location}, not a photo of the specific property`
               : property.imageLabel === "Images pending"
                 ? `Property media pending verification for ${property.title}`
-                : `${property.title} in ${property.location}`}
+                : `${property.title} in ${property.location}`)}
             fill
+            unoptimized={property.image.startsWith("/api/property-media/")}
             loading={eager ? "eager" : "lazy"}
             fetchPriority={eager ? "high" : "auto"}
             sizes="(max-width: 640px) 100vw, (max-width: 900px) 50vw, 33vw"

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { AdminPropertyForm } from "@/components/admin-property-form";
+import { AdminPropertyMedia } from "@/components/admin-property-media";
 import { AdminStatus } from "@/components/admin-status";
 import { requireStaff } from "@/lib/admin/auth";
-import { getAdminProperty } from "@/lib/admin/queries";
+import { getAdminProperty, getAdminPropertyMedia } from "@/lib/admin/queries";
 import { transitionPropertyAction } from "@/app/admin/(protected)/properties/actions";
 import type { PropertyStatus } from "@/lib/supabase/types";
 
@@ -29,7 +30,9 @@ export default async function EditPropertyPage({
 }: EditPropertyPageProps) {
   const { id } = await params;
   const query = await searchParams;
-  const [staff, property] = await Promise.all([requireStaff(), getAdminProperty(id)]);
+  const [staff, property, images] = await Promise.all([
+    requireStaff(), getAdminProperty(id), getAdminPropertyMedia(id),
+  ]);
   if (!property) notFound();
   if (staff.role !== "administrator" && staff.role !== "property_manager") {
     redirect("/admin/access-denied");
@@ -65,6 +68,7 @@ export default async function EditPropertyPage({
         </p>
       ) : null}
       <AdminPropertyForm property={property} />
+      <AdminPropertyMedia propertyId={property.id} propertyType={property.property_type} images={images} />
 
       <section className="admin-transitions">
         <h2>Publication workflow</h2>
