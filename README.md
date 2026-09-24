@@ -44,8 +44,9 @@ Published property listings come from Supabase when
 `SUPABASE_CONTENT_SOURCE=database`; the verified developer record in
 `src/lib/content.ts` remains a controlled rollback source. Its approved estate
 photos stay labelled as context, never as a picture of the specific virgin plot.
-This property-read cutover has passed local and linked checks but is not yet
-deployed; the current Vercel build still serves repository property data.
+The property-read cutover is deployed and verified on the Vercel site; approved
+Supabase listings now drive the homepage, catalogue, detail pages, area cards,
+search metadata, and sitemap.
 Price references on the area page, FAQs, and printable buyer guide follow the
 published developer listing. Older dated articles may need a separate editor
 review when that price changes.

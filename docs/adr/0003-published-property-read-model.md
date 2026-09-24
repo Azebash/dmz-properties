@@ -1,6 +1,6 @@
 # ADR 0003: Read approved property inventory from Supabase
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-09-24
 - Related: [ADR 0001](0001-supabase-operational-platform.md), [ADR 0002](0002-staff-governance.md)
 
@@ -63,9 +63,10 @@ repository rollback. A reversible linked browser fixture tests draft privacy,
 review, publication, immediate edits, media placeholder, sitemap and catalogue
 appearance, and removal when reserved; fixture rows and audit events are deleted.
 
-Do not call the migration complete until the database-mode production build,
-all public property routes, enquiries, and the sitemap pass after deployment.
-If production cutover fails, set `SUPABASE_CONTENT_SOURCE=repository` and
+The database-mode production build, public property routes, buyer form,
+staff-assignment workflow, and read-only listing/sitemap checks passed after
+deployment. If production cutover fails later, set
+`SUPABASE_CONTENT_SOURCE=repository` and
 redeploy while keeping the Supabase records for correction. Business approvals
 for current title particulars, complete fees, and resale-specific evidence
 remain separate publication gates.

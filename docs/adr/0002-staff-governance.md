@@ -1,6 +1,6 @@
 # ADR 0002: Govern staff access and lead ownership through audited roles
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-09-24
 - Related: [ADR 0001](0001-supabase-operational-platform.md)
 

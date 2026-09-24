@@ -20,6 +20,7 @@
     "test:linked-staff:governance": "node --env-file=.env.local scripts/verify-local-staff-governance.mjs",
     "test:linked-public-property": "node --env-file=.env.local scripts/verify-local-property-publication.mjs",
     "test:live-public-forms": "node --env-file=.env.local scripts/verify-live-public-forms.mjs",
+    "test:live-published-property": "node --env-file=.env.local scripts/verify-live-published-property.mjs",
     "monitor:production": "node scripts/check-production-availability.mjs",
     "test:live-editorial": "node --env-file=.env.local scripts/verify-live-editorial-workflow.mjs",
     "test:live-estate-updates": "node --env-file=.env.local scripts/verify-live-editorial-workflow.mjs --estate-update",

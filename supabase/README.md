@@ -1,9 +1,8 @@
 # Supabase Development
 
-Supabase is the canonical owner of DMZ operational records. Published articles
-and the area-guide copy use its database read path; the property read cutover
-has local evidence but still requires deployment and live verification before
-repository property records become rollback-only.
+Supabase is the canonical owner of DMZ operational records. Published
+properties, articles, and area-guide copy use its database read path;
+repository property records are retained only as a controlled rollback.
 
 ## Requirements
 
@@ -39,7 +38,9 @@ SUPABASE_PERSIST_ENQUIRIES=true
 
 ## First Administrator
 
-Public sign-up is disabled. Create a staff user through Supabase Auth, then run this through the SQL editor using the Auth user UUID:
+Public sign-up is disabled. Create a confirmed staff user with a password
+through Supabase Auth, then run this through the SQL editor using that Auth
+user UUID:
 
 ```sql
 insert into public.staff_profiles (user_id, display_name, role)
@@ -65,15 +66,17 @@ can grant roles and assign enquiry/inspection ownership, and content editors or
 viewers cannot read private lead records. With a local production server on
 port 3100 and Node.js 22, run `npm run test:linked-staff:governance` with
 `DMZ_VERIFY_SITE_URL=http://localhost:3100` to create and remove a synthetic
-confirmed Auth user without sending an email. Run `npm run test:live-staff-workflows`
-only after the staff UI is deployed; ordinary `test:live-workflows` remains
-valid against the existing production UI.
+confirmed Auth user without sending an email. `npm run test:live-staff-workflows`
+also passed against the deployed staff UI with temporary linked records removed.
 
 `npm run test:linked-public-property` uses the same local site and linked
 database to create a synthetic draft property, review and publish it, verify
 the public listing and neutral media placeholder, edit it, reserve it, and
 remove the property and audit records. The current developer plot's published
 copy was reconciled only if its database row still matched the original seed.
+`npm run test:live-published-property` performs a read-only production check of
+the original URL, price, last-reviewed date, curated context imagery, structured
+data, area guide, FAQs, printable guide, and sitemap.
 
 To verify the authenticated operations after a production deployment, run
 `npm run test:live-workflows` with local staff credentials and a server-only

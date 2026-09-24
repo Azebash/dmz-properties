@@ -149,6 +149,7 @@ npm run lint
 npm run test:e2e
 npm run test:production
 npm run test:live-public-forms
+npm run test:live-published-property
 npm run monitor:production
 ```
 

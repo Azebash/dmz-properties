@@ -41,7 +41,7 @@ These items are launch blockers.
 - [x] Add confirmed estate infrastructure and Airport Road access information
 - [x] Add clear developer-inventory or owner-resale labels
 - [x] Add last-verified dates to listings
-- [~] Audited Supabase property publishing now drives all public property readers in the locally verified build; production cutover and live validation remain pending
+- [x] Audited Supabase property publishing drives public property readers, and the original listing URL, offer, context imagery, and sitemap passed live checks
 
 ### Enquiries And Conversion
 
@@ -238,8 +238,9 @@ These features reduce manual work after enquiry volume grows.
 - [x] Define administrator role and RLS permissions
 - [x] Define property manager role for listings and enquiries
 - [x] Define content editor role for articles and SEO
-- [x] Define read-only viewer role
-- [~] Staff directory, audited existing-user role changes, and lead/inspection assignment are implemented locally; secure invitations and deployment remain to verify
+- [x] Define read-only viewer role without buyer, seller, or inspection access
+- [x] Deploy and live-verify the staff directory, audited existing-user role changes, and linked lead/inspection assignment
+- [ ] Add app-managed invitations only with a pending-account activation gate and verified email delivery
 - [ ] Two-factor authentication for administrators
 
 ### Lead Management
