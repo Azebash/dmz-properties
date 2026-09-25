@@ -18,6 +18,7 @@
     "test:live-workflows": "node --env-file=.env.local scripts/verify-live-admin-workflows.mjs",
     "test:linked-follow-ups": "node --env-file=.env.local scripts/verify-live-admin-workflows.mjs --follow-ups",
     "test:live-follow-ups": "node --env-file=.env.local scripts/verify-live-admin-workflows.mjs --follow-ups --production",
+    "configure:single-operator": "node --env-file=.env.local scripts/configure-single-operator.mjs --production --apply",
     "test:live-staff-workflows": "node --env-file=.env.local scripts/verify-live-admin-workflows.mjs --staff-governance",
     "test:linked-staff:governance": "node --env-file=.env.local scripts/verify-local-staff-governance.mjs",
     "test:linked-public-property": "node --env-file=.env.local scripts/verify-local-property-publication.mjs",

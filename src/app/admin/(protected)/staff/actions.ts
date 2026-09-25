@@ -111,3 +111,36 @@ export async function assignLeadAction(
   revalidatePath("/admin/inspections");
   return { error: "", message: "Lead and linked inspection ownership updated." };
 }
+
+export async function setDefaultLeadOwnerAction(
+  _state: StaffActionState,
+  formData: FormData,
+): Promise<StaffActionState> {
+  await requireAdministrator();
+  const value = String(formData.get("assignee") || "");
+  const assignee = value || null;
+  const assignExisting = formData.get("assignExisting") === "yes";
+  if (assignee && !uuidPattern.test(assignee)) {
+    return { error: "Choose an active property operator.", message: "" };
+  }
+  if (assignExisting && !assignee) {
+    return { error: "Choose an operator before assigning existing enquiries.", message: "" };
+  }
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("set_default_lead_owner", {
+    p_assignee: assignee,
+    p_assign_existing: assignExisting,
+  });
+  if (error) {
+    return { error: error.code === "23514"
+      ? "The selected account must be active, confirmed, and allowed to handle property enquiries."
+      : "The lead owner setting could not be saved.", message: "" };
+  }
+  revalidatePath("/admin");
+  revalidatePath("/admin/staff");
+  revalidatePath("/admin/enquiries");
+  revalidatePath("/admin/inspections");
+  return { error: "", message: assignExisting
+    ? "Default owner saved; existing unassigned open leads and their inspections were assigned."
+    : "Default owner saved. New enquiries and inspection requests will go to this operator." };
+}

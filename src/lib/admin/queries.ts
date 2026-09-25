@@ -193,3 +193,12 @@ export async function listAdminStaff() {
   if (error) throw new Error(`Unable to load staff directory: ${error.message}`);
   return data;
 }
+
+export async function getDefaultLeadOwner() {
+  const staff = await requireStaff();
+  if (staff.role !== "administrator") redirect("/admin/access-denied");
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("get_default_lead_owner");
+  if (error) throw new Error(`Unable to load default lead owner: ${error.message}`);
+  return data;
+}

@@ -73,6 +73,23 @@ member must still monitor the inbox. `npm run test:live-follow-ups` creates a
 synthetic lead, verifies scheduling and closure through the production staff
 UI, then removes the temporary lead and audit events.
 
+For single-person operations, an administrator selects **Default lead owner**
+at `/admin/staff`. If no explicit default is stored and exactly one eligible
+administrator/property manager exists, new enquiries and linked inspection
+requests route to that person automatically. With multiple eligible operators,
+select one in staff settings. The optional existing-lead checkbox assigns only
+unassigned open enquiries and their unassigned inspections; prior assignments
+remain untouched. Routing changes and resulting assignments are audited, and a
+default owner cannot be disabled until routing is handed off or cleared.
+Run `npm run test:live-staff-workflows` with staff credentials after deployment
+to verify the single-operator controls and existing ownership workflow.
+When exactly one active property operator should own the operation, run
+`npm run configure:single-operator` once. It requires local staff credentials,
+confirms there is exactly one eligible operator, explicitly stores that owner,
+assigns existing unassigned open enquiries and inspections, and verifies the
+remaining unassigned count is zero. If more than one operator is active, select
+the owner manually at `/admin/staff` instead.
+
 1. Select the official DMZ Properties domain.
 2. Create the official business inbox.
 3. Verify the sending domain with Resend using its DNS records.

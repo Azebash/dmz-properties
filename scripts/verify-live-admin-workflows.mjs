@@ -36,13 +36,23 @@ const paginationPrefix = `Reminder Page Fixture ${randomUUID().slice(0, 8)}`;
 let enquiryId;
 let inspectionId;
 let paginationIds = [];
+let expectedAssignmentEvents = 0;
 let browser;
 
 async function databaseRequest(path, options = {}) {
-  const response = await fetch(`${databaseUrl}${path}`, {
-    ...options,
-    headers: { ...headers, ...options.headers },
-  });
+  let response;
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      response = await fetch(`${databaseUrl}${path}`, {
+        ...options,
+        headers: { ...headers, ...options.headers },
+      });
+      break;
+    } catch (error) {
+      if (attempt === 1) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+  }
   if (!response.ok) throw new Error(`Database ${options.method || "GET"} failed: ${response.status}`);
   if (response.status === 204) return null;
   if (options.method === "HEAD") {
@@ -116,6 +126,14 @@ try {
   let dueBefore = 0;
   let enquiriesBefore = 0;
   if (followUps) {
+    const [routedEnquiry, routedInspection] = await Promise.all([
+      databaseRequest(`/enquiries?id=eq.${enquiryId}&select=assigned_to`),
+      databaseRequest(`/inspections?id=eq.${inspectionId}&select=assigned_to`),
+    ]);
+    if (!routedEnquiry[0]?.assigned_to ||
+      routedInspection[0]?.assigned_to !== routedEnquiry[0].assigned_to) {
+      throw new Error("New enquiry and linked inspection did not route to the one eligible operator");
+    }
     dueBefore = await databaseRequest(
       `/enquiries?select=id&status=in.(new,qualified,inspection,offer)&follow_up_on=lte.${todayLagos}`,
       { method: "HEAD", headers: { Prefer: "count=exact", Range: "0-0" } },
@@ -152,13 +170,19 @@ try {
   if (governance) {
     await page.goto(`${site}/admin/staff`, { waitUntil: "networkidle" });
     await expect(page.getByRole("heading", { name: "Staff", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "One-person lead operations" })).toBeVisible();
+    await expect(page.getByLabel("Default lead owner")).toBeVisible();
     await expect(page.getByRole("link", { name: "Hafiz Bashir" })).toBeVisible();
   }
 
   await page.goto(`${site}/admin/enquiries/${enquiryId}`, { waitUntil: "networkidle" });
   await expect(page.getByRole("heading", { name: "Workflow Verification" })).toBeVisible();
   if (governance) {
-    await page.getByLabel("Assigned to").selectOption({ label: "Hafiz Bashir" });
+    const currentAssignment = await databaseRequest(`/enquiries?id=eq.${enquiryId}&select=assigned_to`);
+    const assignmentSelect = page.getByLabel("Assigned to");
+    await assignmentSelect.selectOption({ label: "Hafiz Bashir" });
+    const targetAssignee = await assignmentSelect.inputValue();
+    expectedAssignmentEvents = currentAssignment[0]?.assigned_to === targetAssignee ? 0 : 2;
     await page.getByRole("button", { name: "Save assignment" }).click();
     await expect(page.getByText("Lead and linked inspection ownership updated.")).toBeVisible();
   }
@@ -257,7 +281,7 @@ try {
         inspection[0]?.status !== "completed" ||
         inspection[0]?.time_zone !== "Africa/Lagos" ||
         !inspection[0]?.scheduled_at ||
-        activity.length !== 4 || assignments.length !== (governance ? 2 : 0)) {
+        activity.length !== 4 || assignments.length !== expectedAssignmentEvents) {
       throw new Error("Workflow state or audit records do not match the browser actions");
     }
     console.log(JSON.stringify({ enquiry: "qualified", inspection: "completed", audits: activity.length + assignments.length }));

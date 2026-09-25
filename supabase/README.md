@@ -81,6 +81,16 @@ checks passed after rollout, including 51-record due and full-inbox pagination
 boundaries and cross-list page preservation; synthetic leads and audit records
 were removed.
 
+`single_operator_lead_routing.test.sql` checks administrator-only routing
+settings, automatic assignment with exactly one eligible operator, explicit
+default routing when several operators exist, linked inspection assignment,
+optional bulk assignment of existing unassigned open leads, and protection
+against disabling the configured default owner. After deploying the staff UI,
+`npm run test:live-staff-workflows` verifies the routing control is available
+to administrators; linked tests cover intake assignment and handoff behavior.
+`npm run configure:single-operator` performs the one-time, explicitly confirmed
+production setup when the Auth directory has exactly one eligible operator.
+
 `npm run test:linked-public-property` uses the same local site and linked
 database to create a synthetic draft property, review and publish it, verify
 the public listing and neutral media placeholder, edit it, reserve it, and

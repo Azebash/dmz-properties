@@ -349,6 +349,42 @@ export type Database = {
           },
         ]
       }
+      lead_routing_settings: {
+        Row: {
+          default_assignee: string | null
+          singleton: boolean
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          default_assignee?: string | null
+          singleton?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          default_assignee?: string | null
+          singleton?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_routing_settings_default_assignee_fkey"
+            columns: ["default_assignee"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "lead_routing_settings_updated_by_fkey"
+            columns: ["updated_by"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       properties: {
         Row: {
           address: string | null
@@ -703,6 +739,7 @@ export type Database = {
         Returns: boolean
       }
       get_published_area_guide: { Args: { p_slug: string }; Returns: Json }
+      get_default_lead_owner: { Args: Record<PropertyKey, never>; Returns: string | null }
       ingest_enquiry: { Args: { payload: Json }; Returns: string }
       manage_staff_profile: {
         Args: {
@@ -719,6 +756,10 @@ export type Database = {
         Returns: Database["public"]["Enums"]["publication_status"]
       }
       save_property: { Args: { p_payload: Json }; Returns: string }
+      set_default_lead_owner: {
+        Args: { p_assignee: string | null; p_assign_existing: boolean }
+        Returns: string | null
+      }
       set_enquiry_follow_up: {
         Args: { p_enquiry_id: string; p_follow_up_on: string | null }
         Returns: string | null

@@ -56,7 +56,7 @@ These items are launch blockers.
 - [x] Add consent checkbox and privacy notice
 - [x] Confirm submission in the UI after durable Supabase persistence
 - [x] Honeypot passed a live non-persistence check and Supabase distributed rate limiting is active
-- [!] Assign an owner to monitor `/admin/enquiries` and follow up while email notifications are disabled
+- [!] Confirm the named operator who will monitor `/admin/enquiries`; lead routing can send all new enquiries and inspections to one default owner, but the inbox has no outbound notifications
 
 ### Legal And Trust
 
@@ -253,6 +253,7 @@ These features reduce manual work after enquiry volume grows.
 - [x] Audited, Abuja-date follow-up reminders and a due inbox passed linked and reversible production checks; no automated email or push notifications
 - [x] Private enquiry notes and administrator audit history
 - [x] Administrators assign leads and linked inspections to active property staff through the audited staff workflow
+- [~] Single-operator default owner and automatic new-lead/inspection routing pass linked role and workflow tests; production staff-UI verification pending
 - [x] Audited inspection confirmation, time-zone correction, completion, and outcome notes
 - [ ] Export leads to CSV
 - [ ] CRM integration

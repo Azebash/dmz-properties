@@ -3,11 +3,13 @@ import Link from "next/link";
 import { AdminExistingStaff } from "@/components/admin-existing-staff";
 import { listAdminStaff } from "@/lib/admin/queries";
 import { formatAdminDate } from "@/lib/admin/format";
+import { getDefaultLeadOwner } from "@/lib/admin/queries";
+import { AdminLeadRouting } from "@/components/admin-lead-routing";
 
 export const metadata: Metadata = { title: "Staff Management" };
 
 export default async function StaffPage() {
-  const staff = await listAdminStaff();
+  const [staff, defaultOwner] = await Promise.all([listAdminStaff(), getDefaultLeadOwner()]);
   return (
     <div className="admin-page">
       <header className="admin-page-header">
@@ -15,6 +17,7 @@ export default async function StaffPage() {
         <h1>Staff</h1>
         <p>Give each teammate the minimum role they need, and hand off assigned work before removing access.</p>
       </header>
+      <AdminLeadRouting staff={staff} defaultOwner={defaultOwner} />
       <AdminExistingStaff />
       <div className="admin-table-wrap"><table className="admin-table">
         <caption>Staff directory</caption>
