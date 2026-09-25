@@ -112,6 +112,17 @@ confirm it has no `property_media` row, then remove it in Supabase Storage.
 If `property_media_registration_unknown` appears, first check the row and file
 before retrying or deleting either one.
 
+Property paperwork uses the separate private `property-documents` bucket. Only
+administrators and property managers can upload and download PDFs (maximum
+3 MB). `submitted`, internally verified, rejected, and withdrawn records remain
+private; approval does not publish a document or share it with a buyer. A
+reversible synthetic PDF check passed on production with temporary bytes,
+metadata, and audit events removed. Run `npm run test:live-property-documents`
+with Node.js 22 to repeat it. Do not use real offer letters as test fixtures.
+For a `property_document_registration_unknown` event, check the row and object
+before retrying; for `property_document_orphan_cleanup_failed`, confirm no row
+references the private path before removing the object in Supabase Storage.
+
 ## Domain And Search
 
 1. Verify HTTPS on the Vercel launch URL and set `NEXT_PUBLIC_SITE_URL` to the

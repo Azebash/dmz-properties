@@ -97,7 +97,9 @@ local production server on port 3100 and Node.js 22, run
 `npm run test:linked-property-documents` to upload and retrieve a generated
 synthetic PDF, prove anonymous downloads redirect to staff login, and remove
 all temporary records and bytes. After production rollout, use
-`npm run test:live-property-documents` for the reversible live check.
+`npm run test:live-property-documents` for the reversible live check. Both
+checks passed after rollout; the generated PDF and its temporary records were
+removed. Internal document approval never creates a public download.
 
 To verify the authenticated operations after a production deployment, run
 `npm run test:live-workflows` with local staff credentials and a server-only

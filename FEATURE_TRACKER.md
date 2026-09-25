@@ -225,7 +225,7 @@ These features reduce manual work after enquiry volume grows.
 - [x] Add an estate-update entry point using the audited article editor, review workflow, and publication controls
 - [ ] Add draft, review, scheduled, published, sold, and archived states
 - [x] Private property image upload, classification, ordering, review, and withdrawal pass linked and reversible production checks
-- [~] Separate private property-document management is implemented locally; linked review and production verification are pending. Offer letters stay out of the photo gallery
+- [x] Separate private property-document upload, staff download, internal review, and withdrawal passed linked and reversible production checks. Offer letters stay out of the photo gallery
 - [x] Add editable property and article SEO title and description controls
 - [x] Add staff-only, non-indexed article preview for saved drafts and reviews
 - [x] Record audited property, article, enquiry, and inspection changes; show article, lead, and inspection history to administrators

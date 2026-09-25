@@ -1,6 +1,6 @@
 # ADR 0005: Keep property verification documents in a separate staff-only workflow
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-09-25
 - Related: [ADR 0001](0001-supabase-operational-platform.md), [ADR 0004](0004-reviewed-property-media.md)
 
@@ -51,10 +51,11 @@ The private bucket adds a storage dependency, and authenticated downloads use a
 server request per file. This workflow tracks internal review; sending documents
 to buyers, owner uploads, legally verifying title, and document retention policy
 remain separate decisions. Linked pgTAP checks role restrictions, private bucket,
-state transitions, and audit entries. A reversible browser check must prove that
-only an authenticated property role can download the PDF, and that metadata does
-not leak to the public listing. Do not mark rollout complete before that check
-passes against production.
+state transitions, and audit entries. A reversible browser check confirms
+anonymous denial, authorized staff PDF download, and that metadata does not
+leak to the public listing. The linked database tests and production browser
+check passed; the photo and published-listing regression checks also passed
+after rollout.
 
 ## Rollback
 
