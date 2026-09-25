@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { AdminPropertyForm } from "@/components/admin-property-form";
 import { AdminPropertyMedia } from "@/components/admin-property-media";
 import { AdminPropertyDocuments } from "@/components/admin-property-documents";
+import { AdminPropertyAvailability } from "@/components/admin-property-availability";
 import { AdminStatus } from "@/components/admin-status";
 import { requireStaff } from "@/lib/admin/auth";
 import { getAdminProperty, getAdminPropertyMedia, getAdminPropertyDocuments } from "@/lib/admin/queries";
@@ -69,6 +70,7 @@ export default async function EditPropertyPage({
         </p>
       ) : null}
       <AdminPropertyForm property={property} />
+      <AdminPropertyAvailability property={property} />
       <AdminPropertyMedia propertyId={property.id} propertyType={property.property_type} images={images} />
       <AdminPropertyDocuments propertyId={property.id} documents={documents} />
 

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Property } from "@/lib/content";
+import { availabilityLabel } from "@/lib/property-availability";
 
 export function PropertyCard({
   property,
@@ -39,6 +40,7 @@ export function PropertyCard({
           <Link href={`/properties/${property.slug}`}>{property.title}</Link>
         </h3>
         <p className="property-price">{property.price}</p>
+        <p className="property-availability">{availabilityLabel(property.availabilityStatus, property.availabilityCheckedAt)}</p>
       </div>
     </article>
   );

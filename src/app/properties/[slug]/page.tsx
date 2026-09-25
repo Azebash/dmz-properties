@@ -9,6 +9,7 @@ import { business } from "@/lib/business";
 import { PropertyActions } from "@/components/property-actions";
 import { TrackedLink } from "@/components/tracked-link";
 import { serializeStructuredData } from "@/lib/structured-data";
+import { availabilityLabel } from "@/lib/property-availability";
 
 type PropertyPageProps = {
   params: Promise<{ slug: string }>;
@@ -145,7 +146,7 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
       <section className="section-shell detail-facts" aria-label="Property facts">
         <div className="detail-fact">
           <span>Availability</span>
-          <strong>{property.status}</strong>
+          <strong>{availabilityLabel(property.availabilityStatus, property.availabilityCheckedAt)}</strong>
         </div>
         <div className="detail-fact">
           <span>Ownership</span>

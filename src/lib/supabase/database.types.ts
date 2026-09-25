@@ -349,6 +349,8 @@ export type Database = {
       properties: {
         Row: {
           address: string | null
+          availability_checked_at: string | null
+          availability_status: string
           created_at: string
           created_by: string | null
           description: string
@@ -377,6 +379,8 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          availability_checked_at?: string | null
+          availability_status?: string
           created_at?: string
           created_by?: string | null
           description: string
@@ -405,6 +409,8 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          availability_checked_at?: string | null
+          availability_status?: string
           created_at?: string
           created_by?: string | null
           description?: string
@@ -710,6 +716,10 @@ export type Database = {
         Returns: Database["public"]["Enums"]["publication_status"]
       }
       save_property: { Args: { p_payload: Json }; Returns: string }
+      set_property_availability: {
+        Args: { p_checked: boolean; p_property_id: string; p_status: string }
+        Returns: string
+      }
       set_inspection_timezone: {
         Args: { p_inspection_id: string; p_time_zone: string }
         Returns: string

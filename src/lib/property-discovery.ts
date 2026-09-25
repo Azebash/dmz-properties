@@ -4,6 +4,7 @@ export type CatalogueFilters = {
   q: string;
   type: string;
   ownership: string;
+  availability: "all" | "available" | "on_hold" | "unconfirmed";
   minPrice: string;
   maxPrice: string;
   minSize: string;
@@ -11,7 +12,7 @@ export type CatalogueFilters = {
   sort: "newest" | "price_asc" | "price_desc" | "relevance";
 };
 
-export const filterKeys = ["q", "type", "ownership", "minPrice", "maxPrice", "minSize", "maxSize", "sort"] as const;
+export const filterKeys = ["q", "type", "ownership", "availability", "minPrice", "maxPrice", "minSize", "maxSize", "sort"] as const;
 
 function first(value: string | string[] | undefined) {
   return typeof value === "string" ? value : "";
@@ -29,10 +30,13 @@ export function parseCatalogueFilters(
   const type = first(params.type);
   const ownership = first(params.ownership);
   const sort = first(params.sort);
+  const availability = first(params.availability);
   return {
     q: first(params.q).trim().slice(0, 120),
     type: properties.some((property) => property.type === type) ? type : "all",
     ownership: properties.some((property) => property.ownership === ownership) ? ownership : "all",
+    availability: availability === "available" || availability === "on_hold" || availability === "unconfirmed"
+      ? availability : "all",
     minPrice: bound(first(params.minPrice), 1_000_000_000_000),
     maxPrice: bound(first(params.maxPrice), 1_000_000_000_000),
     minSize: bound(first(params.minSize), 10_000_000),
@@ -60,6 +64,7 @@ export function discoverProperties(properties: Property[], filters: CatalogueFil
     if (query && !relevance(property, query)) return false;
     if (filters.type !== "all" && property.type !== filters.type) return false;
     if (filters.ownership !== "all" && property.ownership !== filters.ownership) return false;
+    if (filters.availability !== "all" && property.availabilityStatus !== filters.availability) return false;
     if (minPrice !== null || maxPrice !== null) {
       if (property.currency !== "NGN" || property.priceAmount === undefined) return false;
       if (minPrice !== null && property.priceAmount < minPrice) return false;

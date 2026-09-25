@@ -73,6 +73,11 @@ test("catalogue range filters and sorting survive a shared URL", async ({ page }
   await expect(page.getByRole("button", { name: "Reset all filters" })).toBeVisible();
   await expectNoHorizontalOverflow(page);
 
+  await page.getByLabel("Availability check").selectOption("available");
+  await expect(page.getByRole("heading", { name: "No matching properties" })).toBeVisible();
+  await page.getByLabel("Availability check").selectOption("unconfirmed");
+  await expect(page.getByText("1 property", { exact: true })).toBeVisible();
+
   await page.getByLabel("Sort by").selectOption("relevance");
   await expect(page).toHaveURL(/sort=relevance/);
   await page.goBack();
@@ -86,6 +91,7 @@ test("catalogue range filters and sorting survive a shared URL", async ({ page }
   await page.getByRole("button", { name: "Clear filters" }).click();
   await expect(page.getByText("1 property", { exact: true })).toBeVisible();
   await expect(page.getByLabel("Maximum price (NGN)")).toHaveValue("");
+  await expect(page.getByLabel("Availability check")).toHaveValue("all");
 });
 
 test("buyer acquisition pages keep prospects in DMZ journeys", async ({ page }) => {

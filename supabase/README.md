@@ -101,6 +101,14 @@ all temporary records and bytes. After production rollout, use
 checks passed after rollout; the generated PDF and its temporary records were
 removed. Internal document approval never creates a public download.
 
+`property_availability.test.sql` checks that publication does not imply stock,
+that only property staff can record an audited confirmation with a server-issued
+timestamp, and that reservation and republication clear previous confirmations.
+Run `npm run test:linked-property-availability` with a local production server
+on port 3100 and Node.js 22 to check the staff UI and public filter against the
+real unconfirmed developer listing without changing inventory claims. Run
+`npm run test:live-property-availability` only after application rollout.
+
 To verify the authenticated operations after a production deployment, run
 `npm run test:live-workflows` with local staff credentials and a server-only
 Supabase secret in `.env.local`. The test creates an inspection request, updates

@@ -16,6 +16,7 @@ try {
   await page.goto(propertyUrl);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("600 sqm Virgin Land");
   await expect(page.locator(".detail-price")).toHaveText("NGN 14,000,000");
+  await expect(page.getByText("Availability to confirm")).toBeVisible();
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", propertyUrl);
   await expect(page.getByText("2026-09-22", { exact: true })).toBeVisible();
   await expect(page.getByText(/photographs show the estate, not an individual virgin-land plot/i)).toBeVisible();

@@ -6,7 +6,8 @@ const land = { ...listed[0], publishedAt: "2026-09-15" };
 const home: Property = {
   ...land, slug: "developed-home", reference: "DMZ-HOME-2", title: "Developed home",
   type: "House", ownership: "Owner resale", priceAmount: 22_000_000,
-  plotSizeSqm: 450, publishedAt: "2026-09-20",
+  plotSizeSqm: 450, publishedAt: "2026-09-20", availabilityStatus: "available",
+  availabilityCheckedAt: "2026-09-24",
 };
 const unpriced: Property = {
   ...home, slug: "unpriced-home", reference: "DMZ-HOME-3", title: "Another home",
@@ -16,6 +17,7 @@ const unpriced: Property = {
 const foreign: Property = {
   ...home, slug: "foreign-home", reference: "DMZ-HOME-4", title: "Foreign-priced home",
   currency: "USD", priceAmount: 5_000, publishedAt: "2026-09-19",
+  availabilityStatus: "on_hold", availabilityCheckedAt: "2026-09-24",
 };
 const catalogue = [land, home, unpriced, foreign];
 
@@ -32,6 +34,12 @@ describe("catalogue discovery", () => {
       .toEqual([home.slug, foreign.slug]);
   });
 
+  it("filters by the effective stock check instead of the listing source", () => {
+    expect(discover({ availability: "available" })).toEqual([unpriced.slug, home.slug]);
+    expect(discover({ availability: "on_hold" })).toEqual([foreign.slug]);
+    expect(discover({ availability: "unconfirmed" })).toEqual([land.slug]);
+  });
+
   it("sorts newest, priced NGN listings, and search relevance predictably", () => {
     expect(discover({})).toEqual([unpriced.slug, home.slug, foreign.slug, land.slug]);
     expect(discover({ sort: "price_asc" })).toEqual([land.slug, home.slug, unpriced.slug, foreign.slug]);
@@ -43,9 +51,9 @@ describe("catalogue discovery", () => {
   it("normalizes invalid or repeated URL values rather than misapplying filters", () => {
     const filters = parseCatalogueFilters({
       type: "Land", ownership: "Unverified", minPrice: "-10", maxPrice: "Infinity",
-      minSize: "1e3", maxSize: "10000001", sort: "unknown", q: ["injected", "repeat"],
+      minSize: "1e3", maxSize: "10000001", sort: "unknown", availability: "sold", q: ["injected", "repeat"],
     }, catalogue);
     expect(filters).toMatchObject({ type: "Land", ownership: "all", minPrice: "", maxPrice: "",
-      minSize: "", maxSize: "", sort: "newest", q: "" });
+      minSize: "", maxSize: "", sort: "newest", availability: "all", q: "" });
   });
 });

@@ -61,6 +61,9 @@ The deployed catalogue offers shareable price and plot-size ranges and newest,
 NGN-price, or relevance sorting. Unknown prices and sizes are excluded when
 filtered, and price sorting keeps other currencies and prices on request last.
 Publication is not a guarantee of live availability; buyers must reconfirm it.
+The inventory-confirmation workflow is locally verified but pending application
+rollout. Property staff can attest to a fresh stock check; confirmations expire
+after 14 days. Existing listings default to "Availability to confirm."
 Price references on the area page, FAQs, and printable buyer guide follow the
 published developer listing. Older dated articles may need a separate editor
 review when that price changes.

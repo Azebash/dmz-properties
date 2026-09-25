@@ -697,7 +697,8 @@ img {
 }
 
 .filter-search,
-.filter-sort {
+.filter-sort,
+.filter-availability {
   grid-column: span 2;
 }
 
@@ -707,6 +708,13 @@ img {
   color: var(--ink-soft);
   font-size: 12px;
   line-height: 1.6;
+}
+
+.property-availability {
+  margin: 7px 0 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .property-filters label {
@@ -2798,7 +2806,8 @@ img {
   }
 
   .filter-search,
-  .filter-sort {
+  .filter-sort,
+  .filter-availability {
     grid-column: auto;
   }
 

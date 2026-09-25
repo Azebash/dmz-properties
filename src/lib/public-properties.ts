@@ -4,6 +4,7 @@ import { properties as repositoryProperties, type Property } from "@/lib/content
 import { usesDatabaseContent } from "@/lib/public-articles";
 import { getSupabaseConfig } from "@/lib/supabase/config";
 import type { PropertyRow } from "@/lib/supabase/types";
+import { effectiveAvailability } from "@/lib/property-availability";
 
 const estateContext = repositoryProperties[0];
 const mediaPending = "/images/property-media-pending.svg";
@@ -17,7 +18,7 @@ type PublishedMedia = {
   estate_context: boolean;
 };
 
-export function propertyFromRow(row: PropertyRow, approvedMedia: PublishedMedia[] = []): Property {
+export function propertyFromRow(row: PropertyRow, approvedMedia: PublishedMedia[] = [], now = new Date()): Property {
   if (!row.last_verified_at || !Array.isArray(row.features) ||
     !row.features.every((item) => typeof item === "string")) {
     throw new Error(`Published property ${row.reference} has incomplete verified content`);
@@ -49,6 +50,7 @@ export function propertyFromRow(row: PropertyRow, approvedMedia: PublishedMedia[
     }
     return [feature];
   });
+  const availability = effectiveAvailability(row.availability_status, row.availability_checked_at, now);
 
   return {
     slug: row.slug,
@@ -58,6 +60,8 @@ export function propertyFromRow(row: PropertyRow, approvedMedia: PublishedMedia[
     location: row.location_name,
     ownership: row.ownership_label || (row.source === "owner_resale" ? "Owner resale" : "Developer inventory"),
     status: row.source === "owner_resale" ? "Owner resale" : "Developer inventory",
+    availabilityStatus: availability.status,
+    availabilityCheckedAt: availability.checkedAt,
     price,
     priceAmount: amount !== null && amount > 0 ? amount : undefined,
     currency: row.price_currency,

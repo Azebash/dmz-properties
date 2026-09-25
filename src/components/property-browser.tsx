@@ -36,13 +36,13 @@ export function PropertyBrowser({ properties, initialFilters }: {
   }
 
   function clearFilters() {
-    change({ q: "", type: "all", ownership: "all", minPrice: "", maxPrice: "",
+    change({ q: "", type: "all", ownership: "all", availability: "all", minPrice: "", maxPrice: "",
       minSize: "", maxSize: "", sort: "newest" });
   }
 
   const filtered = discoverProperties(properties, { ...filters, q: deferredQuery });
   const hasActiveFilters = filterKeys.some((key) => filters[key] !== (
-    key === "sort" ? "newest" : key === "type" || key === "ownership" ? "all" : ""
+    key === "sort" ? "newest" : key === "type" || key === "ownership" || key === "availability" ? "all" : ""
   ));
 
   return (
@@ -101,7 +101,17 @@ export function PropertyBrowser({ properties, initialFilters }: {
             <option value="relevance">Search relevance</option>
           </select>
         </div>
-        <p className="filter-hint">Price filters include only listings with a stated NGN amount; plot-size filters include only stated plot sizes. Price sorting puts other currencies and prices on request last. Confirm availability before making plans.</p>
+        <div className="filter-control filter-availability">
+          <label htmlFor="property-availability">Availability check</label>
+          <select id="property-availability" value={filters.availability}
+            onChange={(event) => change({ ...filters, availability: event.target.value as CatalogueFilters["availability"] })}>
+            <option value="all">All listings</option>
+            <option value="available">Recently confirmed available</option>
+            <option value="on_hold">On hold</option>
+            <option value="unconfirmed">Needs reconfirmation</option>
+          </select>
+        </div>
+        <p className="filter-hint">Availability confirmations expire after 14 days; even a recently confirmed listing must be reconfirmed before payment. Price filters include only stated NGN amounts, plot-size filters only stated sizes, and price sorting puts other currencies and prices on request last.</p>
       </div>
 
       <div className="filter-results">

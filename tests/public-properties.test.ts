@@ -30,6 +30,8 @@ const publishedRow = {
   property_type: "Land",
   location_name: "KYC Homes Phase II",
   status: "published",
+  availability_status: "unconfirmed",
+  availability_checked_at: null,
   ownership_label: "Developer inventory",
   price_amount: 14000000,
   price_currency: "NGN",
@@ -59,6 +61,7 @@ describe("public property publishing", () => {
       slug: properties[0].slug,
       reference: "DMZ-KYC-001",
       price: "NGN 14,000,000",
+      availabilityStatus: "unconfirmed",
       lastVerifiedAt: "2026-09-22",
       updatedAt: "2026-09-23",
       imageLabel: "Estate context",
@@ -84,6 +87,20 @@ describe("public property publishing", () => {
       gallery: ["/images/property-media-pending.svg"],
       price: "Price on request",
     });
+  });
+
+  it("requires a recent separate inventory check before presenting a listing as available", async () => {
+    configureDatabase();
+    vi.stubGlobal("fetch", mockInventory([{
+      ...publishedRow, availability_status: "available",
+      availability_checked_at: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+    }]));
+    expect((await getPublishedProperties())[0]).toMatchObject({ availabilityStatus: "unconfirmed" });
+    vi.stubGlobal("fetch", mockInventory([{
+      ...publishedRow, availability_status: "available",
+      availability_checked_at: new Date().toISOString(),
+    }]));
+    expect((await getPublishedProperties())[0]).toMatchObject({ availabilityStatus: "available" });
   });
 
   it("does not reuse curated developer imagery after its source becomes a resale", async () => {

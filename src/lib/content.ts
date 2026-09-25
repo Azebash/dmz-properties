@@ -1,3 +1,5 @@
+import type { AvailabilityStatus } from "@/lib/property-availability";
+
 export type Property = {
   slug: string;
   title: string;
@@ -9,6 +11,8 @@ export type Property = {
   plotSizeSqm?: number;
   publishedAt?: string;
   status: string;
+  availabilityStatus: AvailabilityStatus;
+  availabilityCheckedAt?: string;
   ownership: string;
   size: string;
   image: string;
@@ -51,6 +55,7 @@ export const properties: Property[] = [
     currency: "NGN",
     plotSizeSqm: 600,
     status: "Developer inventory",
+    availabilityStatus: "unconfirmed",
     ownership: "Developer inventory",
     size: "600 sqm",
     image: "/images/estate/estate-street.webp",

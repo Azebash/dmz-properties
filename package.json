@@ -27,6 +27,8 @@
     "test:live-public-forms": "node --env-file=.env.local scripts/verify-live-public-forms.mjs",
     "test:live-published-property": "node --env-file=.env.local scripts/verify-live-published-property.mjs",
     "test:live-property-discovery": "node scripts/verify-live-property-discovery.mjs",
+    "test:linked-property-availability": "node --env-file=.env.local scripts/verify-property-availability.mjs",
+    "test:live-property-availability": "node --env-file=.env.local scripts/verify-property-availability.mjs --production",
     "monitor:production": "node scripts/check-production-availability.mjs",
     "test:live-editorial": "node --env-file=.env.local scripts/verify-live-editorial-workflow.mjs",
     "test:live-estate-updates": "node --env-file=.env.local scripts/verify-live-editorial-workflow.mjs --estate-update",
