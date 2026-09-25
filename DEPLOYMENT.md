@@ -89,6 +89,9 @@ confirms there is exactly one eligible operator, explicitly stores that owner,
 assigns existing unassigned open enquiries and inspections, and verifies the
 remaining unassigned count is zero. If more than one operator is active, select
 the owner manually at `/admin/staff` instead.
+The current live project has exactly one eligible operator configured as the
+default, and no unassigned open enquiries remain. Check the inbox routinely;
+routing does not provide email or push notifications.
 
 1. Select the official DMZ Properties domain.
 2. Create the official business inbox.

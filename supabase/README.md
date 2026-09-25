@@ -89,7 +89,10 @@ against disabling the configured default owner. After deploying the staff UI,
 `npm run test:live-staff-workflows` verifies the routing control is available
 to administrators; linked tests cover intake assignment and handoff behavior.
 `npm run configure:single-operator` performs the one-time, explicitly confirmed
-production setup when the Auth directory has exactly one eligible operator.
+production setup when the Auth directory has exactly one eligible operator. It
+has been run on the live project and routed its unassigned open queue to that
+operator; later synthetic intake tests confirmed new enquiries and inspections
+also route there.
 
 `npm run test:linked-public-property` uses the same local site and linked
 database to create a synthetic draft property, review and publish it, verify

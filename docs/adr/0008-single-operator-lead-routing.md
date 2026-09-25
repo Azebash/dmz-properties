@@ -49,9 +49,13 @@ The administrator chooses a default when multiple operators are active; the
 sole-operator case requires no setting. Enquiry and inspection assignments are
 written in their creation transaction. Linked pgTAP covers access boundaries,
 automatic and explicit routing, bulk handoff, audit records, and owner
-protection. Production verification must confirm the staff control is visible
-and use a synthetic intake submission with cleanup; never change ownership of
-real leads as a test.
+protection. Production verification confirmed the staff control is visible, the
+live Auth directory has exactly one eligible property operator, and new
+enquiries plus linked inspections route to that account. An administrator
+confirmed the live setup, which saved that operator as the default and assigned
+existing unassigned open enquiries and inspections while preserving prior
+assignments. Reversible intake and staff workflows passed with synthetic
+records removed.
 
 ## Rollback
 

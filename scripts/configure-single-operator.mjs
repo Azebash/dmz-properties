@@ -35,7 +35,7 @@ try {
     throw new Error(`Expected exactly one eligible property operator; found ${eligibleOwners.length}. No routing changes were made.`);
   }
   await owner.selectOption(eligibleOwners[0]);
-  await page.getByLabel(/Also assign existing unassigned open leads/).check();
+  await page.locator('input[name="assignExisting"]').check();
   await page.getByRole("button", { name: "Save lead routing" }).click();
   await expect(page.getByText("Default owner saved; existing unassigned open leads and their inspections were assigned."))
     .toBeVisible({ timeout: 30_000 });

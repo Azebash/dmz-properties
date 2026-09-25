@@ -97,12 +97,10 @@ clear the reminder. This is an in-app staff queue; it does not send email or
 messages.
 For one-person operations, `/admin/staff` lets an administrator set the default
 owner for new buyer, seller, and inspection enquiries, and optionally assign
-existing unassigned open leads. With exactly one eligible property operator,
-new enquiries route to that person automatically. Run
-`npm run configure:single-operator` once to save that person as the explicit
-owner and assign the existing unassigned open queue; the script stops safely if
-more than one operator is eligible. The staff inbox still needs monitoring;
-auto-assignment does not send notifications.
+existing unassigned open leads. The live system has one eligible operator saved
+as the default and the open unassigned queue is empty. New enquiries and
+inspection requests route to that operator. The staff inbox still needs
+monitoring; auto-assignment does not send notifications.
 Virgin-land listings use estate-context photography, explicitly identified as
 not a picture of the exact plot; offer-letter details remain private.
 
