@@ -45,8 +45,11 @@ existing lead contact preference for timing. Linked pgTAP proves roles, date
 limits, idempotency, audit events, terminal cleanup, and reopen behavior. A
 reversible browser workflow with a synthetic lead proved staff scheduling,
 visibility in the due inbox, closure removal, and complete cleanup against
-both the linked local build and production. The existing inspection workflow,
-published listing and dependency readiness also passed after deployment.
+both the linked local build and production. A production pagination check added
+50 due fixtures (51 with the lead under test), proved all fixtures appear once
+across stable pages, and removed the fixture rows and audit events. The existing
+inspection workflow, published listing and dependency readiness also passed
+after deployment.
 
 ## Rollback
 
