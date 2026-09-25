@@ -112,10 +112,10 @@ These features should follow immediately after the launch blockers.
 
 - [x] Filter by property type
 - [x] Filter by developer inventory or owner resale
-- [~] Filter by stated NGN price range; local checks pass, production rollout pending
-- [~] Filter by stated plot size in sqm; local checks pass, production rollout pending
+- [x] Filter by stated NGN price range; listings without an NGN amount are excluded when filtering
+- [x] Filter by stated plot size in sqm; listings without a recorded size are excluded when filtering
 - [ ] Filter by availability once a separately verified availability field and staff update workflow exist; publication alone is not live stock confirmation
-- [~] Sort by newest publication, NGN price, and search relevance, with shareable URL controls; production rollout pending
+- [x] Sort by newest publication, NGN price, and search relevance, with shareable URL controls verified on production
 - [x] Search by property name or reference number
 - [ ] Related-property recommendations
 - [x] Clear empty and no-results states

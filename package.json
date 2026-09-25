@@ -26,6 +26,7 @@
     "test:linked-media-concurrency": "node --env-file=.env.local scripts/verify-linked-media-concurrency.mjs",
     "test:live-public-forms": "node --env-file=.env.local scripts/verify-live-public-forms.mjs",
     "test:live-published-property": "node --env-file=.env.local scripts/verify-live-published-property.mjs",
+    "test:live-property-discovery": "node scripts/verify-live-property-discovery.mjs",
     "monitor:production": "node scripts/check-production-availability.mjs",
     "test:live-editorial": "node --env-file=.env.local scripts/verify-live-editorial-workflow.mjs",
     "test:live-estate-updates": "node --env-file=.env.local scripts/verify-live-editorial-workflow.mjs --estate-update",

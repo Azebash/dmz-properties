@@ -125,6 +125,13 @@ references the private path before removing the object in Supabase Storage.
 
 ## Domain And Search
 
+The catalogue's NGN price, plot-size, and sorting controls use shareable URLs;
+`npm run test:live-property-discovery` verifies those controls at mobile and
+desktop widths without writing production data. Listings without a verified
+numeric price or plot size are excluded from the corresponding range filter.
+Availability still requires independent confirmation rather than treating
+publication as a real-time stock guarantee.
+
 1. Verify HTTPS on the Vercel launch URL and set `NEXT_PUBLIC_SITE_URL` to the
    chosen canonical origin without a trailing slash.
 2. Verify `/robots.txt`, `/sitemap.xml`, and `/opengraph-image` on production.
