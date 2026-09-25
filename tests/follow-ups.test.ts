@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { dueFollowUpPageSize, followUpLabel, followUpRange, lagosToday, parseFollowUpPage } from "@/lib/admin/follow-ups";
+import {
+  dueFollowUpPageSize, enquiryInboxPageSize, enquiryPageRange, followUpLabel,
+  followUpRange, lagosToday, parseEnquiryPage, parseFollowUpPage,
+} from "@/lib/admin/follow-ups";
 
 describe("Abuja follow-up dates", () => {
   it("uses the business date at the UTC day boundary", () => {
@@ -23,7 +26,13 @@ describe("Abuja follow-up dates", () => {
     expect(parseFollowUpPage("1.5")).toBe(1);
     expect(parseFollowUpPage("999999")).toBe(1);
     expect(parseFollowUpPage(["2", "3"])).toBe(1);
+    expect(parseEnquiryPage("2")).toBe(2);
+    expect(parseEnquiryPage("0")).toBe(1);
+    expect(parseEnquiryPage(["2", "3"])).toBe(1);
     expect(followUpRange(1)).toEqual({ from: 0, to: 49 });
     expect(followUpRange(2)).toEqual({ from: 50, to: 99 });
+    expect(enquiryInboxPageSize).toBe(50);
+    expect(enquiryPageRange(1)).toEqual({ from: 0, to: 49 });
+    expect(enquiryPageRange(2)).toEqual({ from: 50, to: 99 });
   });
 });

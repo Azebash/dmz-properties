@@ -77,8 +77,9 @@ server on port 3100 and Node.js 22, set
 `npm run test:linked-follow-ups`. It creates and removes a synthetic enquiry,
 checks the protected due inbox, then closes the lead. After rollout,
 `npm run test:live-follow-ups` repeats the reversible flow on production. Both
-checks passed after rollout, including a 51-record due-pagination boundary;
-synthetic leads and audit records were removed.
+checks passed after rollout, including 51-record due and full-inbox pagination
+boundaries and cross-list page preservation; synthetic leads and audit records
+were removed.
 
 `npm run test:linked-public-property` uses the same local site and linked
 database to create a synthetic draft property, review and publish it, verify

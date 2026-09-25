@@ -70,6 +70,24 @@ async function dueListText(page, expectedTotal) {
   return allRows;
 }
 
+async function enquiryListText(page, expectedTotal) {
+  const allRows = [];
+  const pageCount = Math.max(1, Math.ceil(expectedTotal / 50));
+  for (let current = 1; current <= pageCount; current += 1) {
+    const region = page.getByRole("region", { name: "All enquiries" });
+    const first = (current - 1) * 50 + 1;
+    const last = Math.min(current * 50, expectedTotal);
+    await expect(region.getByText(`Showing ${first}–${last} of ${expectedTotal} enquiries`, { exact: true }))
+      .toBeVisible();
+    allRows.push(...await region.locator("tbody tr").allTextContents());
+    if (current < pageCount) {
+      await region.getByRole("link", { name: "Next" }).click();
+      await page.waitForURL(new RegExp(`inboxPage=${current + 1}#latest-enquiries$`));
+    }
+  }
+  return allRows;
+}
+
 try {
   const payload = {
     submissionKey,
@@ -96,11 +114,15 @@ try {
   if (!inspectionId) throw new Error("Test inspection was not created");
 
   let dueBefore = 0;
+  let enquiriesBefore = 0;
   if (followUps) {
     dueBefore = await databaseRequest(
       `/enquiries?select=id&status=in.(new,qualified,inspection,offer)&follow_up_on=lte.${todayLagos}`,
       { method: "HEAD", headers: { Prefer: "count=exact", Range: "0-0" } },
     );
+    enquiriesBefore = await databaseRequest("/enquiries?select=id", {
+      method: "HEAD", headers: { Prefer: "count=exact", Range: "0-0" },
+    });
     const fixtures = Array.from({ length: 50 }, (_, index) => ({
       submission_key: randomUUID(),
       enquiry_type: "Buying a plot",
@@ -161,6 +183,20 @@ try {
     }));
     if (mobile.content > mobile.viewport + 1) throw new Error("Due inbox overflows a 375px viewport");
     await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto(`${site}/admin/enquiries?inboxPage=2`, { waitUntil: "networkidle" });
+    await expect(page.getByRole("region", { name: "All enquiries" })
+      .getByText(`Showing 51–${Math.min(100, enquiriesBefore + 50)} of ${enquiriesBefore + 50} enquiries`, { exact: true }))
+      .toBeVisible();
+    if (followUps) {
+      await expect(page.getByRole("region", { name: "Follow-ups due" })
+        .getByRole("link", { name: "Next" })).toHaveAttribute("href", /inboxPage=2/);
+    }
+    await page.goto(`${site}/admin/enquiries`, { waitUntil: "networkidle" });
+    const inboxRows = await enquiryListText(page, enquiriesBefore + 50);
+    const inboxFixtures = inboxRows.filter((row) => row.includes(paginationPrefix));
+    if (inboxFixtures.length !== 50 || !inboxRows.some((row) => row.includes("Workflow Verification"))) {
+      throw new Error("Enquiry inbox pages did not include each synthetic record exactly once");
+    }
     await page.goto(`${site}/admin/enquiries/${enquiryId}`, { waitUntil: "networkidle" });
     const pending = await databaseRequest(`/enquiries?id=eq.${enquiryId}&select=follow_up_on`);
     if (pending[0]?.follow_up_on !== todayLagos) throw new Error("Due reminder was not stored");
@@ -176,7 +212,7 @@ try {
     }
     const events = await databaseRequest(`/audit_events?entity_id=eq.${enquiryId}&action=in.(follow_up_changed,workflow_updated)&select=id`);
     if (events.length !== 2) throw new Error("Scheduling and closing the reminder were not audited");
-    console.log("Follow-up scheduling, due inbox, terminal cleanup and audit events verified");
+    console.log("Due and enquiry pagination, scheduling, terminal cleanup and audit events verified");
   } else {
     await page.getByLabel("Lead stage").selectOption("qualified");
     await page.getByLabel("Private follow-up notes").fill("Confirmed remote buyer interest.");
@@ -229,6 +265,12 @@ try {
 } finally {
   await browser?.close();
   if (enquiryId) {
+    if (followUps) {
+      const fixtures = await databaseRequest(
+        `/enquiries?name=like.${encodeURIComponent(`${paginationPrefix}*`)}&select=id`,
+      );
+      paginationIds = [...new Set([...paginationIds, ...fixtures.map((row) => row.id)])];
+    }
     const allIds = [enquiryId, inspectionId, ...paginationIds].filter(Boolean).join(",");
     await databaseRequest(`/audit_events?entity_id=in.(${allIds})`, {
       method: "DELETE",

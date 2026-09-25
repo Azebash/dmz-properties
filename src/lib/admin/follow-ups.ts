@@ -2,6 +2,7 @@ import { formatAdminDate } from "@/lib/admin/format";
 
 export const followUpStatuses = ["new", "qualified", "inspection", "offer"] as const;
 export const dueFollowUpPageSize = 50;
+export const enquiryInboxPageSize = 50;
 
 export function parseFollowUpPage(value: string | string[] | undefined) {
   if (typeof value !== "string" || !/^\d{1,5}$/.test(value)) return 1;
@@ -12,6 +13,21 @@ export function parseFollowUpPage(value: string | string[] | undefined) {
 export function followUpRange(page: number) {
   const first = (page - 1) * dueFollowUpPageSize;
   return { from: first, to: first + dueFollowUpPageSize - 1 };
+}
+
+export function parseEnquiryPage(value: string | string[] | undefined) {
+  if (typeof value !== "string" || !/^\d{1,5}$/.test(value)) return 1;
+  const page = Number(value);
+  return Number.isSafeInteger(page) && page > 0 ? page : 1;
+}
+
+export function enquiryInboxRange(page: number) {
+  return enquiryPageRange(page);
+}
+
+export function enquiryPageRange(page: number) {
+  const first = (page - 1) * enquiryInboxPageSize;
+  return { from: first, to: first + enquiryInboxPageSize - 1 };
 }
 
 export function lagosToday(now = new Date()) {

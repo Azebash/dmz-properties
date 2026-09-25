@@ -1,7 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireStaff } from "@/lib/admin/auth";
 import { redirect } from "next/navigation";
-import { dueFollowUpPageSize, followUpRange, followUpStatuses, lagosToday } from "@/lib/admin/follow-ups";
+import {
+  dueFollowUpPageSize, enquiryInboxPageSize, enquiryInboxRange,
+  followUpRange, followUpStatuses, lagosToday,
+} from "@/lib/admin/follow-ups";
 
 async function authorizedClient() {
   await requireStaff();
@@ -59,17 +62,19 @@ export async function getAdminPropertyDocuments(propertyId: string) {
   return data;
 }
 
-export async function listAdminEnquiries() {
+export async function listAdminEnquiries(page = 1) {
   const supabase = await authorizedPropertyClient();
-  const { data, error } = await supabase
+  const { from, to } = enquiryInboxRange(page);
+  const { data, error, count } = await supabase
     .from("enquiries")
     .select(
       "id, name, email, phone, enquiry_type, property_reference, status, assigned_to, follow_up_on, created_at",
+      { count: "exact" },
     )
-    .order("created_at", { ascending: false })
-    .limit(100);
+    .order("created_at", { ascending: false }).order("id", { ascending: false })
+    .range(from, to);
   if (error) throw new Error(`Unable to load enquiries: ${error.message}`);
-  return data;
+  return { items: data, total: count || 0, page, pageSize: enquiryInboxPageSize };
 }
 
 export async function listDueEnquiryFollowUps(page = 1) {

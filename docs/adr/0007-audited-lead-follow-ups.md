@@ -23,9 +23,11 @@ are not configured, and scheduled GitHub monitoring cannot currently run.
   workflow transaction. Reopening the lead does not restore an old date.
 - The protected inbox shows due and overdue reminders separately from its
   latest-enquiries table, ordered by due date, creation date, and ID in stable
-  50-item pages. It reports the full due count and provides Previous/Next
-  navigation. The overview reports the full due count. The lead detail page can
-  reschedule or clear a reminder and shows its current state.
+  50-item pages. The full enquiry table is also paginated newest-first with
+  stable creation-date and ID ordering. Both report the full result count and
+  provide Previous/Next navigation, preserving the other list's current page.
+  The overview reports the full due count. The lead detail page can reschedule
+  or clear a reminder and shows its current state.
 - This is an in-app staff queue, not an automated email, SMS, WhatsApp, or
   browser push notification. A human must still monitor and assign leads.
 
@@ -47,9 +49,10 @@ reversible browser workflow with a synthetic lead proved staff scheduling,
 visibility in the due inbox, closure removal, and complete cleanup against
 both the linked local build and production. A production pagination check added
 50 due fixtures (51 with the lead under test), proved all fixtures appear once
-across stable pages, and removed the fixture rows and audit events. The existing
-inspection workflow, published listing and dependency readiness also passed
-after deployment.
+across both due reminders and the general enquiry register, verified navigation
+preserves the other list's page, and removed the fixture rows and audit events.
+The existing inspection workflow, published listing and dependency readiness
+also passed after deployment.
 
 ## Rollback
 
