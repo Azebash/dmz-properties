@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireStaff } from "@/lib/admin/auth";
 import { redirect } from "next/navigation";
-import { followUpStatuses, lagosToday } from "@/lib/admin/follow-ups";
+import { dueFollowUpPageSize, followUpRange, followUpStatuses, lagosToday } from "@/lib/admin/follow-ups";
 
 async function authorizedClient() {
   await requireStaff();
@@ -72,15 +72,17 @@ export async function listAdminEnquiries() {
   return data;
 }
 
-export async function listDueEnquiryFollowUps() {
+export async function listDueEnquiryFollowUps(page = 1) {
   const supabase = await authorizedPropertyClient();
-  const { data, error } = await supabase.from("enquiries")
-    .select("id,name,property_reference,assigned_to,follow_up_on")
+  const { from, to } = followUpRange(page);
+  const { data, error, count } = await supabase.from("enquiries")
+    .select("id,name,property_reference,assigned_to,follow_up_on,created_at", { count: "exact" })
     .in("status", followUpStatuses).lte("follow_up_on", lagosToday())
     .order("follow_up_on", { ascending: true })
-    .order("created_at", { ascending: true }).limit(100);
+    .order("created_at", { ascending: true }).order("id", { ascending: true })
+    .range(from, to);
   if (error) throw new Error(`Unable to load due follow-ups: ${error.message}`);
-  return data;
+  return { items: data, total: count || 0, page, pageSize: dueFollowUpPageSize };
 }
 
 export async function getAdminEnquiry(id: string) {

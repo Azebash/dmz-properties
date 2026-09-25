@@ -62,8 +62,8 @@ up through the available phone or WhatsApp channels until notifications are
 configured.
 
 Property staff can set an Abuja-date next follow-up on an active lead. The
-protected inbox shows the earliest 100 due and overdue leads separately from
-the recent enquiries list, while the overview counts all due leads. Closing a
+protected inbox shows due and overdue leads in stable, 50-item pages separately
+from the recent enquiries list, while the overview counts all due leads. Closing a
 lead as won, lost, or spam clears its reminder in the same audit transaction.
 These are on-screen reminders, not email, SMS, or push notifications; a staff
 member must still monitor the inbox. `npm run test:live-follow-ups` creates a

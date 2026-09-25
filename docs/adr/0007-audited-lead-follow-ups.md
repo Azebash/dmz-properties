@@ -22,10 +22,10 @@ are not configured, and scheduled GitHub monitoring cannot currently run.
 - Closing a lead as won, lost, or spam clears its reminder in the same audited
   workflow transaction. Reopening the lead does not restore an old date.
 - The protected inbox shows due and overdue reminders separately from its
-  latest-enquiries table, ordered by due date. The overview reports the full
-  due count. If the inbox reaches its first 100 due rows, it says so rather
-  than implying the list is complete. The lead detail page can reschedule or
-  clear a reminder and shows its current state.
+  latest-enquiries table, ordered by due date, creation date, and ID in stable
+  50-item pages. It reports the full due count and provides Previous/Next
+  navigation. The overview reports the full due count. The lead detail page can
+  reschedule or clear a reminder and shows its current state.
 - This is an in-app staff queue, not an automated email, SMS, WhatsApp, or
   browser push notification. A human must still monitor and assign leads.
 

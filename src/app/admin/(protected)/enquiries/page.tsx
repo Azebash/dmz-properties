@@ -3,17 +3,29 @@ import Link from "next/link";
 import { AdminEmpty } from "@/components/admin-empty";
 import { AdminStatus } from "@/components/admin-status";
 import { formatAdminDate } from "@/lib/admin/format";
-import { followUpLabel, lagosToday } from "@/lib/admin/follow-ups";
+import { followUpLabel, lagosToday, parseFollowUpPage } from "@/lib/admin/follow-ups";
 import { requireStaff } from "@/lib/admin/auth";
 import { listAdminEnquiries, listDueEnquiryFollowUps } from "@/lib/admin/queries";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = { title: "Enquiries" };
 
-export default async function AdminEnquiriesPage() {
+export default async function AdminEnquiriesPage({ searchParams }: PageProps<"/admin/enquiries">) {
+  const params = await searchParams;
+  const requestedPage = parseFollowUpPage(params.followUpPage);
   const [enquiries, due, staff] = await Promise.all([
-    listAdminEnquiries(), listDueEnquiryFollowUps(), requireStaff(),
+    listAdminEnquiries(), listDueEnquiryFollowUps(requestedPage), requireStaff(),
   ]);
   const today = lagosToday();
+  const pageCount = Math.max(1, Math.ceil(due.total / due.pageSize));
+  if (requestedPage > pageCount) {
+    redirect(`/admin/enquiries?followUpPage=${pageCount}#due-follow-ups`);
+  }
+  const firstItem = due.total ? (requestedPage - 1) * due.pageSize + 1 : 0;
+  const lastItem = Math.min(requestedPage * due.pageSize, due.total);
+  const pageHref = (page: number) => page === 1
+    ? "/admin/enquiries#due-follow-ups"
+    : `/admin/enquiries?followUpPage=${page}#due-follow-ups`;
   return (
     <div className="admin-page">
       <header className="admin-page-header">
@@ -24,9 +36,12 @@ export default async function AdminEnquiriesPage() {
       <section className="admin-due-follow-ups" id="due-follow-ups" aria-labelledby="due-follow-ups-heading">
         <h2 id="due-follow-ups-heading">Follow-ups due</h2>
         <p>Due today or overdue in Abuja time. Reminders are visible here; they do not send email or messages.</p>
-        {due.length ? (
+        <p className="admin-due-follow-ups-count">
+          {due.total ? `Showing ${firstItem}–${lastItem} of ${due.total} due follow-ups` : "0 due follow-ups"}
+        </p>
+        {due.items.length ? (
           <ul>
-            {due.map((enquiry) => (
+            {due.items.map((enquiry) => (
               <li key={enquiry.id}>
                 <Link href={`/admin/enquiries/${enquiry.id}`}>{enquiry.name}</Link>
                 <span>{enquiry.property_reference || "General enquiry"}</span>
@@ -39,7 +54,13 @@ export default async function AdminEnquiriesPage() {
             ))}
           </ul>
         ) : <p>No follow-ups due today.</p>}
-        {due.length === 100 ? <p>Showing the earliest 100 due follow-ups. Clear completed reminders to reveal later items.</p> : null}
+        {pageCount > 1 ? (
+          <nav className="admin-follow-up-pagination" aria-label="Follow-up pages">
+            {requestedPage > 1 ? <Link rel="prev" href={pageHref(requestedPage - 1)}>Previous</Link> : <span />}
+            <span>Page {requestedPage} of {pageCount}</span>
+            {requestedPage < pageCount ? <Link rel="next" href={pageHref(requestedPage + 1)}>Next</Link> : <span />}
+          </nav>
+        ) : null}
       </section>
       {enquiries.length ? (
         <div className="admin-table-wrap">

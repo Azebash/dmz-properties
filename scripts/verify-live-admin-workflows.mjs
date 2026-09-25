@@ -32,8 +32,10 @@ const headers = {
 const databaseUrl = `${supabaseUrl}/rest/v1`;
 const submissionKey = randomUUID();
 const preferredDate = new Date(Date.now() + 3 * 86_400_000).toISOString().slice(0, 10);
+const paginationPrefix = `Reminder Page Fixture ${randomUUID().slice(0, 8)}`;
 let enquiryId;
 let inspectionId;
+let paginationIds = [];
 let browser;
 
 async function databaseRequest(path, options = {}) {
@@ -43,7 +45,29 @@ async function databaseRequest(path, options = {}) {
   });
   if (!response.ok) throw new Error(`Database ${options.method || "GET"} failed: ${response.status}`);
   if (response.status === 204) return null;
+  if (options.method === "HEAD") {
+    const total = response.headers.get("content-range")?.split("/")[1];
+    return Number(total || 0);
+  }
   return response.json();
+}
+
+async function dueListText(page, expectedTotal) {
+  const allRows = [];
+  const pageCount = Math.max(1, Math.ceil(expectedTotal / 50));
+  for (let current = 1; current <= pageCount; current += 1) {
+    const region = page.getByRole("region", { name: "Follow-ups due" });
+    const first = (current - 1) * 50 + 1;
+    const last = Math.min(current * 50, expectedTotal);
+    await expect(region.getByText(`Showing ${first}–${last} of ${expectedTotal} due follow-ups`, { exact: true }))
+      .toBeVisible();
+    allRows.push(...await region.locator("li").allTextContents());
+    if (current < pageCount) {
+      await region.getByRole("link", { name: "Next" }).click();
+      await page.waitForURL(new RegExp(`followUpPage=${current + 1}#due-follow-ups$`));
+    }
+  }
+  return allRows;
 }
 
 try {
@@ -70,6 +94,30 @@ try {
   );
   inspectionId = inspections[0]?.id;
   if (!inspectionId) throw new Error("Test inspection was not created");
+
+  let dueBefore = 0;
+  if (followUps) {
+    dueBefore = await databaseRequest(
+      `/enquiries?select=id&status=in.(new,qualified,inspection,offer)&follow_up_on=lte.${todayLagos}`,
+      { method: "HEAD", headers: { Prefer: "count=exact", Range: "0-0" } },
+    );
+    const fixtures = Array.from({ length: 50 }, (_, index) => ({
+      submission_key: randomUUID(),
+      enquiry_type: "Buying a plot",
+      name: `${paginationPrefix} ${String(index + 1).padStart(2, "0")}`,
+      email: "reminder-pagination@example.com",
+      phone: "+2348000000000",
+      message: "Synthetic fixture for due follow-up pagination verification.",
+      privacy_consent_at: new Date().toISOString(),
+      status: "qualified",
+      follow_up_on: todayLagos,
+    }));
+    const inserted = await databaseRequest("/enquiries", {
+      method: "POST", headers: { Prefer: "return=representation" }, body: JSON.stringify(fixtures),
+    });
+    paginationIds = inserted.map((row) => row.id);
+    if (paginationIds.length !== 50) throw new Error("Could not create follow-up pagination fixtures");
+  }
 
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
@@ -98,10 +146,14 @@ try {
     await expect(page.getByText("Follow-up scheduled and audited. Check the staff inbox for due reminders."))
       .toBeVisible();
     await page.goto(`${site}/admin/enquiries`, { waitUntil: "networkidle" });
+    const expectedDue = dueBefore + 51;
+    const pagedRows = await dueListText(page, expectedDue);
+    const visibleFixtures = pagedRows.filter((row) => row.includes(paginationPrefix));
+    if (visibleFixtures.length !== 50 || !pagedRows.some((row) => row.includes("Workflow Verification"))) {
+      throw new Error("Due follow-up pages did not include each synthetic record exactly once");
+    }
     const due = page.getByRole("region", { name: "Follow-ups due" });
-    await expect(due.getByRole("link", { name: "Workflow Verification" })).toBeVisible();
-    await expect(due.getByRole("link", { name: "Workflow Verification" })
-      .locator("..").locator(".admin-follow-up")).toContainText("Due today");
+    await expect(due.getByRole("link", { name: "Next" })).toHaveCount(0);
     await page.setViewportSize({ width: 375, height: 812 });
     const mobile = await page.evaluate(() => ({
       viewport: document.documentElement.clientWidth,
@@ -118,8 +170,10 @@ try {
     const closed = await databaseRequest(`/enquiries?id=eq.${enquiryId}&select=follow_up_on`);
     if (closed[0]?.follow_up_on !== null) throw new Error("Terminal lead retained an active reminder");
     await page.goto(`${site}/admin/enquiries`, { waitUntil: "networkidle" });
-    await expect(page.getByRole("region", { name: "Follow-ups due" })
-      .getByRole("link", { name: "Workflow Verification" })).toHaveCount(0);
+    const rowsAfterClose = await dueListText(page, expectedDue - 1);
+    if (rowsAfterClose.some((row) => row.includes("Workflow Verification"))) {
+      throw new Error("Closed lead remained in paginated due reminders");
+    }
     const events = await databaseRequest(`/audit_events?entity_id=eq.${enquiryId}&action=in.(follow_up_changed,workflow_updated)&select=id`);
     if (events.length !== 2) throw new Error("Scheduling and closing the reminder were not audited");
     console.log("Follow-up scheduling, due inbox, terminal cleanup and audit events verified");
@@ -175,11 +229,12 @@ try {
 } finally {
   await browser?.close();
   if (enquiryId) {
-    await databaseRequest(`/audit_events?entity_id=in.(${enquiryId},${inspectionId || enquiryId})`, {
+    const allIds = [enquiryId, inspectionId, ...paginationIds].filter(Boolean).join(",");
+    await databaseRequest(`/audit_events?entity_id=in.(${allIds})`, {
       method: "DELETE",
     });
-    await databaseRequest(`/enquiries?id=eq.${enquiryId}`, { method: "DELETE" });
-    const leftovers = await databaseRequest(`/enquiries?id=eq.${enquiryId}&select=id`);
+    await databaseRequest(`/enquiries?id=in.(${[enquiryId, ...paginationIds].join(",")})`, { method: "DELETE" });
+    const leftovers = await databaseRequest(`/enquiries?id=in.(${[enquiryId, ...paginationIds].join(",")})&select=id`);
     if (leftovers.length) throw new Error("Temporary verification enquiry was not removed");
     console.log("Temporary workflow records removed");
   }
