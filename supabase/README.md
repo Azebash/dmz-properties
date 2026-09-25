@@ -91,6 +91,14 @@ then remove the temporary file, media row, and audit records. On Node.js 22,
 `npm run test:live-property-media` repeats the reversible check against the
 canonical production URL without requiring a local server.
 
+`private_property_documents.test.sql` checks staff-only document metadata,
+audited internal review and withdrawal, and a PDF-only private bucket. With a
+local production server on port 3100 and Node.js 22, run
+`npm run test:linked-property-documents` to upload and retrieve a generated
+synthetic PDF, prove anonymous downloads redirect to staff login, and remove
+all temporary records and bytes. After production rollout, use
+`npm run test:live-property-documents` for the reversible live check.
+
 To verify the authenticated operations after a production deployment, run
 `npm run test:live-workflows` with local staff credentials and a server-only
 Supabase secret in `.env.local`. The test creates an inspection request, updates

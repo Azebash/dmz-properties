@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { AdminPropertyForm } from "@/components/admin-property-form";
 import { AdminPropertyMedia } from "@/components/admin-property-media";
+import { AdminPropertyDocuments } from "@/components/admin-property-documents";
 import { AdminStatus } from "@/components/admin-status";
 import { requireStaff } from "@/lib/admin/auth";
-import { getAdminProperty, getAdminPropertyMedia } from "@/lib/admin/queries";
+import { getAdminProperty, getAdminPropertyMedia, getAdminPropertyDocuments } from "@/lib/admin/queries";
 import { transitionPropertyAction } from "@/app/admin/(protected)/properties/actions";
 import type { PropertyStatus } from "@/lib/supabase/types";
 
@@ -30,8 +31,8 @@ export default async function EditPropertyPage({
 }: EditPropertyPageProps) {
   const { id } = await params;
   const query = await searchParams;
-  const [staff, property, images] = await Promise.all([
-    requireStaff(), getAdminProperty(id), getAdminPropertyMedia(id),
+  const [staff, property, images, documents] = await Promise.all([
+    requireStaff(), getAdminProperty(id), getAdminPropertyMedia(id), getAdminPropertyDocuments(id),
   ]);
   if (!property) notFound();
   if (staff.role !== "administrator" && staff.role !== "property_manager") {
@@ -69,6 +70,7 @@ export default async function EditPropertyPage({
       ) : null}
       <AdminPropertyForm property={property} />
       <AdminPropertyMedia propertyId={property.id} propertyType={property.property_type} images={images} />
+      <AdminPropertyDocuments propertyId={property.id} documents={documents} />
 
       <section className="admin-transitions">
         <h2>Publication workflow</h2>

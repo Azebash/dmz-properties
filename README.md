@@ -51,6 +51,9 @@ JPEG, PNG and WebP files are normalized to WebP without source metadata. Land
 photos can only be estate context; offer letters are never uploaded to the
 photo gallery. The media UI and RLS-gated image route are deployed; a reversible
 live check confirmed private upload, approval, public display and withdrawal.
+Private offer letters and other property paperwork have a separate staff-only
+PDF workflow in development. Internal document verification does not publish
+or send the file to buyers; production rollout remains pending.
 The property-read cutover is deployed and verified on the Vercel site; approved
 Supabase listings now drive the homepage, catalogue, detail pages, area cards,
 search metadata, and sitemap.

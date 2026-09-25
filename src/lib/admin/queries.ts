@@ -49,6 +49,15 @@ export async function getAdminPropertyMedia(propertyId: string) {
   return data;
 }
 
+export async function getAdminPropertyDocuments(propertyId: string) {
+  const supabase = await authorizedPropertyClient();
+  const { data, error } = await supabase.from("property_documents")
+    .select("id,property_id,document_type,display_name,notes,verification_status,created_at")
+    .eq("property_id", propertyId).order("created_at", { ascending: false });
+  if (error) throw new Error(`Unable to load property documents: ${error.message}`);
+  return data;
+}
+
 export async function listAdminEnquiries() {
   const supabase = await authorizedPropertyClient();
   const { data, error } = await supabase

@@ -661,6 +661,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_property_document: {
+        Args: {
+          p_property_id: string
+          p_storage_path: string
+          p_document_type: string
+          p_display_name: string
+          p_notes: string
+        }
+        Returns: string
+      }
       add_property_media: {
         Args: {
           p_alt_text: string
@@ -746,6 +756,14 @@ export type Database = {
         }
         Returns: Database["public"]["Enums"]["verification_status"]
       }
+      transition_property_document: {
+        Args: {
+          p_document_id: string
+          p_status: Database["public"]["Enums"]["verification_status"]
+          p_review_confirmed: boolean
+        }
+        Returns: Database["public"]["Enums"]["verification_status"]
+      }
       update_enquiry_workflow: {
         Args: {
           p_enquiry_id: string
@@ -762,6 +780,15 @@ export type Database = {
           p_status: Database["public"]["Enums"]["inspection_status"]
         }
         Returns: Database["public"]["Enums"]["inspection_status"]
+      }
+      update_property_document: {
+        Args: {
+          p_document_id: string
+          p_document_type: string
+          p_display_name: string
+          p_notes: string
+        }
+        Returns: Database["public"]["Enums"]["verification_status"]
       }
       update_property_media: {
         Args: {
