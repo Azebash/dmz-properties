@@ -131,6 +131,14 @@ desktop widths without writing production data. Listings without a verified
 numeric price or plot size are excluded from the corresponding range filter.
 Availability still requires independent confirmation rather than treating
 publication as a real-time stock guarantee.
+Administrators and property managers can record an audited current-stock check
+for a published listing at `/admin/properties/[id]/edit`. Available or on-hold
+requires an explicit confirmation that they checked with the owner or developer;
+the server writes the timestamp. Public confirmations expire after 14 days,
+and changing publication state resets availability. Existing inventory defaults
+to "Availability to confirm" and the current developer listing remains there.
+`npm run test:live-property-availability` checks the public label, filters and
+staff form without asserting or altering business stock.
 
 1. Verify HTTPS on the Vercel launch URL and set `NEXT_PUBLIC_SITE_URL` to the
    chosen canonical origin without a trailing slash.

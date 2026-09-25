@@ -114,7 +114,7 @@ These features should follow immediately after the launch blockers.
 - [x] Filter by developer inventory or owner resale
 - [x] Filter by stated NGN price range; listings without an NGN amount are excluded when filtering
 - [x] Filter by stated plot size in sqm; listings without a recorded size are excluded when filtering
-- [~] Audited inventory confirmation and a 14-day availability filter are implemented locally; linked and live rollout checks remain pending. The current developer listing stays unconfirmed
+- [x] Audited inventory confirmation and a 14-day availability filter passed linked and live checks; the current developer listing stays unconfirmed until staff verifies stock
 - [x] Sort by newest publication, NGN price, and search relevance, with shareable URL controls verified on production
 - [x] Search by property name or reference number
 - [ ] Related-property recommendations

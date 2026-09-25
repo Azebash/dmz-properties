@@ -1,6 +1,6 @@
 # ADR 0006: Separate inventory availability from property publication
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-09-25
 - Related: [ADR 0003](0003-published-property-read-model.md), [ADR 0004](0004-reviewed-property-media.md)
 
@@ -48,8 +48,10 @@ Staff must periodically reconfirm availability. Expiry is calculated on public
 reads rather than changing the stored row, so the original check and actor
 remain auditable. Linked database tests cover authorization, confirmation,
 server timestamps, revocation, and republication; unit tests cover the 14-day
-boundary and public fallback. A reversible production check should not label
-the real developer plot available without a business confirmation.
+boundary and public fallback. Production read-only checks confirmed that the
+real developer plot remains unconfirmed, the public filter excludes it from
+recently available listings, and the staff action rejects an available claim
+without attestation. No business inventory claim was changed.
 
 ## Rollback
 

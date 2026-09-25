@@ -107,7 +107,8 @@ timestamp, and that reservation and republication clear previous confirmations.
 Run `npm run test:linked-property-availability` with a local production server
 on port 3100 and Node.js 22 to check the staff UI and public filter against the
 real unconfirmed developer listing without changing inventory claims. Run
-`npm run test:live-property-availability` only after application rollout.
+`npm run test:live-property-availability` to repeat the read-only production
+check. Both passed after rollout; the developer listing remained unconfirmed.
 
 To verify the authenticated operations after a production deployment, run
 `npm run test:live-workflows` with local staff credentials and a server-only
