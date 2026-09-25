@@ -1,17 +1,28 @@
 import { randomUUID } from "node:crypto";
 import { chromium, expect } from "@playwright/test";
 
-const site = process.env.DMZ_VERIFY_SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://dmz-properties.vercel.app";
+const site = process.argv.includes("--production") ? "https://dmz-properties.vercel.app"
+  : process.env.DMZ_VERIFY_SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://dmz-properties.vercel.app";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const secret = process.env.SUPABASE_SECRET_KEY;
 const email = process.env.DMZ_ADMIN_EMAIL;
 const password = process.env.DMZ_ADMIN_TEMP_PASSWORD;
 const governance = process.argv.includes("--staff-governance");
+const followUps = process.argv.includes("--follow-ups");
 
 if (!supabaseUrl || !secret || !email || !password ||
   (!site.startsWith("https://") && !/^http:\/\/localhost:\d+$/.test(site))) {
   throw new Error("Workflow verification requires HTTPS (or localhost) and staff/Supabase credentials");
 }
+if (followUps && site !== "https://dmz-properties.vercel.app" && !/^http:\/\/localhost:\d+$/.test(site)) {
+  throw new Error("Follow-up verification requires the canonical site or localhost");
+}
+
+const lagosParts = new Intl.DateTimeFormat("en-GB", {
+  timeZone: "Africa/Lagos", year: "numeric", month: "2-digit", day: "2-digit",
+}).formatToParts(new Date());
+const lagosPart = (type) => lagosParts.find((part) => part.type === type)?.value;
+const todayLagos = `${lagosPart("year")}-${lagosPart("month")}-${lagosPart("day")}`;
 
 const headers = {
   apikey: secret,
@@ -81,53 +92,86 @@ try {
     await page.getByRole("button", { name: "Save assignment" }).click();
     await expect(page.getByText("Lead and linked inspection ownership updated.")).toBeVisible();
   }
-  await page.getByLabel("Lead stage").selectOption("qualified");
-  await page.getByLabel("Private follow-up notes").fill("Confirmed remote buyer interest.");
-  await page.getByRole("button", { name: "Save follow-up" }).click();
-  await expect(page.locator(".admin-edit-header .admin-status")).toHaveText("qualified", {
-    timeout: 30_000,
-  });
+  if (followUps) {
+    await page.getByLabel("Follow up by (Abuja date)").fill(todayLagos);
+    await page.getByRole("button", { name: "Save follow-up date" }).click();
+    await expect(page.getByText("Follow-up scheduled and audited. Check the staff inbox for due reminders."))
+      .toBeVisible();
+    await page.goto(`${site}/admin/enquiries`, { waitUntil: "networkidle" });
+    const due = page.getByRole("region", { name: "Follow-ups due" });
+    await expect(due.getByRole("link", { name: "Workflow Verification" })).toBeVisible();
+    await expect(due.getByRole("link", { name: "Workflow Verification" })
+      .locator("..").locator(".admin-follow-up")).toContainText("Due today");
+    await page.setViewportSize({ width: 375, height: 812 });
+    const mobile = await page.evaluate(() => ({
+      viewport: document.documentElement.clientWidth,
+      content: document.documentElement.scrollWidth,
+    }));
+    if (mobile.content > mobile.viewport + 1) throw new Error("Due inbox overflows a 375px viewport");
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto(`${site}/admin/enquiries/${enquiryId}`, { waitUntil: "networkidle" });
+    const pending = await databaseRequest(`/enquiries?id=eq.${enquiryId}&select=follow_up_on`);
+    if (pending[0]?.follow_up_on !== todayLagos) throw new Error("Due reminder was not stored");
+    await page.getByLabel("Lead stage").selectOption("lost");
+    await page.getByRole("button", { name: "Save follow-up", exact: true }).click();
+    await expect(page.locator(".admin-edit-header .admin-status")).toHaveText("lost", { timeout: 30_000 });
+    const closed = await databaseRequest(`/enquiries?id=eq.${enquiryId}&select=follow_up_on`);
+    if (closed[0]?.follow_up_on !== null) throw new Error("Terminal lead retained an active reminder");
+    await page.goto(`${site}/admin/enquiries`, { waitUntil: "networkidle" });
+    await expect(page.getByRole("region", { name: "Follow-ups due" })
+      .getByRole("link", { name: "Workflow Verification" })).toHaveCount(0);
+    const events = await databaseRequest(`/audit_events?entity_id=eq.${enquiryId}&action=in.(follow_up_changed,workflow_updated)&select=id`);
+    if (events.length !== 2) throw new Error("Scheduling and closing the reminder were not audited");
+    console.log("Follow-up scheduling, due inbox, terminal cleanup and audit events verified");
+  } else {
+    await page.getByLabel("Lead stage").selectOption("qualified");
+    await page.getByLabel("Private follow-up notes").fill("Confirmed remote buyer interest.");
+    await page.getByRole("button", { name: "Save follow-up", exact: true }).click();
+    await expect(page.locator(".admin-edit-header .admin-status")).toHaveText("qualified", {
+      timeout: 30_000,
+    });
 
-  await page.goto(`${site}/admin/inspections/${inspectionId}`, { waitUntil: "networkidle" });
-  if (governance) {
-    await expect(page.getByLabel("Assigned to")).toHaveValue(
-      (await databaseRequest(`/enquiries?id=eq.${enquiryId}&select=assigned_to`))[0].assigned_to,
+    await page.goto(`${site}/admin/inspections/${inspectionId}`, { waitUntil: "networkidle" });
+    if (governance) {
+      await expect(page.getByLabel("Assigned to")).toHaveValue(
+        (await databaseRequest(`/enquiries?id=eq.${enquiryId}&select=assigned_to`))[0].assigned_to,
+      );
+    }
+    await page.getByLabel("Time zone", { exact: true }).fill("Africa/Lagos");
+    await page.getByRole("button", { name: "Update time zone" }).click();
+    await expect(page.getByText("Time zone updated and audited.")).toBeVisible({ timeout: 30_000 });
+    await page.getByLabel("Next step").selectOption("confirmed");
+    await page.getByLabel("Appointment in Africa/Lagos").fill(`${preferredDate}T12:00`);
+    await page.getByRole("button", { name: "Save inspection" }).click();
+    await expect(page.locator(".admin-edit-header .admin-status")).toHaveText("confirmed", {
+      timeout: 30_000,
+    });
+    await page.getByLabel("Next step").selectOption("completed");
+    await page.getByLabel("Private outcome notes").fill("Buyer attended the remote inspection and requested documents.");
+    await page.getByRole("button", { name: "Save inspection" }).click();
+    await expect(page.locator(".admin-edit-header .admin-status")).toHaveText("completed", {
+      timeout: 30_000,
+    });
+
+    const enquiry = await databaseRequest(`/enquiries?id=eq.${enquiryId}&select=status,internal_notes`);
+    const inspection = await databaseRequest(
+      `/inspections?id=eq.${inspectionId}&select=status,time_zone,scheduled_at,outcome_notes`,
     );
+    const activity = await databaseRequest(
+      `/audit_events?entity_id=in.(${enquiryId},${inspectionId})&action=in.(workflow_updated,time_zone_corrected)&select=id`,
+    );
+    const assignments = governance ? await databaseRequest(
+      `/audit_events?entity_id=in.(${enquiryId},${inspectionId})&action=eq.assigned&select=id`,
+    ) : [];
+    if (enquiry[0]?.status !== "qualified" ||
+        inspection[0]?.status !== "completed" ||
+        inspection[0]?.time_zone !== "Africa/Lagos" ||
+        !inspection[0]?.scheduled_at ||
+        activity.length !== 4 || assignments.length !== (governance ? 2 : 0)) {
+      throw new Error("Workflow state or audit records do not match the browser actions");
+    }
+    console.log(JSON.stringify({ enquiry: "qualified", inspection: "completed", audits: activity.length + assignments.length }));
   }
-  await page.getByLabel("Time zone", { exact: true }).fill("Africa/Lagos");
-  await page.getByRole("button", { name: "Update time zone" }).click();
-  await expect(page.getByText("Time zone updated and audited.")).toBeVisible();
-  await page.getByLabel("Next step").selectOption("confirmed");
-  await page.getByLabel("Appointment in Africa/Lagos").fill(`${preferredDate}T12:00`);
-  await page.getByRole("button", { name: "Save inspection" }).click();
-  await expect(page.locator(".admin-edit-header .admin-status")).toHaveText("confirmed", {
-    timeout: 30_000,
-  });
-  await page.getByLabel("Next step").selectOption("completed");
-  await page.getByLabel("Private outcome notes").fill("Buyer attended the remote inspection and requested documents.");
-  await page.getByRole("button", { name: "Save inspection" }).click();
-  await expect(page.locator(".admin-edit-header .admin-status")).toHaveText("completed", {
-    timeout: 30_000,
-  });
-
-  const enquiry = await databaseRequest(`/enquiries?id=eq.${enquiryId}&select=status,internal_notes`);
-  const inspection = await databaseRequest(
-    `/inspections?id=eq.${inspectionId}&select=status,time_zone,scheduled_at,outcome_notes`,
-  );
-  const activity = await databaseRequest(
-    `/audit_events?entity_id=in.(${enquiryId},${inspectionId})&action=in.(workflow_updated,time_zone_corrected)&select=id`,
-  );
-  const assignments = governance ? await databaseRequest(
-    `/audit_events?entity_id=in.(${enquiryId},${inspectionId})&action=eq.assigned&select=id`,
-  ) : [];
-  if (enquiry[0]?.status !== "qualified" ||
-      inspection[0]?.status !== "completed" ||
-      inspection[0]?.time_zone !== "Africa/Lagos" ||
-      !inspection[0]?.scheduled_at ||
-      activity.length !== 4 || assignments.length !== (governance ? 2 : 0)) {
-    throw new Error("Workflow state or audit records do not match the browser actions");
-  }
-  console.log(JSON.stringify({ enquiry: "qualified", inspection: "completed", audits: activity.length + assignments.length }));
 } finally {
   await browser?.close();
   if (enquiryId) {

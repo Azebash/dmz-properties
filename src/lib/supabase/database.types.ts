@@ -187,6 +187,7 @@ export type Database = {
           current_location: string | null
           email: string
           enquiry_type: string
+          follow_up_on: string | null
           id: string
           inspection_date: string | null
           inspection_preference: string | null
@@ -214,6 +215,7 @@ export type Database = {
           current_location?: string | null
           email: string
           enquiry_type: string
+          follow_up_on?: string | null
           id?: string
           inspection_date?: string | null
           inspection_preference?: string | null
@@ -241,6 +243,7 @@ export type Database = {
           current_location?: string | null
           email?: string
           enquiry_type?: string
+          follow_up_on?: string | null
           id?: string
           inspection_date?: string | null
           inspection_preference?: string | null
@@ -716,6 +719,10 @@ export type Database = {
         Returns: Database["public"]["Enums"]["publication_status"]
       }
       save_property: { Args: { p_payload: Json }; Returns: string }
+      set_enquiry_follow_up: {
+        Args: { p_enquiry_id: string; p_follow_up_on: string | null }
+        Returns: string | null
+      }
       set_property_availability: {
         Args: { p_checked: boolean; p_property_id: string; p_status: string }
         Returns: string

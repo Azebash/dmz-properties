@@ -89,6 +89,9 @@ onboarding is not yet enabled in the app.
 Only administrators and property managers may view buyer, inspection, or seller
 records. The same roles may edit published property details with an audit event;
 new property listings still require review and publication.
+An in-app follow-up queue is locally verified for property staff: dated next
+contacts appear in a due inbox and close with won, lost, or spam leads. It does
+not send email or messages; application rollout is pending.
 Virgin-land listings use estate-context photography, explicitly identified as
 not a picture of the exact plot; offer-letter details remain private.
 

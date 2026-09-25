@@ -16,6 +16,8 @@
     "test:e2e:ui": "playwright test --ui",
     "test:production": "npm run build && playwright test --config=playwright.production.config.ts",
     "test:live-workflows": "node --env-file=.env.local scripts/verify-live-admin-workflows.mjs",
+    "test:linked-follow-ups": "node --env-file=.env.local scripts/verify-live-admin-workflows.mjs --follow-ups",
+    "test:live-follow-ups": "node --env-file=.env.local scripts/verify-live-admin-workflows.mjs --follow-ups --production",
     "test:live-staff-workflows": "node --env-file=.env.local scripts/verify-live-admin-workflows.mjs --staff-governance",
     "test:linked-staff:governance": "node --env-file=.env.local scripts/verify-local-staff-governance.mjs",
     "test:linked-public-property": "node --env-file=.env.local scripts/verify-local-property-publication.mjs",

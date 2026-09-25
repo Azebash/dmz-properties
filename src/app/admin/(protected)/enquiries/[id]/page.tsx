@@ -4,9 +4,11 @@ import { notFound } from "next/navigation";
 import { AdminActivity } from "@/components/admin-activity";
 import { AdminEnquiryWorkflow } from "@/components/admin-enquiry-workflow";
 import { AdminLeadAssignment } from "@/components/admin-lead-assignment";
+import { AdminEnquiryFollowUp } from "@/components/admin-enquiry-follow-up";
 import { AdminStatus } from "@/components/admin-status";
 import { requireStaff } from "@/lib/admin/auth";
 import { formatAdminDateTime } from "@/lib/admin/format";
+import { followUpLabel } from "@/lib/admin/follow-ups";
 import { uuidPattern } from "@/lib/admin/lead-workflow";
 import { getAdminActivity, getAdminEnquiry, listAdminStaff } from "@/lib/admin/queries";
 
@@ -58,7 +60,8 @@ export default async function AdminEnquiryDetails({
               <div><dt>Owner</dt><dd>{staff.role === "administrator"
                 ? assignees.find((member) => member.user_id === enquiry.assigned_to)?.display_name || "Unassigned"
                 : !enquiry.assigned_to ? "Unassigned"
-                  : enquiry.assigned_to === staff.user_id ? "Assigned to you" : "Team assignment"}</dd></div>
+                   : enquiry.assigned_to === staff.user_id ? "Assigned to you" : "Team assignment"}</dd></div>
+              <div><dt>Next follow-up</dt><dd>{followUpLabel(enquiry.follow_up_on)}</dd></div>
               <div><dt>Preferred contact</dt><dd>{enquiry.preferred_contact_method || "Not provided"}</dd></div>
               <div><dt>Contact time</dt><dd>{enquiry.preferred_contact_time || "Not provided"}</dd></div>
             </dl>
@@ -82,6 +85,7 @@ export default async function AdminEnquiryDetails({
             {staff.role === "administrator" ? (
               <AdminLeadAssignment enquiryId={enquiry.id} assignedTo={enquiry.assigned_to} staff={assignees} />
             ) : null}
+            <AdminEnquiryFollowUp id={enquiry.id} status={enquiry.status} followUpOn={enquiry.follow_up_on} />
             <AdminEnquiryWorkflow id={enquiry.id} status={enquiry.status} notes={enquiry.internal_notes} />
           </div>
         ) : (

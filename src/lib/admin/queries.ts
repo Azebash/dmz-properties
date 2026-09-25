@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireStaff } from "@/lib/admin/auth";
 import { redirect } from "next/navigation";
+import { followUpStatuses, lagosToday } from "@/lib/admin/follow-ups";
 
 async function authorizedClient() {
   await requireStaff();
@@ -63,11 +64,22 @@ export async function listAdminEnquiries() {
   const { data, error } = await supabase
     .from("enquiries")
     .select(
-      "id, name, email, phone, enquiry_type, property_reference, status, assigned_to, created_at",
+      "id, name, email, phone, enquiry_type, property_reference, status, assigned_to, follow_up_on, created_at",
     )
     .order("created_at", { ascending: false })
     .limit(100);
   if (error) throw new Error(`Unable to load enquiries: ${error.message}`);
+  return data;
+}
+
+export async function listDueEnquiryFollowUps() {
+  const supabase = await authorizedPropertyClient();
+  const { data, error } = await supabase.from("enquiries")
+    .select("id,name,property_reference,assigned_to,follow_up_on")
+    .in("status", followUpStatuses).lte("follow_up_on", lagosToday())
+    .order("follow_up_on", { ascending: true })
+    .order("created_at", { ascending: true }).limit(100);
+  if (error) throw new Error(`Unable to load due follow-ups: ${error.message}`);
   return data;
 }
 

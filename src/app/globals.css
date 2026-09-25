@@ -3182,6 +3182,51 @@ body:has(.admin-surface) .consent-banner {
   font-size: 11px;
 }
 
+.admin-due-follow-ups {
+  margin-top: 32px;
+  padding: clamp(20px, 3vw, 32px);
+  border: 1px solid var(--line);
+  background: white;
+}
+
+.admin-due-follow-ups h2 {
+  margin: 0 0 8px;
+  font-size: 26px;
+}
+
+.admin-due-follow-ups p {
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.admin-due-follow-ups ul {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-due-follow-ups li {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+}
+
+.admin-due-follow-ups li a {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.admin-follow-up[data-due="overdue"],
+.admin-table td .admin-follow-up[data-due="overdue"] {
+  color: #7a2424;
+}
+
 .admin-status {
   width: fit-content;
   padding: 6px 8px;

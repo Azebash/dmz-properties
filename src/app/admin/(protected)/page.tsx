@@ -9,6 +9,7 @@ export default async function AdminDashboardPage() {
       ["Enquiries", summary.enquiries],
       ["Inspection requests", summary.inspections],
       ["Seller reviews", summary.sellerSubmissions],
+      ["Follow-ups due", summary.dueFollowUps],
     ]),
   ];
 

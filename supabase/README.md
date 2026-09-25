@@ -69,6 +69,15 @@ port 3100 and Node.js 22, run `npm run test:linked-staff:governance` with
 confirmed Auth user without sending an email. `npm run test:live-staff-workflows`
 also passed against the deployed staff UI with temporary linked records removed.
 
+`enquiry_follow_ups.test.sql` verifies that only property staff can set an
+audited next-contact date in Abuja time, that repeated saves are idempotent,
+and that terminal lead stages clear the due date. With a local production
+server on port 3100 and Node.js 22, set
+`DMZ_VERIFY_SITE_URL=http://localhost:3100` and run
+`npm run test:linked-follow-ups`. It creates and removes a synthetic enquiry,
+checks the protected due inbox, then closes the lead. After rollout,
+`npm run test:live-follow-ups` repeats the reversible flow on production.
+
 `npm run test:linked-public-property` uses the same local site and linked
 database to create a synthetic draft property, review and publish it, verify
 the public listing and neutral media placeholder, edit it, reserve it, and
