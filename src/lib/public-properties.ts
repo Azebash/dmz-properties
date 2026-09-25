@@ -61,6 +61,8 @@ export function propertyFromRow(row: PropertyRow, approvedMedia: PublishedMedia[
     price,
     priceAmount: amount !== null && amount > 0 ? amount : undefined,
     currency: row.price_currency,
+    plotSizeSqm: row.plot_size_sqm ? Number(row.plot_size_sqm) : undefined,
+    publishedAt: row.published_at || undefined,
     size: row.plot_size_sqm ? `${Number(row.plot_size_sqm)} sqm` : "Size on request",
     image: media[0]?.src || curated?.image || (contextualLand ? estateContext.image : mediaPending),
     imageLabel,

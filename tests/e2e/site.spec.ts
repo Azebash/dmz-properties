@@ -64,6 +64,30 @@ test("property discovery filters and carries listing context into an enquiry", a
   await expect(page.locator(".form-property")).toContainText("DMZ-KYC-001");
 });
 
+test("catalogue range filters and sorting survive a shared URL", async ({ page }) => {
+  await page.goto("/properties?maxPrice=14000000&minSize=600&sort=price_asc");
+  await expect(page.getByLabel("Maximum price (NGN)")).toHaveValue("14000000");
+  await expect(page.getByLabel("Minimum plot size (sqm)")).toHaveValue("600");
+  await expect(page.getByLabel("Sort by")).toHaveValue("price_asc");
+  await expect(page.getByText("1 property", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Reset all filters" })).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+
+  await page.getByLabel("Sort by").selectOption("relevance");
+  await expect(page).toHaveURL(/sort=relevance/);
+  await page.goBack();
+  await expect(page.getByLabel("Sort by")).toHaveValue("price_asc");
+
+  await page.getByLabel("Maximum price (NGN)").fill("10000000");
+  await expect(page.getByRole("heading", { name: "No matching properties" })).toBeVisible();
+  await expect(page).toHaveURL(/maxPrice=10000000/);
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "No matching properties" })).toBeVisible();
+  await page.getByRole("button", { name: "Clear filters" }).click();
+  await expect(page.getByText("1 property", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Maximum price (NGN)")).toHaveValue("");
+});
+
 test("buyer acquisition pages keep prospects in DMZ journeys", async ({ page }) => {
   const pages = [
     "/properties/600sqm-virgin-land-kyc-homes-phase-ii",

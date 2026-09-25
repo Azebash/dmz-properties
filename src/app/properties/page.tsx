@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PropertyBrowser } from "@/components/property-browser";
 import { getPublishedProperties } from "@/lib/public-properties";
+import { parseCatalogueFilters } from "@/lib/property-discovery";
 
 export const revalidate = 60;
 
@@ -11,8 +12,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/properties" },
 };
 
-export default async function PropertiesPage() {
+export default async function PropertiesPage({ searchParams }: PageProps<"/properties">) {
   const properties = await getPublishedProperties();
+  const filters = parseCatalogueFilters(await searchParams, properties);
   return (
     <main>
       <section className="section-shell page-hero">
@@ -24,7 +26,7 @@ export default async function PropertiesPage() {
           Road, Abuja.
         </p>
       </section>
-      <PropertyBrowser properties={properties} />
+      <PropertyBrowser key={JSON.stringify(filters)} properties={properties} initialFilters={filters} />
     </main>
   );
 }

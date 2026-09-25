@@ -6,6 +6,8 @@ export type Property = {
   price: string;
   priceAmount?: number;
   currency?: string;
+  plotSizeSqm?: number;
+  publishedAt?: string;
   status: string;
   ownership: string;
   size: string;
@@ -47,6 +49,7 @@ export const properties: Property[] = [
     price: "NGN 14,000,000",
     priceAmount: 14_000_000,
     currency: "NGN",
+    plotSizeSqm: 600,
     status: "Developer inventory",
     ownership: "Developer inventory",
     size: "600 sqm",

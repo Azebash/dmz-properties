@@ -683,7 +683,7 @@ img {
 
 .property-filters {
   display: grid;
-  grid-template-columns: 1.6fr 0.7fr 0.7fr;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
   padding: 16px;
   border: 1px solid var(--line);
@@ -694,6 +694,19 @@ img {
 .filter-control {
   display: grid;
   gap: 7px;
+}
+
+.filter-search,
+.filter-sort {
+  grid-column: span 2;
+}
+
+.filter-hint {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+  line-height: 1.6;
 }
 
 .property-filters label {
@@ -715,8 +728,17 @@ img {
   color: var(--ink);
 }
 
-.results-count {
+.filter-results {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
   margin: 24px 0 32px;
+}
+
+.results-count {
+  margin: 0;
   color: var(--ink-soft);
   font-family: var(--font-mono), monospace;
   font-size: 10px;
@@ -2775,6 +2797,11 @@ img {
     grid-template-columns: 1fr;
   }
 
+  .filter-search,
+  .filter-sort {
+    grid-column: auto;
+  }
+
   .consent-banner {
     grid-template-columns: 1fr;
   }
@@ -2785,10 +2812,6 @@ img {
 
   .remote-inspection-link {
     margin: 18px 0 0;
-  }
-
-  .filter-search {
-    grid-column: auto;
   }
 
   .field-full,

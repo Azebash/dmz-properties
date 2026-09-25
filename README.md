@@ -57,6 +57,10 @@ send the file to buyers.
 The property-read cutover is deployed and verified on the Vercel site; approved
 Supabase listings now drive the homepage, catalogue, detail pages, area cards,
 search metadata, and sitemap.
+The catalogue's pending release adds shareable price and plot-size ranges and newest,
+NGN-price, or relevance sorting. Unknown prices and sizes are excluded when
+filtered, and price sorting keeps other currencies and prices on request last.
+Publication is not a guarantee of live availability; buyers must reconfirm it.
 Price references on the area page, FAQs, and printable buyer guide follow the
 published developer listing. Older dated articles may need a separate editor
 review when that price changes.
