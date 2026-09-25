@@ -250,7 +250,7 @@ These features reduce manual work after enquiry volume grows.
 - [ ] Buyer profile and requirement records
 - [ ] Seller and property-submission records
 - [x] Audited lead stages: new, qualified, inspection, offer, won, lost, and spam
-- [~] Audited, Abuja-date follow-up reminders and a due inbox passed linked checks; production rollout pending. No automated email or push notifications
+- [x] Audited, Abuja-date follow-up reminders and a due inbox passed linked and reversible production checks; no automated email or push notifications
 - [x] Private enquiry notes and administrator audit history
 - [x] Administrators assign leads and linked inspections to active property staff through the audited staff workflow
 - [x] Audited inspection confirmation, time-zone correction, completion, and outcome notes

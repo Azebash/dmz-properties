@@ -61,6 +61,15 @@ without Resend. Assign a staff member to monitor `/admin/enquiries` and follow
 up through the available phone or WhatsApp channels until notifications are
 configured.
 
+Property staff can set an Abuja-date next follow-up on an active lead. The
+protected inbox shows the earliest 100 due and overdue leads separately from
+the recent enquiries list, while the overview counts all due leads. Closing a
+lead as won, lost, or spam clears its reminder in the same audit transaction.
+These are on-screen reminders, not email, SMS, or push notifications; a staff
+member must still monitor the inbox. `npm run test:live-follow-ups` creates a
+synthetic lead, verifies scheduling and closure through the production staff
+UI, then removes the temporary lead and audit events.
+
 1. Select the official DMZ Properties domain.
 2. Create the official business inbox.
 3. Verify the sending domain with Resend using its DNS records.

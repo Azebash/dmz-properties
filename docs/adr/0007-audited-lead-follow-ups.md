@@ -1,6 +1,6 @@
 # ADR 0007: Track follow-up dates in the protected lead inbox
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-09-25
 - Related: [ADR 0001](0001-supabase-operational-platform.md), [ADR 0002](0002-staff-governance.md)
 
@@ -43,9 +43,10 @@ are not configured, and scheduled GitHub monitoring cannot currently run.
 Follow-ups are limited to a date rather than a time of day; staff use their
 existing lead contact preference for timing. Linked pgTAP proves roles, date
 limits, idempotency, audit events, terminal cleanup, and reopen behavior. A
-reversible browser workflow with a synthetic lead must prove staff scheduling,
-visibility in the due inbox, closure removal, and cleanup before calling
-production rollout complete.
+reversible browser workflow with a synthetic lead proved staff scheduling,
+visibility in the due inbox, closure removal, and complete cleanup against
+both the linked local build and production. The existing inspection workflow,
+published listing and dependency readiness also passed after deployment.
 
 ## Rollback
 
