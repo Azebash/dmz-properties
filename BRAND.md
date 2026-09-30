@@ -8,8 +8,8 @@
 - Founder: Hafiz Bashir
 - Office: Suite A108, Garki Mall, Off Kabo Street, Damaturu Crescent, Garki II, Abuja
 - Telephone and WhatsApp: +234 810 370 4005
-- Current specialization: verified developer inventory and owner resales within KYC Homes Phase II, Sabon Lugbe, Airport Road, Abuja
-- Future scope: broader property sales, advisory, partnerships, and development
+- Specialization: land-led property sales, verified developer inventory, and owner resales exclusively within KYC Homes; current inventory is in Phase II, Sabon Lugbe, Airport Road, Abuja
+- Property scope: land is the main offering; homes and all other property types within KYC Homes are also supported
 
 ## Brand Idea
 

@@ -21,9 +21,10 @@ export default async function PropertiesPage({ searchParams }: PageProps<"/prope
         <p className="eyebrow">Available opportunities</p>
         <h1 className="page-title">Property with context.</h1>
         <p>
-          Current developer inventory and approved owner resales, beginning with
-          our specialist coverage of KYC Homes Phase II in Sabon Lugbe, Airport
-          Road, Abuja.
+          Land is our main offering, alongside homes and other property types.
+          Browse developer inventory and approved owner resales exclusively
+          within KYC Homes, with current listings in Phase II, Sabon Lugbe,
+          Airport Road, Abuja.
         </p>
       </section>
       <PropertyBrowser key={JSON.stringify(filters)} properties={properties} initialFilters={filters} />

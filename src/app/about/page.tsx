@@ -21,12 +21,13 @@ export default function AboutPage() {
         <div className="about-copy">
           <p>
             {business.brandName} is an independently operated real estate company
-            specializing in property sales, resales, and buyer guidance.
+            focused exclusively on KYC Homes. Land is our main offering,
+            alongside sales and resales of homes and other property types.
             It is a property venture of {business.legalName}, registered under
             {` ${business.registrationNumber}`}.
           </p>
           <p>
-            Our current strength is {estate.name} in Sabon Lugbe, Abuja. Our
+            Our current inventory is within {estate.name} in Sabon Lugbe, Abuja. Our
             founder&apos;s professional relationship with {estate.developer} provides
             firsthand knowledge of the development, available inventory, and
             transaction processes. We represent both developer-owned properties
@@ -37,9 +38,8 @@ export default function AboutPage() {
             official website of KYC Homes Phase II.</strong>
           </p>
           <p>
-            As we expand into new locations and future developments, the same
-            principle will guide our work: understand every property we present
-            and communicate what buyers need to know plainly.
+            Our focus stays within KYC Homes: understand every property we
+            present and communicate what buyers need to know plainly.
           </p>
           <Link className="button button-primary section-action" href="/contact">
             Talk to us
