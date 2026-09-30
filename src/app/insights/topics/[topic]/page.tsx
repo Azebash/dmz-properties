@@ -9,6 +9,14 @@ type TopicPageProps = {
   params: Promise<{ topic: string }>;
 };
 
+const topicDescriptions: Record<string, string> = {
+  "Explainer": "Understand property ownership, purchase routes, and the terms you may encounter when buying.",
+  "Area guide": "Get to know KYC Homes, its surroundings, and what to look for during an inspection.",
+  "Buying guide": "Practical checks to help you compare properties and prepare for a purchase.",
+  "Remote buying": "Plan a live inspection, review property records, and stay informed when buying from abroad.",
+  "Estate update": "Follow development progress and changes within KYC Homes.",
+};
+
 export const revalidate = 60;
 
 export async function generateMetadata({ params }: TopicPageProps): Promise<Metadata> {
@@ -48,7 +56,7 @@ export default async function TopicPage({ params }: TopicPageProps) {
       <section className="section-shell page-hero">
         <p className="eyebrow">Insight topic</p>
         <h1 className="page-title">{category}</h1>
-        <p>Practical property information organized around this topic.</p>
+        <p>{topicDescriptions[category] || "Explore property guidance from DMZ to help you make an informed decision."}</p>
       </section>
       <section className="section-shell article-list listing-page-grid">
         {topicArticles.map((article) => (

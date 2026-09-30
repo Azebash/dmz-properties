@@ -12,7 +12,7 @@ export default function GalleryPage() {
   return (
     <main>
       <section className="section-shell page-hero gallery-page-hero">
-        <p className="eyebrow">Estate image archive</p>
+        <p className="eyebrow">Estate gallery</p>
         <h1 className="page-title">Development you can see.</h1>
         <p>
           Genuine views of completed homes, ongoing construction, and residential

@@ -19,7 +19,7 @@ export default async function InsightsPage() {
     <main>
       <section className="section-shell page-hero">
         <p className="eyebrow">Insights</p>
-        <h1 className="page-title">Useful before persuasive.</h1>
+        <h1 className="page-title">Understand property before you buy.</h1>
         <p>
           Clear explanations and local property knowledge to help buyers ask
           better questions and make better-informed decisions.

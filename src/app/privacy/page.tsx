@@ -14,7 +14,7 @@ export default function PrivacyPage() {
       <header className="section-shell page-hero legal-hero">
         <p className="eyebrow">Legal</p>
         <h1 className="page-title">Privacy policy</h1>
-        <p>Last updated September 17, 2026</p>
+        <p>Last updated September 30, 2026</p>
       </header>
       <article className="section-shell legal-copy">
         <h2>Information we collect</h2>
@@ -37,10 +37,11 @@ export default function PrivacyPage() {
           legal, and legitimate business requirements.
         </p>
         <p>
-          For public form protection, the site may use Cloudflare Turnstile and a
-          distributed rate-limiting provider. Turnstile processes technical
-          verification data, while rate-limit identifiers are hashed before they
-          are sent to the configured store.
+          We use security checks to protect enquiry forms from spam and repeated
+          submissions. These checks may process technical information about your
+          connection. Where Cloudflare Turnstile is used, it processes information
+          to distinguish genuine visitors from automated requests. Connection
+          identifiers used to limit repeated submissions are stored in a hashed form.
         </p>
         <h2>Analytics and browser storage</h2>
         <p>
@@ -50,10 +51,9 @@ export default function PrivacyPage() {
           you from using the website or submitting an enquiry.
         </p>
         <p>
-          When campaign or referral parameters bring you to the website, they may
-          be retained for the current browser session and included if you choose
-          to submit an enquiry. This helps us understand which introduction or
-          campaign produced the enquiry without creating a public user profile.
+          If you arrive through an advertisement or referral link, we may remember
+          that source during your visit and include it with an enquiry you submit.
+          This helps us understand how you found us without creating a public user profile.
         </p>
         <PrivacyPreferences />
         <h2>Your choices</h2>

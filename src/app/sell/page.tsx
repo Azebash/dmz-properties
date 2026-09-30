@@ -27,7 +27,8 @@ export default function SellPage() {
         <h1 className="page-title">Sell with the details in order.</h1>
         <p>
           DMZ Properties privately reviews KYC Homes Phase II properties before offering
-          them to qualified buyers. Submission does not guarantee publication.
+          them to buyers. We will contact you to discuss your property and the
+          checks needed before it can be listed.
         </p>
         <Link className="button button-primary section-action" href="#seller-enquiry">
           Submit a property
@@ -53,7 +54,7 @@ export default function SellPage() {
         <div className="section-shell seller-process-grid">
           <div>
             <p className="eyebrow">The resale process</p>
-            <h2>Representation, not open listing.</h2>
+            <h2>From listing to transfer.</h2>
           </div>
           <ol>
             <li>
@@ -78,8 +79,8 @@ export default function SellPage() {
               <div>
                 <h3>Prepared presentation</h3>
                 <p>
-                  Approved properties receive clear details, current media, and
-                  coordinated buyer enquiries.
+                  We present your property with clear details and photographs,
+                  and help coordinate buyer enquiries and inspections.
                 </p>
               </div>
             </li>

@@ -143,9 +143,10 @@ export default async function KycEstatePage() {
             <span>Developer inventory</span>
             <h3>Find your plot with DMZ.</h3>
             <p>
-              We help you review current options, inspect the estate, and
-              understand approved terms. {estate.developer} reviews and approves
-              applications; DMZ remains your point of contact for acquisition guidance.
+              Explore available plots, arrange an inspection, and understand the
+              purchase terms with DMZ. We guide you through the application
+              process and stay in touch while {estate.developer} reviews and
+              approves your application.
             </p>
             <Link className="text-link section-action" href="/properties">
               Explore DMZ inventory
@@ -219,7 +220,7 @@ export default async function KycEstatePage() {
           </>
         ) : (
           <div className="estate-updates-empty">
-            <p>No dated estate updates have been published yet. Ask DMZ for current site information and an inspection.</p>
+            <p>For the latest site conditions and development progress, speak with DMZ or arrange an inspection.</p>
             <Link className="text-link" href="/book-inspection">Request an inspection</Link>
           </div>
         )}
@@ -239,7 +240,7 @@ export default async function KycEstatePage() {
               <PropertyCard key={property.slug} property={property} />
             ))}
           </div>
-          {!estateProperties.length ? <p>There are no currently published estate listings. Ask DMZ for availability.</p> : null}
+          {!estateProperties.length ? <p>Ask DMZ about current property options within the estate.</p> : null}
         </div>
       </section>
 

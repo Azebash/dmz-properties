@@ -18,7 +18,7 @@ export function PrivacyPreferences() {
   return (
     <div className="privacy-preferences">
       <p>
-        Current optional analytics preference: <strong>{consent}</strong>
+        Optional analytics: <strong>{consent === "accepted" ? "Allowed" : consent === "declined" ? "Declined" : "No preference selected"}</strong>
       </p>
       <div>
         <button

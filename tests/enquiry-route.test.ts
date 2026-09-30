@@ -147,11 +147,11 @@ describe("POST /api/enquiries", () => {
     expect(response.status).toBe(403);
   });
 
-  it("reports missing delivery configuration", async () => {
+  it("gives visitors a direct-contact fallback when delivery is unavailable", async () => {
     const response = await POST(createRequest(validInput, "missing-config"));
     expect(response.status).toBe(503);
     expect(await response.json()).toMatchObject({
-      message: expect.stringContaining("not configured"),
+      message: "We cannot accept enquiries through this form right now. Please contact us directly.",
     });
   });
 
@@ -191,7 +191,7 @@ describe("POST /api/enquiries", () => {
     const response = await POST(createRequest(validInput, "partial-security"));
     expect(response.status).toBe(503);
     expect(await response.json()).toMatchObject({
-      message: expect.stringContaining("security"),
+      message: "We cannot accept enquiries through this form right now. Please contact us directly.",
     });
   });
 

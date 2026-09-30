@@ -50,7 +50,7 @@ function buildFaqs(currentPrice: string | null) {
   ],
   [
     "What types of properties do you represent?",
-    "We currently focus on developer inventory and verified client-owned resales within KYC Homes Phase II, including plots and developed residential properties.",
+    "We help buyers find land, homes, and other properties within KYC Homes, Abuja, including properties sold by the developer and resales offered by existing owners. Ask us about current availability.",
   ],
   [
     "Does every property go through the same checks?",
@@ -66,7 +66,7 @@ function buildFaqs(currentPrice: string | null) {
   ],
   [
     "Can an existing owner list a KYC Homes Phase II property through DMZ?",
-    "Owners can submit a property for private review. DMZ Properties publishes it only after the required ownership and authority-to-sell checks.",
+    "Owners can contact us about selling their property. We review ownership records and the owner's authority to sell before offering it to buyers.",
   ],
   [
     "Does verification replace a lawyer or surveyor?",

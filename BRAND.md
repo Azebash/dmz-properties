@@ -44,6 +44,9 @@ The identity deliberately avoids roofs, keys, towers, map pins, crests, and mili
 
 ## Usage
 
+- Treat the land-first sales mix and KYC-only scope as internal editorial direction. Public copy should explain properties, location, services, and buyer benefits naturally; do not repeat internal positioning statements such as "Land is our main offering" or "Land first. All property types."
+- Keep implementation details, publication workflows, configuration status, and legal-review reminders in internal documentation. Public messages should explain what the visitor can do next.
+
 - Keep clear space around the logo equal to the width of the D stem.
 - Use the primary logo on light neutral backgrounds.
 - Use the reversed logo on forest or dark photographic backgrounds.

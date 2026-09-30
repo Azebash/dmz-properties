@@ -95,7 +95,7 @@ export function PropertyBrowser({ properties, initialFilters }: {
           <label htmlFor="property-sort">Sort by</label>
           <select id="property-sort" value={filters.sort}
             onChange={(event) => change({ ...filters, sort: event.target.value as CatalogueFilters["sort"] })}>
-            <option value="newest">Newest published</option>
+            <option value="newest">Newest listings</option>
             <option value="price_asc">Price: low to high (NGN)</option>
             <option value="price_desc">Price: high to low (NGN)</option>
             <option value="relevance">Search relevance</option>
@@ -111,7 +111,7 @@ export function PropertyBrowser({ properties, initialFilters }: {
             <option value="unconfirmed">Needs reconfirmation</option>
           </select>
         </div>
-        <p className="filter-hint">Availability confirmations expire after 14 days; even a recently confirmed listing must be reconfirmed before payment. Price filters include only stated NGN amounts, plot-size filters only stated sizes, and price sorting puts other currencies and prices on request last.</p>
+        <p className="filter-hint">Confirm availability and current terms with DMZ before payment. Price and size filters show properties with matching details; properties priced on request appear last when sorting by price.</p>
       </div>
 
       <div className="filter-results">
@@ -130,7 +130,7 @@ export function PropertyBrowser({ properties, initialFilters }: {
       ) : (
         <div className="empty-note">
           <h2>No matching properties</h2>
-          <p>Adjust the filters or contact us for current off-site availability.</p>
+          <p>Try different filters or ask DMZ about current property options.</p>
           <button className="button button-secondary" type="button" onClick={clearFilters}>Clear filters</button>
         </div>
       )}

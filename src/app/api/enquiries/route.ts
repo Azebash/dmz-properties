@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
   const origin = request.headers.get("origin");
   if (!origin || origin !== request.nextUrl.origin) {
     logDeliveryIssue("invalid_origin", 403);
-    return NextResponse.json({ message: "Invalid submission origin." }, { status: 403 });
+    return NextResponse.json({ message: "Please refresh the page and submit your enquiry again." }, { status: 403 });
   }
 
   const turnstilePair = [
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
   ) {
     logDeliveryIssue("security_configuration_incomplete", 503);
     return NextResponse.json(
-      { message: "Enquiry security is temporarily unavailable." },
+      { message: "We cannot accept enquiries through this form right now. Please contact us directly." },
       { status: 503 },
     );
   }
@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
       });
     }
     return NextResponse.json(
-      { message: "Enquiry delivery is not configured yet. Please contact us directly." },
+      { message: "We cannot accept enquiries through this form right now. Please contact us directly." },
       { status: 503 },
     );
   }

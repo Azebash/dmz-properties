@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { BrandLockup } from "@/components/brand-lockup";
 import { BrandMark } from "@/components/brand-mark";
 
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default function BrandPreviewPage() {
+  if (process.env.NODE_ENV === "production") notFound();
   return (
     <main className="brand-preview">
       <header className="brand-preview-header">

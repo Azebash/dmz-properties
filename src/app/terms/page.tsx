@@ -13,7 +13,7 @@ export default function TermsPage() {
       <header className="section-shell page-hero legal-hero">
         <p className="eyebrow">Legal</p>
         <h1 className="page-title">Terms of use</h1>
-        <p>Last updated September 17, 2026</p>
+        <p>Last updated September 30, 2026</p>
       </header>
       <article className="section-shell legal-copy">
         <h2>Website information</h2>
@@ -39,11 +39,6 @@ export default function TermsPage() {
           A website enquiry does not reserve a property or create a binding sale.
           Use only written payment instructions confirmed for the specific
           transaction and retain all receipts and agreements.
-        </p>
-        <h2>Final review</h2>
-        <p>
-          These terms are an operational draft and must be reviewed by local legal
-          counsel before the website is opened to the public.
         </p>
         <h2>Contact</h2>
         <p>

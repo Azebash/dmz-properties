@@ -22,7 +22,7 @@ export default async function Home() {
         <div className={styles.heroCopy}>
           <p className={styles.eyebrow}>KYC Homes, Abuja. Firsthand perspective.</p>
           <h1 id="home-title">Know what you<br />are buying.</h1>
-          <p className={styles.intro}>Land first. All property types. Focused exclusively on KYC Homes, with clear information and personal guidance.</p>
+          <p className={styles.intro}>Find your next property in KYC Homes, Abuja, with firsthand knowledge and guidance from enquiry to inspection.</p>
           <div className={styles.actions}>
             <Link className={styles.primaryButton} href="/properties">Explore properties <Arrow /></Link>
             <Link className={styles.inlineLink} href="/book-inspection">Book an inspection <Arrow /></Link>
@@ -42,7 +42,7 @@ export default async function Home() {
       <section className={`${styles.shell} ${styles.section}`} aria-labelledby="selection-title">
         <div className={styles.sectionHeading}>
           <h2 id="selection-title">A place to start.<br /><span className={styles.muted}>The facts to go further.</span></h2>
-          <p>Land is our main offering. We also handle homes and other property types within KYC Homes, through developer inventory and owner resales.</p>
+          <p>Explore property opportunities with clear details on location, price, and ownership. Arrange an inspection to see what suits you.</p>
         </div>
         <div className={styles.selection}>
           {selection.map((property) => {
@@ -83,7 +83,7 @@ export default async function Home() {
           {!selection.length ? (
             <div className={styles.emptyState}>
               <h3>Your search starts with a conversation.</h3>
-              <p>There are no published listings right now. Speak with DMZ about current availability and your requirements.</p>
+              <p>Speak with DMZ about current property options and arrange an inspection that suits you.</p>
               <Link className={styles.darkButton} href="/contact">Make an enquiry <Arrow /></Link>
             </div>
           ) : null}

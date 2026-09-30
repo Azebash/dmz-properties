@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Property Verification Process",
   description:
-    "Understand how DMZ Properties reviews developer inventory and owner resales before publication.",
+    "Understand the property and ownership checks DMZ Properties carries out before presenting a property to buyers.",
   alternates: { canonical: "/verification" },
 };
 
