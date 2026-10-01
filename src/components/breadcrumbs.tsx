@@ -7,7 +7,7 @@ type Breadcrumb = {
   href?: string;
 };
 
-export function Breadcrumbs({ items }: { items: Breadcrumb[] }) {
+export function Breadcrumbs({ items, structuredData = true }: { items: Breadcrumb[]; structuredData?: boolean }) {
   const breadcrumbData = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -21,10 +21,10 @@ export function Breadcrumbs({ items }: { items: Breadcrumb[] }) {
 
   return (
     <>
-      <script
+      {structuredData ? <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeStructuredData(breadcrumbData) }}
-      />
+      /> : null}
       <nav className="breadcrumbs" aria-label="Breadcrumb">
         <ol>
           {items.map((item, index) => (

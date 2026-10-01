@@ -4,6 +4,9 @@ import { getPublishedArticles } from "@/lib/public-articles";
 import { getPublishedProperties } from "@/lib/public-properties";
 import { availabilityLabel } from "@/lib/property-availability";
 import { business } from "@/lib/business";
+import { getPublicAreaGuide } from "@/lib/public-area-guide";
+import { BuyingOptions } from "@/components/buying-options";
+import { buyingEnquiry, selectHomepageProperties } from "@/lib/buying-options";
 import styles from "./home.module.css";
 
 export const revalidate = 60;
@@ -13,8 +16,8 @@ function Arrow() {
 }
 
 export default async function Home() {
-  const [articles, properties] = await Promise.all([getPublishedArticles(), getPublishedProperties()]);
-  const selection = properties.slice(0, 3);
+  const [articles, properties, guide] = await Promise.all([getPublishedArticles(), getPublishedProperties(), getPublicAreaGuide()]);
+  const selection = selectHomepageProperties(properties);
 
   return (
     <main id="main-content" className={`${styles.home} homepage`}>
@@ -22,9 +25,9 @@ export default async function Home() {
         <div className={styles.heroCopy}>
           <p className={styles.eyebrow}>KYC Homes, Abuja. Firsthand perspective.</p>
           <h1 id="home-title">Know what you<br />are buying.</h1>
-          <p className={styles.intro}>Find your next property in KYC Homes, Abuja, with firsthand knowledge and guidance from enquiry to inspection.</p>
+          <p className={styles.intro}>Tell us your budget and what you&apos;re looking for in KYC Homes, Abuja. We&apos;ll help you explore developer plots and resales from existing owners.</p>
           <div className={styles.actions}>
-            <Link className={styles.primaryButton} href="/properties">Explore properties <Arrow /></Link>
+            <Link className={styles.primaryButton} href={buyingEnquiry("options").contact}>Talk to us about your options <Arrow /></Link>
             <Link className={styles.inlineLink} href="/book-inspection">Book an inspection <Arrow /></Link>
           </div>
         </div>
@@ -39,10 +42,12 @@ export default async function Home() {
         <Link className={styles.inlineLink} href="/gallery">See the estate <Arrow /></Link>
       </div>
 
-      <section className={`${styles.shell} ${styles.section}`} aria-labelledby="selection-title">
+      <div className={`${styles.shell} ${styles.section}`}><BuyingOptions price={guide.developerPrice} /></div>
+
+      {selection.length ? <section className={`${styles.shell} ${styles.section}`} aria-labelledby="selection-title">
         <div className={styles.sectionHeading}>
-          <h2 id="selection-title">A place to start.<br /><span className={styles.muted}>The facts to go further.</span></h2>
-          <p>Explore property opportunities with clear details on location, price, and ownership. Arrange an inspection to see what suits you.</p>
+          <h2 id="selection-title">Explore property in<br /><span className={styles.muted}>KYC Homes Phase II.</span></h2>
+          <p>A selection of properties we can help you explore. Contact us for other options that suit your budget.</p>
         </div>
         <div className={styles.selection}>
           {selection.map((property) => {
@@ -80,16 +85,9 @@ export default async function Home() {
               </article>
             );
           })}
-          {!selection.length ? (
-            <div className={styles.emptyState}>
-              <h3>Your search starts with a conversation.</h3>
-              <p>Speak with DMZ about current property options and arrange an inspection that suits you.</p>
-              <Link className={styles.darkButton} href="/contact">Make an enquiry <Arrow /></Link>
-            </div>
-          ) : null}
         </div>
         {properties.length > 3 ? <Link className={`${styles.inlineLink} ${styles.moreLink}`} href="/properties">Explore properties <Arrow /></Link> : null}
-      </section>
+      </section> : null}
 
       <section className={`${styles.shell} ${styles.estateSection}`} aria-labelledby="estate-title">
         <div className={styles.estateMainImage}>

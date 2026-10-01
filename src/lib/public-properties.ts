@@ -5,6 +5,7 @@ import { usesDatabaseContent } from "@/lib/public-articles";
 import { getSupabaseConfig } from "@/lib/supabase/config";
 import type { PropertyRow } from "@/lib/supabase/types";
 import { effectiveAvailability } from "@/lib/property-availability";
+import { formatPropertyPrice } from "@/lib/buying-options";
 
 const estateContext = repositoryProperties[0];
 const mediaPending = "/images/property-media-pending.svg";
@@ -18,8 +19,8 @@ type PublishedMedia = {
   estate_context: boolean;
 };
 
-export function propertyFromRow(row: PropertyRow, approvedMedia: PublishedMedia[] = [], now = new Date()): Property {
-  if (!row.last_verified_at || !Array.isArray(row.features) ||
+export function propertyFromRow(row: PropertyRow, approvedMedia: PublishedMedia[] = [], now = new Date(), preview = false): Property {
+  if ((!preview && !row.last_verified_at) || !Array.isArray(row.features) ||
     !row.features.every((item) => typeof item === "string")) {
     throw new Error(`Published property ${row.reference} has incomplete verified content`);
   }
@@ -41,8 +42,8 @@ export function propertyFromRow(row: PropertyRow, approvedMedia: PublishedMedia[
     : curated?.imageLabel || (contextualLand ? "Estate context" : "Images pending");
   const amount = row.price_amount === null ? null : Number(row.price_amount);
   const price = amount !== null && amount > 0
-    ? `${row.price_currency} ${new Intl.NumberFormat("en-NG", { maximumFractionDigits: 2 }).format(amount)}`
-    : row.price_label || "Price on request";
+    ? formatPropertyPrice(amount, row.price_currency)
+    : row.source === "owner_resale" ? "Contact us for current pricing" : row.price_label || "Price on request";
   const features = (row.features as string[]).flatMap((feature) => {
     if (row.reference === "DMZ-KYC-001" && row.source === "developer_inventory" &&
       feature.toLowerCase().includes("current developer price")) {
@@ -54,12 +55,15 @@ export function propertyFromRow(row: PropertyRow, approvedMedia: PublishedMedia[
 
   return {
     slug: row.slug,
+    source: row.source,
+    isFeatured: row.is_featured,
     reference: row.reference,
     title: row.title,
     type: row.property_type,
     location: row.location_name,
-    ownership: row.ownership_label || (row.source === "owner_resale" ? "Owner resale" : "Developer inventory"),
-    status: row.source === "owner_resale" ? "Owner resale" : "Developer inventory",
+    ownership: row.ownership_label === "Developer inventory" || !row.ownership_label
+      ? (row.source === "owner_resale" ? "Owner resale" : "Direct developer sale") : row.ownership_label,
+    status: row.source === "owner_resale" ? "Owner resale" : "Direct developer sale",
     availabilityStatus: availability.status,
     availabilityCheckedAt: availability.checkedAt,
     price,
@@ -75,7 +79,7 @@ export function propertyFromRow(row: PropertyRow, approvedMedia: PublishedMedia[
     description: row.description,
     features,
     updatedAt: row.updated_at.slice(0, 10),
-    lastVerifiedAt: row.last_verified_at.slice(0, 10),
+    lastVerifiedAt: row.last_verified_at?.slice(0, 10),
     seoTitle: row.seo_title || undefined,
     seoDescription: row.seo_description || undefined,
   };

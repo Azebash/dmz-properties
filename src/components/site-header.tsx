@@ -6,7 +6,7 @@ import { useRef } from "react";
 import { BrandLockup } from "@/components/brand-lockup";
 
 const navigation = [
-  { href: "/properties", label: "Properties" },
+  { href: "/properties", label: "Buying options" },
   { href: "/areas/kyc-homes-phase-ii", label: "KYC Homes II" },
   { href: "/insights", label: "Insights" },
   { href: "/about", label: "About" },

@@ -24,7 +24,7 @@ export async function listAdminProperties() {
   const { data, error } = await supabase
     .from("properties")
     .select(
-      "id, reference, title, source, status, price_amount, price_currency, location_name, last_verified_at, updated_at",
+      "id, reference, title, source, status, price_amount, price_currency, location_name, last_verified_at, updated_at, is_featured",
     )
     .order("updated_at", { ascending: false })
     .limit(100);

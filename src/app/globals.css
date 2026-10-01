@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+.buying-options { color: #173f32; }
+.buying-routes { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin: 32px 0; }
+.buying-routes > article { background: #edf1e8; border: 1px solid #ccd5c9; padding: clamp(22px, 3vw, 40px); min-width: 0; }
+.buying-routes h3 { font-size: 28px; line-height: 1.2; margin: 0 0 18px; }
+.buying-routes p { line-height: 1.7; }
+.developer-price-enquiry { margin: 24px 0; }
+.buying-price { font-size: 20px; }
+.buying-price strong { display: block; font-size: clamp(28px, 4vw, 42px); }
+.buying-price-date, .buying-price-note { font-size: 13px; color: #526358; }
+.staff-property-preview { background: #edf1e8; padding: 20px; margin-block: 20px; }
+@media (max-width: 767px) { .buying-routes { grid-template-columns: 1fr; } }
+
 :root {
   --ink: #11251f;
   --ink-soft: #496159;

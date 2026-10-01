@@ -20,7 +20,7 @@ export async function saveAreaGuideAction(_previous: { error: string }, formData
   try {
     copy = areaGuideCopyFromForm(formData);
   } catch {
-    return { error: "Every field needs between 10 and 400 characters of approved copy." };
+    return { error: "Check the required copy and enter a valid price, plot size, and confirmation date, or leave all price fields blank." };
   }
   const supabase = await createClient();
   const { error } = await supabase.rpc("save_area_guide", { p_slug: areaGuideSlug, p_copy: copy });
@@ -42,7 +42,8 @@ export async function transitionAreaGuideAction(formData: FormData) {
   });
   if (!error && status === "published") {
     updateTag("published-area-guide");
-    revalidatePath(publicPath);
+    for (const path of [publicPath, "/", "/properties", "/faqs", "/guides/kyc-homes-phase-ii-buyer-guide"]) revalidatePath(path);
+    revalidatePath("/properties", "page");
   }
   revalidatePath(editorPath);
   redirect(`${editorPath}?transition=${error ? "failed" : "saved"}`);

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { AdminPropertyForm } from "@/components/admin-property-form";
 import { AdminPropertyMedia } from "@/components/admin-property-media";
@@ -13,12 +14,16 @@ import type { PropertyStatus } from "@/lib/supabase/types";
 export const metadata: Metadata = { title: "Edit Property" };
 
 const transitions: Record<PropertyStatus, PropertyStatus[]> = {
-  draft: ["under_review", "archived"],
+  draft: ["published", "archived"],
   under_review: ["draft", "published", "archived"],
   published: ["under_review", "reserved", "sold", "archived"],
   reserved: ["published", "sold", "archived"],
   sold: ["archived"],
   archived: [],
+};
+const actionLabels: Record<PropertyStatus, string> = {
+  draft: "Return to draft", under_review: "Unpublish listing", published: "Publish listing",
+  reserved: "Mark reserved", sold: "Mark sold", archived: "Archive listing",
 };
 
 type EditPropertyPageProps = {
@@ -70,20 +75,21 @@ export default async function EditPropertyPage({
         </p>
       ) : null}
       <AdminPropertyForm property={property} />
+      <p className="button-row"><Link className="button button-secondary" href={`/admin/properties/${property.id}/preview`}>Preview saved listing</Link></p>
       <AdminPropertyAvailability property={property} />
       <AdminPropertyMedia propertyId={property.id} propertyType={property.property_type} images={images} />
       <AdminPropertyDocuments propertyId={property.id} documents={documents} />
 
       <section className="admin-transitions">
-        <h2>Publication workflow</h2>
-        <p>Status changes are validated and written to the audit history.</p>
+          <h2>Listing publication</h2>
+        <p>Save your draft, preview it, then publish after verification. Reserved, sold, and archived listings are hidden from visitors.</p>
         <div>
           {transitions[property.status].map((status) => (
             <form key={status} action={transitionPropertyAction}>
               <input name="propertyId" type="hidden" value={property.id} />
               <input name="status" type="hidden" value={status} />
               <button className="button button-secondary" type="submit">
-                Move to {status.replaceAll("_", " ")}
+                {status === "under_review" && property.status !== "published" ? "Submit for review" : actionLabels[status]}
               </button>
             </form>
           ))}

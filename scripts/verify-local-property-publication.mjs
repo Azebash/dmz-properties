@@ -59,9 +59,11 @@ try {
   const publicUrl = `${site}${publicPath}`;
   if ((await reader.goto(publicUrl))?.status() !== 404) throw new Error("Draft property was public");
 
-  await admin.getByRole("button", { name: "Move to under review" }).click();
-  await expect(admin.locator(".admin-edit-header .admin-status")).toHaveText("under review", { timeout: 30_000 });
-  await admin.getByRole("button", { name: "Move to published" }).click();
+  await admin.getByRole("link", { name: "Preview saved listing" }).click();
+  await expect(admin.getByText("Staff preview · draft", { exact: true })).toBeVisible();
+  await expect(admin.locator('script[type="application/ld+json"]').filter({ hasText: 'RealEstateListing' })).toHaveCount(0);
+  await admin.getByRole("link", { name: "Return to listing editor" }).click();
+  await admin.getByRole("button", { name: "Publish listing" }).click();
   await expect(admin.locator(".admin-edit-header .admin-status")).toHaveText("published", { timeout: 30_000 });
   await expect.poll(async () => (await reader.goto(publicUrl))?.status(), { timeout: 30_000 }).toBe(200);
   await expect(reader.getByRole("heading", { level: 1 })).toHaveText("Synthetic owner-resale verification");
@@ -96,15 +98,15 @@ try {
     await reader.goto(publicUrl);
     return reader.getByRole("heading", { level: 1 }).textContent();
   }, { timeout: 30_000 }).toBe("Updated synthetic resale verification");
-  await expect(reader.getByText("NGN 11,000,000", { exact: true })).toBeVisible();
+  await expect(reader.getByText("₦11,000,000", { exact: true })).toBeVisible();
 
-  await admin.getByRole("button", { name: "Move to reserved" }).click();
+  await admin.getByRole("button", { name: "Mark reserved" }).click();
   await expect(admin.locator(".admin-edit-header .admin-status")).toHaveText("reserved", { timeout: 30_000 });
   await expect.poll(async () => (await reader.goto(publicUrl))?.status(), { timeout: 30_000 }).toBe(404);
   await expect.poll(async () => (await (await fetch(`${site}/sitemap.xml`)).text()).includes(publicPath), {
     timeout: 30_000,
   }).toBe(false);
-  console.log("Draft privacy, review, publication, placeholder, live edit, and reservation passed");
+  console.log("Draft privacy, preview, publication, placeholder, live edit, and reservation passed");
 } finally {
   await browser?.close();
   const found = await databaseRequest(`/properties?reference=eq.${reference}&select=id`);

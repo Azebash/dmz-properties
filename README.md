@@ -65,7 +65,7 @@ The inventory-confirmation workflow is deployed. Property staff can attest to a
 fresh stock check; confirmations expire after 14 days. Existing listings default
 to "Availability to confirm."
 Price references on the area page, FAQs, and printable buyer guide follow the
-published developer listing. Older dated articles may need a separate editor
+approved area-guide developer benchmark. Older dated articles may need a separate editor
 review when that price changes.
 Articles are seeded in Supabase and edited at `/admin/content`; published records
 power the homepage, Insights, topic pages, and sitemap when
@@ -76,10 +76,23 @@ editorial changes and publication transitions on that page. Public-facing photog
 KYC Homes Phase II image library and is identified as estate context until
 listing-specific media is supplied.
 
+The public journey centres on personal property matching: buyers can discuss
+developer plots or owner resales and provide a budget without selecting a listing.
+Property posts are optional. Staff can feature published listings on the homepage;
+up to three appear, featured first and newest next. Drafts have a protected
+visitor-style preview and authorized property staff can publish after verification.
+
 The KYC Homes Phase II area guide has a protected copy editor at
 `/admin/areas/kyc-homes-phase-ii`. Draft and reviewed text does not replace the
-approved public page until publication. Estate facts, prices, imagery, and
-purchase guidance remain fixed in the page template.
+approved public page until publication. Its approved copy also owns the general
+developer land-price benchmark, plot size, confirmation date, and visibility;
+these are independent of optional listings. Each property post retains its own
+asking price. Apply the October 1 migrations before deploying the new editor.
+
+To verify publishing and benchmark database rules against an isolated migrated
+local PostgreSQL database, set `DMZ_TEST_DATABASE_URL` and run
+`node scripts/verify-local-listing-rules.mjs`. It refuses remote hosts and rolls
+back all fixtures. This does not replace full Supabase Auth/Storage UI verification.
 
 Administrator-only staff governance at `/admin/staff` grants roles to existing
 Supabase Auth users, changes access, and assigns an enquiry with its inspection.
@@ -88,7 +101,7 @@ confirmed Auth account and password before access is granted; invitation
 onboarding is not yet enabled in the app.
 Only administrators and property managers may view buyer, inspection, or seller
 records. The same roles may edit published property details with an audit event;
-new property listings still require review and publication.
+new property listings require verification before publication.
 The staff inbox has deployed, audited follow-up dates: due and overdue contacts
 remain visible even when a lead is no longer among the newest enquiries.
 Both due reminders and the full enquiry register are paginated, with their

@@ -17,7 +17,7 @@ export function SiteFooter() {
         </div>
         <div className="footer-column">
           <strong>Explore</strong>
-          <Link href="/properties">Properties</Link>
+          <Link href="/properties">Buying options</Link>
           <Link href="/areas/kyc-homes-phase-ii">KYC Homes Phase II</Link>
           <Link href="/gallery">Estate gallery</Link>
           <Link href="/sell">Sell a property</Link>

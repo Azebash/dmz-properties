@@ -20,6 +20,7 @@ type EnquiryFormProps = {
   propertyReference?: string;
   submitLabel?: string;
   mode?: "general" | "inspection";
+  defaultMessage?: string;
 };
 
 const initialState: FormState = { status: "idle", message: "" };
@@ -29,6 +30,7 @@ export function EnquiryForm({
   propertyReference = "",
   submitLabel = "Send enquiry",
   mode = "general",
+  defaultMessage = "",
 }: EnquiryFormProps) {
   const [state, setState] = useState<FormState>(initialState);
   const submissionKey = useRef<string | null>(null);
@@ -234,7 +236,7 @@ export function EnquiryForm({
       </div>
       {mode === "general" ? (
         <div className="field field-full">
-          <label htmlFor="budget">Budget or expected selling price</label>
+        <label htmlFor="budget">{defaultInterest === "Selling my KYC Homes Phase II property" ? "Your asking price" : "Your budget"}</label>
           <input
             id="budget"
             name="budget"
@@ -244,8 +246,8 @@ export function EnquiryForm({
         </div>
       ) : null}
       <div className="field field-full">
-        <label htmlFor="message">Property requirements or details</label>
-        <textarea id="message" name="message" maxLength={3000} required />
+        <label htmlFor="message">{defaultInterest === "Selling my KYC Homes Phase II property" ? "Tell us about the property you want to sell" : "Property requirements or details"}</label>
+        <textarea id="message" name="message" defaultValue={defaultMessage} maxLength={3000} required />
       </div>
       <div className="honeypot" aria-hidden="true">
         <label htmlFor="website">Website</label>

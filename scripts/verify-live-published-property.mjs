@@ -15,7 +15,7 @@ try {
   await expect(page.getByRole("link", { name: "600 sqm Virgin Land" })).toBeVisible();
   await page.goto(propertyUrl);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("600 sqm Virgin Land");
-  await expect(page.locator(".detail-price")).toHaveText("NGN 14,000,000");
+  await expect(page.locator(".detail-price")).toHaveText("₦14,000,000");
   await expect(page.getByText("Availability to confirm")).toBeVisible();
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", propertyUrl);
   await expect(page.getByText("2026-09-22", { exact: true })).toBeVisible();
@@ -30,11 +30,11 @@ try {
 
   await page.goto(`${site}/areas/kyc-homes-phase-ii`);
   await expect(page.getByRole("link", { name: "600 sqm Virgin Land" })).toBeVisible();
-  await expect(page.getByText(/600 sqm virgin land \/ NGN 14,000,000/)).toBeVisible();
+  await expect(page.locator(".buying-price strong")).toHaveText("₦14,000,000");
   await page.goto(`${site}/faqs`);
-  await expect(page.getByText(/currently listed KYC Interproject Limited price is NGN 14,000,000/)).toBeVisible();
+  await expect(page.getByText(/quoted KYC Interproject Limited price is ₦14,000,000/)).toBeVisible();
   await page.goto(`${site}/guides/kyc-homes-phase-ii-buyer-guide`);
-  await expect(page.getByText("NGN 14,000,000", { exact: true })).toBeVisible();
+  await expect(page.getByText("₦14,000,000", { exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: "Explore available land" })).toHaveAttribute("href", `/properties/${slug}`);
   await page.goto(`${site}/insights/kyc-homes-phase-ii-abuja-guide`);
   await expect(page.getByRole("heading", { name: "Developer product at publication" })).toBeVisible();

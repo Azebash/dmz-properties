@@ -1,6 +1,17 @@
 # DMZ Properties Development Tracker
 
-Last reviewed: September 24, 2026
+Last reviewed: October 1, 2026
+
+## October 1 local implementation
+
+- [x] Personal buying guidance and resale-budget enquiries work independently of public listings.
+- [x] Optional property showcases support staff selection, private preview, and direct verified publication.
+- [x] Area-guide benchmark separates general developer price, size, date, and visibility from property posts.
+- [x] Approved copy improvements, land-only clarification, seller labels, and article-title correction.
+- [x] 110 unit tests, 104 responsive/browser/accessibility checks, four production performance/metadata checks, build, TypeScript, lint, and 21 isolated database assertions passed.
+- [ ] Apply the two October 1 migrations and deploy after authorization; rerun authenticated publication and approved-media delivery against full Supabase.
+
+Exact checkout and verification limits are recorded in `docs/client-facing-copy-audit.md`.
 
 ## Status Legend
 

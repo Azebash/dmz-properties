@@ -8,6 +8,8 @@ import { getPublicAreaGuide } from "@/lib/public-area-guide";
 import { getPublishedArticles } from "@/lib/public-articles";
 import { getPublishedProperties } from "@/lib/public-properties";
 import { serializeStructuredData } from "@/lib/structured-data";
+import { DeveloperPriceEnquiry } from "@/components/buying-options";
+import { buyingEnquiry } from "@/lib/buying-options";
 
 export const revalidate = 60;
 
@@ -28,7 +30,6 @@ export default async function KycEstatePage() {
   const estateProperties = properties.filter(
     (property) => property.location === "KYC Homes Phase II",
   );
-  const developerLand = estateProperties.find((property) => property.reference === "DMZ-KYC-001");
 
   const placeData = {
     "@context": "https://schema.org",
@@ -133,14 +134,12 @@ export default async function KycEstatePage() {
 
       <section className="section-shell section-block estate-intro">
         <div className="estate-specification">
-          <span>Estate development standard</span>
-          <strong>4-bedroom fully detached duplex</strong>
-          <p>600 sqm virgin land / {developerLand?.price || "Ask DMZ for current pricing"}</p>
+          <DeveloperPriceEnquiry price={copy.developerPrice} />
         </div>
         <h2>{copy.pathsTitle}</h2>
         <div className="estate-paths">
           <article>
-            <span>Developer inventory</span>
+            <span>Direct developer sale</span>
             <h3>Find your plot with DMZ.</h3>
             <p>
               Explore available plots, arrange an inspection, and understand the
@@ -148,21 +147,21 @@ export default async function KycEstatePage() {
               process and stay in touch while {estate.developer} reviews and
               approves your application.
             </p>
-            <Link className="text-link section-action" href="/properties">
-              Explore DMZ inventory
+            <Link className="text-link section-action" href={buyingEnquiry("developer").contact}>
+              Ask about developer plots
             </Link>
           </article>
           <article>
             <span>Owner resales</span>
-            <h3>Acquire property from an existing KYC Homes client.</h3>
+            <h3>Looking for a better price? Ask about owner resales.</h3>
             <p>
               Every resale is reviewed for ownership, authority to sell, and the
               applicable transfer process before it is represented. Third-party
               resale prices are set by the individual owner and may differ from
               the developer&apos;s virgin-land price.
             </p>
-            <Link className="text-link section-action" href="/contact">
-              Ask DMZ about resales
+            <Link className="text-link section-action" href={buyingEnquiry("resale").contact}>
+              Tell us your budget
             </Link>
           </article>
         </div>
@@ -231,8 +230,7 @@ export default async function KycEstatePage() {
           <div className="section-heading">
             <h2>Current opportunities</h2>
             <p>
-              Current developer inventory is shown below. Availability, price,
-              payment terms, and documentation are reconfirmed before commitment.
+              Explore selected properties below, or contact us for options within your budget. Availability, prices, and applicable charges are confirmed before commitment.
             </p>
           </div>
           <div className="property-grid">

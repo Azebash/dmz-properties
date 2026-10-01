@@ -24,7 +24,7 @@ export default function SellPage() {
     <main>
       <section className="section-shell page-hero seller-hero">
         <p className="eyebrow">For existing owners</p>
-        <h1 className="page-title">Sell with the details in order.</h1>
+        <h1 className="page-title">Sell your KYC Homes property through DMZ.</h1>
         <p>
           DMZ Properties privately reviews KYC Homes Phase II properties before offering
           them to buyers. We will contact you to discuss your property and the

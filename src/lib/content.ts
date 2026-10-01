@@ -10,6 +10,8 @@ export type Property = {
   currency?: string;
   plotSizeSqm?: number;
   publishedAt?: string;
+  isFeatured?: boolean;
+  source?: "developer_inventory" | "owner_resale";
   status: string;
   availabilityStatus: AvailabilityStatus;
   availabilityCheckedAt?: string;
@@ -50,13 +52,14 @@ export const properties: Property[] = [
     title: "600 sqm Virgin Land",
     type: "Land",
     location: "KYC Homes Phase II",
-    price: "NGN 14,000,000",
+    price: "₦14,000,000",
     priceAmount: 14_000_000,
     currency: "NGN",
     plotSizeSqm: 600,
-    status: "Developer inventory",
+    source: "developer_inventory",
+    status: "Direct developer sale",
     availabilityStatus: "unconfirmed",
-    ownership: "Developer inventory",
+    ownership: "Direct developer sale",
     size: "600 sqm",
     image: "/images/estate/estate-street.webp",
     imageLabel: "Estate context",
@@ -66,12 +69,12 @@ export const properties: Property[] = [
       "/images/estate/development-progress-03.webp",
     ],
     description:
-      "Virgin residential land sold directly by KYC Interproject Limited within KYC Homes Phase II, Sabon Lugbe. Current price and availability must be reconfirmed before payment.",
+      "600 sqm residential land sold directly by KYC Interproject Limited within KYC Homes Phase II, Sabon Lugbe. The listed price is for land. Ask us about the estate's approved building requirements, current availability, and additional charges.",
     features: [
       "600 sqm virgin land",
-      "NGN 14,000,000 current developer price",
+      "₦14,000,000 current developer price",
       "Direct KYC Interproject Limited inventory",
-      "4-bedroom fully detached duplex development format",
+      "Land only; ask about approved building requirements",
       "Physical and remote inspection available",
       "Full or part payment options subject to approved terms",
     ],
@@ -106,13 +109,13 @@ export const articles: Article[] = [
       },
       {
         heading: "Developer product at publication",
-        body: "At this guide's original publication on 17 September 2026, KYC Interproject Limited's quoted virgin-land price was NGN 14,000,000 for a 600 sqm plot. Phase II follows a 4-bedroom fully detached duplex development format. Full or part payment may be available, but buyers must reconfirm availability, charges, payment schedules, and official instructions before transferring funds.",
+        body: "At this guide's original publication on 17 September 2026, KYC Interproject Limited's quoted virgin-land price was ₦14,000,000 for a 600 sqm plot. The quoted price is for land. Ask DMZ about the estate’s approved building requirements. Full or part payment may be available, but buyers must reconfirm availability, charges, payment schedules, and official instructions before transferring funds.",
       },
     ],
   },
   {
     slug: "questions-before-buying-land",
-    title: "Seven questions to ask before buying land",
+    title: "Ownership and costs: checks before buying land",
     category: "Buying guide",
     readTime: "3 min read",
     excerpt:
@@ -142,7 +145,7 @@ export const articles: Article[] = [
     sections: [
       {
         heading: "The source of the property",
-        body: "Developer inventory is sold through the estate's established allocation process. An owner resale transfers an existing client's interest, so the seller's identity, allocation, payment history, and authority to transfer require separate confirmation.",
+        body: "Developer inventory is sold through the estate's established allocation process. An owner resale transfers an existing owner's interest, so the seller's identity, allocation, payment history, and authority to transfer require separate confirmation.",
       },
       {
         heading: "Verification still matters",

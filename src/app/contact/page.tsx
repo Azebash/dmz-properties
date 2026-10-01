@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { EnquiryForm } from "@/components/enquiry-form";
 import { business } from "@/lib/business";
 import { TrackedLink } from "@/components/tracked-link";
+import { buyingEnquiry } from "@/lib/buying-options";
 
 export const metadata: Metadata = {
   title: "Make an Enquiry",
@@ -11,17 +12,18 @@ export const metadata: Metadata = {
 };
 
 type ContactPageProps = {
-  searchParams: Promise<{ property?: string; interest?: string }>;
+  searchParams: Promise<{ property?: string; interest?: string; intent?: string }>;
 };
 
 export default async function ContactPage({ searchParams }: ContactPageProps) {
   const params = await searchParams;
+  const intent = params.intent === "developer" || params.intent === "resale" || params.intent === "options" ? params.intent : null;
   const allowedInterests = [
     "Buying a plot",
     "Buying a developed property",
     "Booking an inspection",
   ];
-  const defaultInterest = allowedInterests.includes(params.interest || "")
+  const defaultInterest = intent ? "Buying a plot" : allowedInterests.includes(params.interest || "")
     ? params.interest
     : "";
 
@@ -39,8 +41,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         <div className="contact-copy">
           <h2>Start with the essentials.</h2>
           <p>
-            Your location, intended use, budget, and preferred purchase timeline
-            help us respond with useful options rather than a generic list.
+            Tell us what you&apos;re looking for, your budget, and when you hope to buy. We&apos;ll discuss suitable options and current prices with you.
           </p>
           <div className="contact-details">
             <div>
@@ -50,7 +51,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
             <div>
               <span>WhatsApp</span>
               <TrackedLink
-                href={business.phone.whatsapp}
+                href={buyingEnquiry(intent || "options", params.property?.slice(0, 100)).whatsapp}
                 eventName="whatsapp_click"
                 eventData={{ placement: "contact_page" }}
                 newTab
@@ -66,6 +67,7 @@ export default async function ContactPage({ searchParams }: ContactPageProps) {
         </div>
         <EnquiryForm
           defaultInterest={defaultInterest}
+          defaultMessage={intent ? buyingEnquiry(intent).message : ""}
           propertyReference={params.property?.slice(0, 100)}
         />
       </section>

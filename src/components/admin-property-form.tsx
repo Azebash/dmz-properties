@@ -18,6 +18,7 @@ export function AdminPropertyForm({ property }: { property?: PropertyRow }) {
   return (
     <form className="admin-editor" action={action}>
       <input name="id" type="hidden" value={property?.id || ""} />
+      <p>Posting a property is optional. You can help buyers and handle their enquiries without creating a listing.</p>
       <div className="admin-form-grid">
         <div className="field">
           <label htmlFor="property-reference">Reference</label>
@@ -86,6 +87,10 @@ export function AdminPropertyForm({ property }: { property?: PropertyRow }) {
           <label htmlFor="features">Features, one per line</label>
           <textarea id="features" name="features" defaultValue={features} />
         </div>
+        <label className="consent-field field-full">
+          <input type="checkbox" name="isFeatured" defaultChecked={property?.is_featured || false} />
+          <span>Feature on homepage (published listings only)</span>
+        </label>
         <div className="field">
           <label htmlFor="last-verified">Last verified</label>
           <input id="last-verified" name="lastVerifiedAt" type="date" required={property?.status === "published"} defaultValue={property?.last_verified_at?.slice(0, 10) || ""} />

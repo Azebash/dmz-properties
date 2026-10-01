@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getPublishedProperty } from "@/lib/public-properties";
+import { getPublicAreaGuide } from "@/lib/public-area-guide";
+import { formatPropertyPrice } from "@/lib/buying-options";
+import type { DeveloperPrice } from "@/lib/area-guide-copy";
 import { serializeStructuredData } from "@/lib/structured-data";
 
 export const revalidate = 60;
@@ -12,17 +14,18 @@ export const metadata: Metadata = {
   alternates: { canonical: "/faqs" },
 };
 
-function buildFaqs(currentPrice: string | null) {
+function buildFaqs(price: DeveloperPrice | null) {
+  const currentPrice = price?.visible ? formatPropertyPrice(price.amount) : null;
   return [
   [
-    "What is the current company price for virgin land?",
+    "What is the developer’s price for a plot?",
     currentPrice
-      ? `The currently listed KYC Interproject Limited price is ${currentPrice} for a 600 sqm virgin-land plot at KYC Homes Phase II. Price, availability, charges, and payment instructions must be reconfirmed before payment.`
+      ? `The quoted KYC Interproject Limited price is ${currentPrice} for a ${price?.plotSizeSqm} sqm land plot at KYC Homes Phase II, confirmed ${price?.confirmedAt}. This is the land price. Price, availability, charges, and payment instructions must be reconfirmed before payment.`
       : "Ask DMZ for the current KYC Interproject Limited price and availability for 600 sqm virgin land. Charges and payment instructions must be reconfirmed before payment.",
   ],
   [
-    "How are third-party resale prices determined?",
-    "Each owner sets the asking price for their property. DMZ Properties verifies the ownership and authority-to-sell position and communicates the owner's approved terms; a resale price may differ from the developer's virgin-land price.",
+    "Can an owner resale cost less than a developer plot?",
+    "A resale may cost less than the developer’s quoted plot price. Each owner sets their asking price, and availability varies. Tell us your budget and we’ll discuss current options, ownership checks, and applicable charges.",
   ],
   [
     "Can the developer price be paid in parts?",
@@ -41,8 +44,8 @@ function buildFaqs(currentPrice: string | null) {
     "The published onboarding terms state that installment default may be viewed as withdrawal of interest and that refunds attract a 20% administrative charge. Buyers must review the current signed terms before choosing part payment.",
   ],
   [
-    "What is the Phase II development format?",
-    "The documented Phase II plot standard is 600 sqm with a 4-bedroom fully detached duplex development format. Confirm the size and current approved terms for the specific property you are considering.",
+    "Does the land price include a house?",
+    "No. The developer plot price is for land. Ask DMZ about the estate’s approved building requirements, the exact plot size, and the additional costs for the property you are considering.",
   ],
   [
     "Is DMZ Properties the official KYC Homes Phase II website?",
@@ -80,8 +83,8 @@ function buildFaqs(currentPrice: string | null) {
 }
 
 export default async function FaqPage() {
-  const developerLand = await getPublishedProperty("600sqm-virgin-land-kyc-homes-phase-ii");
-  const faqs = buildFaqs(developerLand?.price || null);
+  const guide = await getPublicAreaGuide();
+  const faqs = buildFaqs(guide.developerPrice);
   const faqData = {
     "@context": "https://schema.org",
     "@type": "FAQPage",

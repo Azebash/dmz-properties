@@ -32,4 +32,20 @@ Article publication dates and references to dated developer terms are editorial 
 
 ## Deployment status
 
-These corrections are local until committed and deployed. The audited production site still contains the original wording.
+The September 30 cleanup is present on the live site, as checked October 1. The changes below passed local verification; deployment has not been verified.
+
+## October 1: personal matching and optional listings
+
+Implemented on `main`, starting from `300e84b817f3c14adcf69a1e5bf455356cdea333`. Commit and push were authorized October 1; live database migrations remain pending.
+
+- Homepage and Buying options explain developer plots and owner resales before any optional property showcase. Buyers can discuss their budget without choosing a listing.
+- Approved headlines, seller labels, owner terminology, naira display, land-only clarification, and the two-section article title are updated. The resale invitation makes no stock or discount guarantee.
+- The area guide owns the approved developer benchmark, its plot size, source confirmation date, and visibility. General price references no longer depend on a published listing. Listing asking prices remain separate.
+- Property staff can feature posts, preview saved drafts through a protected shared renderer, and publish directly after verification. Existing media approvals, private documents, source labels, and withdrawal behavior remain in place.
+- Additive migrations prepare audited database copy corrections and publishing changes. The benchmark migration preserves the source verification date; it does not claim a fresh stock check.
+
+Verification: 110 unit tests; 104 browser/accessibility tests at 375, 768, 1024, and 1440 px; four production performance/metadata checks; production build, TypeScript, and ESLint passed. All 31 migrations applied in an isolated PostgreSQL 16 database with minimal Auth/Storage test schemas; 21 database assertions passed with fixtures rolled back. Zero-listing homepage/catalogue rendering and protected-preview structured-data exclusion are covered by tests.
+
+The public buyer journey was also inspected in the in-app browser. No production enquiries were submitted. Authenticated admin UI save/publish and real Supabase Storage delivery have not been rerun against a complete local Supabase stack or the live service.
+
+Next bounded action: apply the two October 1 migrations to the intended Supabase environment before deploying this application, then run the authenticated local publication check in `scripts/verify-local-property-publication.mjs` and reconfirm the approved benchmark in the area editor. Live database changes and explicit deployment actions require separate authorization.

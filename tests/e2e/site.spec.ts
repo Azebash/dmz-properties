@@ -108,8 +108,8 @@ test("buyer acquisition pages keep prospects in DMZ journeys", async ({ page }) 
   }
 
   await page.goto("/areas/kyc-homes-phase-ii");
-  await expect(page.getByRole("link", { name: "Explore DMZ inventory" })).toHaveAttribute("href", "/properties");
-  await expect(page.getByRole("link", { name: "Ask DMZ about resales" })).toHaveAttribute("href", "/contact");
+  await expect(page.getByRole("link", { name: "Ask about developer plots" })).toHaveAttribute("href", /intent=developer/);
+  await expect(page.getByRole("link", { name: "Tell us your budget" })).toHaveAttribute("href", /intent=resale/);
   await expect(page.getByRole("main").getByRole("link", { name: "Book an inspection" })).toHaveAttribute("href", "/book-inspection");
 });
 
@@ -156,7 +156,7 @@ test("contact details expose callable and WhatsApp channels", async ({ page }) =
   );
   await expect(page.getByRole("link", { name: "Start a conversation" })).toHaveAttribute(
     "href",
-    "https://wa.me/2348103704005",
+    /https:\/\/wa\.me\/2348103704005\?text=/,
   );
   await expect(page.getByText(/Suite A108, Garki Mall/).first()).toBeVisible();
 });
@@ -202,11 +202,29 @@ test("buyer guide is available in print layout", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "A clearer route from interest to ownership." }),
   ).toBeVisible();
-  await expect(page.getByText("NGN 14,000,000", { exact: true })).toBeVisible();
+  await expect(page.getByText("₦14,000,000", { exact: true })).toBeVisible();
 
   await page.emulateMedia({ media: "print" });
   await expect(page.locator(".site-header")).toBeHidden();
   await expect(page.locator(".buyer-checklist")).toBeVisible();
+});
+
+test("buyers can discuss resales without selecting a property", async ({ page }) => {
+  await page.goto("/properties");
+  await page.getByRole("link", { name: "Tell us your budget", exact: true }).click();
+  await expect(page).toHaveURL(/intent=resale/);
+  await expect(page.getByLabel("I am interested in")).toHaveValue("Buying a plot");
+  await expect(page.getByLabel("Property requirements or details")).toHaveValue(/resale options from existing owners/);
+  await expect(page.getByLabel("Your budget")).toBeVisible();
+  await expect(page.locator(".form-property")).toHaveCount(0);
+  await page.goto("/sell");
+  await expect(page.getByLabel("Your asking price")).toBeVisible();
+  await expect(page.getByLabel("Tell us about the property you want to sell")).toBeVisible();
+});
+
+test("listing previews require staff authentication", async ({ page }) => {
+  await page.goto("/admin/properties/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa/preview");
+  await expect(page).toHaveURL(/\/admin\/login/);
 });
 
 test("insight topic pages provide crawlable article links", async ({ page }) => {

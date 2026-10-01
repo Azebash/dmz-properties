@@ -60,7 +60,7 @@ describe("public property publishing", () => {
     expect(property).toMatchObject({
       slug: properties[0].slug,
       reference: "DMZ-KYC-001",
-      price: "NGN 14,000,000",
+      price: "₦14,000,000",
       availabilityStatus: "unconfirmed",
       lastVerifiedAt: "2026-09-22",
       updatedAt: "2026-09-23",
@@ -85,7 +85,7 @@ describe("public property publishing", () => {
     expect((await getPublishedProperties())[0]).toMatchObject({
       imageLabel: "Images pending",
       gallery: ["/images/property-media-pending.svg"],
-      price: "Price on request",
+      price: "Contact us for current pricing",
     });
   });
 
@@ -101,6 +101,12 @@ describe("public property publishing", () => {
       availability_checked_at: new Date().toISOString(),
     }]));
     expect((await getPublishedProperties())[0]).toMatchObject({ availabilityStatus: "available" });
+  });
+
+  it("carries homepage selection through the published read model", async () => {
+    configureDatabase();
+    vi.stubGlobal("fetch", mockInventory([{ ...publishedRow, is_featured: true }]));
+    expect((await getPublishedProperties())[0]).toMatchObject({ isFeatured: true, source: "developer_inventory" });
   });
 
   it("does not reuse curated developer imagery after its source becomes a resale", async () => {

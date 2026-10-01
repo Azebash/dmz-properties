@@ -14,7 +14,7 @@ export default function AboutPage() {
     <main>
       <section className="section-shell page-hero">
         <p className="eyebrow">About DMZ Properties</p>
-        <h1 className="page-title">Independent by design. Informed by access.</h1>
+        <h1 className="page-title">Local knowledge to guide your property purchase.</h1>
       </section>
       <section className="section-shell about-grid">
         <h2>Built for clearer property decisions.</h2>

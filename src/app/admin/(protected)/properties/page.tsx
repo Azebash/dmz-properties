@@ -21,7 +21,7 @@ export default async function AdminPropertiesPage() {
       <header className="admin-page-header">
         <p className="eyebrow">Inventory</p>
         <h1>Properties</h1>
-        <p>Published, draft, reserved, sold, and archived inventory.</p>
+        <p>Optional property posts. Manage enquiries and match buyers to options even when you have no published listings.</p>
         {canManage ? (
           <Link className="button button-primary" href="/admin/properties/new">
             Add property
@@ -40,6 +40,7 @@ export default async function AdminPropertiesPage() {
                 <th>Status</th>
                 <th>Price</th>
                 <th>Verified</th>
+                <th>Homepage</th>
               </tr>
             </thead>
             <tbody>
@@ -58,13 +59,14 @@ export default async function AdminPropertiesPage() {
                   <td><AdminStatus value={property.status} /></td>
                   <td>{formatAdminMoney(property.price_amount, property.price_currency)}</td>
                   <td>{formatAdminDate(property.last_verified_at)}</td>
+                  <td>{property.is_featured ? "Featured" : "Automatic"}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       ) : (
-        <AdminEmpty message="Add inventory after the audited mutation workflow is enabled." />
+        <AdminEmpty message="No property posts yet. Add a listing when you want to showcase it, or help buyers through Enquiries." />
       )}
     </div>
   );

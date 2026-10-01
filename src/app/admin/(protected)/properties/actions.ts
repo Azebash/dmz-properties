@@ -7,6 +7,7 @@ import { requireStaff } from "@/lib/admin/auth";
 import { propertyPayloadFromFormData } from "@/lib/admin/property-validation";
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePublicProperty } from "@/lib/admin/property-revalidation";
+import { uuidPattern } from "@/lib/admin/lead-workflow";
 
 export type PropertyActionState = { error: string };
 
@@ -63,8 +64,8 @@ export async function transitionPropertyAction(formData: FormData) {
     "sold",
     "archived",
   ];
-  if (!propertyId || !allowed.includes(status)) {
-    redirect(`/admin/properties/${propertyId}/edit?transition=invalid`);
+  if (!uuidPattern.test(propertyId) || !allowed.includes(status)) {
+    redirect("/admin/properties");
   }
 
   const supabase = await createClient();

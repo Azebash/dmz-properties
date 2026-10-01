@@ -1,4 +1,5 @@
 import type { Json } from "@/lib/supabase/database.types";
+import { uuidPattern } from "@/lib/admin/lead-workflow";
 
 export type PropertyPayloadResult =
   | { success: true; payload: Json }
@@ -12,6 +13,8 @@ function value(formData: FormData, name: string) {
 export function propertyPayloadFromFormData(
   formData: FormData,
 ): PropertyPayloadResult {
+  const id = value(formData, "id");
+  if (id && !uuidPattern.test(id)) return { success: false, error: "The selected property is invalid." };
   const required = [
     "reference",
     "slug",
@@ -51,6 +54,7 @@ export function propertyPayloadFromFormData(
     success: true,
     payload: {
       id: value(formData, "id"),
+      isFeatured: formData.get("isFeatured") === "on",
       reference: value(formData, "reference").toUpperCase(),
       slug,
       title: value(formData, "title"),

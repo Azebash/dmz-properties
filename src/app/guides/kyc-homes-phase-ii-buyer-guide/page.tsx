@@ -3,6 +3,8 @@ import Link from "next/link";
 import { PrintButton } from "@/components/print-button";
 import { business, estate } from "@/lib/business";
 import { getPublishedProperty } from "@/lib/public-properties";
+import { getPublicAreaGuide } from "@/lib/public-area-guide";
+import { buyingEnquiry, formatPropertyPrice } from "@/lib/buying-options";
 
 export const revalidate = 60;
 
@@ -26,7 +28,8 @@ const checklist = [
 ];
 
 export default async function BuyerGuidePage() {
-  const developerLand = await getPublishedProperty("600sqm-virgin-land-kyc-homes-phase-ii");
+  const [developerLand, guide] = await Promise.all([getPublishedProperty("600sqm-virgin-land-kyc-homes-phase-ii"), getPublicAreaGuide()]);
+  const price = guide.developerPrice;
   return (
     <main className="buyer-guide">
       <header className="section-shell page-hero buyer-guide-hero">
@@ -41,8 +44,9 @@ export default async function BuyerGuidePage() {
 
       <section className="section-shell guide-facts">
         <div>
-          <span>Current developer land price</span>
-          <strong>{developerLand?.price || "Ask DMZ for current pricing"}</strong>
+          <span>Developer land price</span>
+          <strong>{price?.visible ? formatPropertyPrice(price.amount) : "Ask DMZ for current pricing"}</strong>
+          {price?.visible ? <small>{price.plotSizeSqm} sqm · price confirmed {price.confirmedAt}. Reconfirm current terms before payment.</small> : null}
         </div>
         <div>
           <span>Plot standard</span>
@@ -50,8 +54,8 @@ export default async function BuyerGuidePage() {
           <small>Check the exact size of any individual property.</small>
         </div>
         <div>
-          <span>Development format</span>
-          <strong>{estate.propertyType}</strong>
+          <span>Land only</span>
+          <strong>Ask about approved building requirements</strong>
         </div>
       </section>
 
@@ -70,7 +74,7 @@ export default async function BuyerGuidePage() {
       <section className="section-shell guide-columns">
         <article>
           <p className="eyebrow">Developer purchase</p>
-          <h2>Direct company inventory</h2>
+          <h2>Direct developer sale</h2>
           <p>
             Start with DMZ to review current availability and arrange an inspection.
             We help you prepare for developer approval, understand the approved
@@ -82,13 +86,14 @@ export default async function BuyerGuidePage() {
         </article>
         <article>
           <p className="eyebrow">Owner resale</p>
-          <h2>Existing client property</h2>
+          <h2>Buying from an existing owner</h2>
           <p>
             The owner sets the asking price. Ownership, authority to sell,
             payment position, property identity, and the applicable estate
             transfer process must be confirmed before commitment.
           </p>
           <Link href="/verification">How DMZ verifies resales</Link>
+          <p><Link href={buyingEnquiry("resale").contact}>Tell us your budget</Link></p>
         </article>
       </section>
 

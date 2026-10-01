@@ -395,6 +395,7 @@ export type Database = {
           description: string
           features: Json
           id: string
+          is_featured: boolean
           last_verified_at: string | null
           latitude: number | null
           location_name: string
@@ -425,6 +426,7 @@ export type Database = {
           description: string
           features?: Json
           id?: string
+          is_featured?: boolean
           last_verified_at?: string | null
           latitude?: number | null
           location_name: string
@@ -455,6 +457,7 @@ export type Database = {
           description?: string
           features?: Json
           id?: string
+          is_featured?: boolean
           last_verified_at?: string | null
           latitude?: number | null
           location_name?: string
